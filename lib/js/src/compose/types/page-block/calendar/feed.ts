@@ -3,9 +3,9 @@ import { Apply, NoID } from '../../../../cast'
 import { IsOf } from '../../../../guards'
 
 interface FeedOptions {
+  moduleID: string;
   color: string;
   prefilter: string;
-  moduleID: string;
 }
 
 interface LegacyFeed {

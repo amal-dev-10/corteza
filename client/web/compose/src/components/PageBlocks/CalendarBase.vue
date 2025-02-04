@@ -343,14 +343,12 @@ export default {
 
                 return compose.PageBlockCalendar.RecordFeed(this.$ComposeAPI, module, this.namespace, ff, this.loaded, { cancelToken: this.cancelTokenSource.token })
                   .then(events => {
-                    events = this.setEventColors(events, ff)
                     this.events.push(...events)
                   })
               })
           case compose.PageBlockCalendar.feedResources.reminder:
             return compose.PageBlockCalendar.ReminderFeed(this.$SystemAPI, this.$auth.user, feed, this.loaded)
               .then(events => {
-                events = this.setEventColors(events, feed)
                 this.events.push(...events)
               })
         }
@@ -405,13 +403,6 @@ export default {
       new Promise(resolve => resolve(this.api().refetchEvents()))
         .then(() => this.key++)
         .catch(() => this.toastErrorHandler(this.$t('notification:page.block.calendar.eventFetchFailed')))
-    },
-
-    setEventColors (events, feed) {
-      return events.map(event => {
-        event.backgroundColor = feed.options.color
-        return event
-      })
     },
 
     setDefaultValues () {

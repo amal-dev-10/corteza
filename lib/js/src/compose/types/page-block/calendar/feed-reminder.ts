@@ -3,11 +3,6 @@ import { User, Reminder } from '../../../../system'
 import { makeColors, Event } from './shared'
 import { AreObjectsOf } from '../../../../guards'
 
-// import variables from 'corteza-webapp-compose/src/themes/corteza-base/variables.scss'
-// const defaultColor = variables.secondary
-// @todo fix this!
-const defaultColor = '#568ba2'
-
 interface FeedOptions {
   color: string;
 }
@@ -30,7 +25,6 @@ interface Range {
  * @returns {Promise<Array>} Resolves to a set of FC events to display
  */
 export async function ReminderFeed ($SystemAPI: SystemAPI, user: User, feed: Feed, range: Range, options = {}): Promise<Event[]> {
-  feed.options.color = feed.options.color || defaultColor
   return $SystemAPI.reminderList({
     scheduledFrom: range.start.toISOString(),
     scheduledUntil: range.end.toISOString(),
@@ -38,7 +32,7 @@ export async function ReminderFeed ($SystemAPI: SystemAPI, user: User, feed: Fee
     excludeDismissed: true,
     assignedTo: user.userID,
   }, options).then(({ set }) => {
-    const { backgroundColor, borderColor, isLight } = makeColors(feed.options.color)
+    const { backgroundColor, borderColor, textColor } = makeColors(feed.options.color)
 
     if (!AreObjectsOf<Reminder>(set, 'reminderID', 'assignedTo', 'remindAt', 'payload')) {
       return []
@@ -51,11 +45,6 @@ export async function ReminderFeed ($SystemAPI: SystemAPI, user: User, feed: Fee
       if (r.assignedTo !== user.userID) {
         classNames.push('event-not-owner')
       }
-      if (isLight) {
-        classNames.push('text-dark')
-      } else {
-        classNames.push('text-white')
-      }
 
       const e: Event = {
         id: r.reminderID,
@@ -63,6 +52,7 @@ export async function ReminderFeed ($SystemAPI: SystemAPI, user: User, feed: Fee
         start: r.remindAt?.toISOString(),
         backgroundColor,
         borderColor,
+        textColor,
         classNames,
         allDay: false,
         extendedProps: {

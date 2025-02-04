@@ -4,11 +4,6 @@ import { Module } from '../../module'
 import { Compose as ComposeAPI } from '../../../../api-clients'
 import { makeColors, Event } from './shared'
 
-// import variables from 'corteza-webapp-compose/src/themes/corteza-base/variables.scss'
-// const defaultColor = variables.primary
-// @todo fix this!
-const defaultColor = '#568ba2'
-
 interface FeedOptions {
   color: string;
   prefilter: string;
@@ -68,12 +63,7 @@ function expandRecord (record: Readonly<Record>, feed: Feed): Event[] {
   ends.push(...(new Array(Math.max(starts.length - ends.length, 0)).fill(undefined)))
 
   const classNames = ['event', 'event-record']
-  const { backgroundColor, borderColor, isLight } = makeColors(feed.options.color || defaultColor)
-  if (isLight) {
-    classNames.push('text-dark')
-  } else {
-    classNames.push('text-white')
-  }
+  const { backgroundColor, borderColor, textColor } = makeColors(feed.options.color)
 
   starts.forEach((start, i) => {
     events.push({
@@ -87,6 +77,7 @@ function expandRecord (record: Readonly<Record>, feed: Feed): Event[] {
       backgroundColor,
       borderColor,
       classNames,
+      textColor,
 
       extendedProps: {
         moduleID: record.module.moduleID,

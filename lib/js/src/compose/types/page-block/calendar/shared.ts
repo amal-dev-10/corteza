@@ -1,7 +1,7 @@
 import hr from 'hex-rgb'
 
 const isLightThreshold = 100
-const bgAlpha = 0.7
+const bgAlpha = 1
 
 export const rgbaRegex = /^rgba\((\d+),.*?(\d+),.*?(\d+),.*?(\d*\.?\d*)\)$/
 
@@ -12,7 +12,7 @@ export const toRGBA = ([r, g, b, a]: number[]): string =>
 interface Colors {
   backgroundColor: string;
   borderColor: string;
-  isLight: boolean;
+  textColor: string;
 }
 
 /**
@@ -23,12 +23,12 @@ interface Colors {
 export function makeColors (hex: string): Colors {
   const bg = hr(hex, { format: 'array' })
   const br = [...bg]
-  bg[3] = bgAlpha
+  const isLight = (bg.slice(0, 3).reduce((acc, cur) => acc + cur, 0) / (bg.length - 1)) > isLightThreshold
 
   return {
+    textColor: isLight ? '#000' : '#fff',
     backgroundColor: `rgba(${bg.join(',')})`,
     borderColor: `rgba(${br.join(',')})`,
-    isLight: (bg.slice(0, 3).reduce((acc, cur) => acc + cur, 0) / (bg.length - 1)) > isLightThreshold,
   }
 }
 
@@ -41,6 +41,7 @@ export interface Event {
   allDay: boolean;
   backgroundColor: string;
   borderColor: string;
+  textColor: string;
   classNames: string[];
   extendedProps: object;
 }

@@ -115,28 +115,6 @@
           </i18next>
         </b-form-group>
       </b-col>
-
-      <b-col
-        cols="12"
-        lg="6"
-      >
-        <b-form-group
-          :label="$t('calendar.recordFeed.colorLabel')"
-          label-class="text-primary"
-        >
-          <c-input-color-picker
-            v-model="feed.options.color"
-            :translations="{
-              modalTitle: $t('calendar.recordFeed.colorPicker'),
-              light: $t('general:themes.labels.light'),
-              dark: $t('general:themes.labels.dark'),
-              cancelBtnLabel: $t('general:label.cancel'),
-              saveBtnLabel: $t('general:label.saveAndClose')
-            }"
-            :theme-settings="themeSettings"
-          />
-        </b-form-group>
-      </b-col>
     </template>
   </b-row>
 </template>
@@ -147,7 +125,7 @@ import { components } from '@cortezaproject/corteza-vue'
 import { compose, NoID } from '@cortezaproject/corteza-js'
 import autocomplete from 'corteza-webapp-compose/src/mixins/autocomplete.js'
 
-const { CInputColorPicker, CInputExpression } = components
+const { CInputExpression } = components
 
 export default {
   i18nOptions: {
@@ -155,7 +133,6 @@ export default {
   },
 
   components: {
-    CInputColorPicker,
     CInputExpression,
   },
 

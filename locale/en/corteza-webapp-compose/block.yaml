@@ -48,9 +48,9 @@ calendar:
   hideTitle: Hide title text
   hideToday: Hide today button
   label: Calendar
+  colorPicker: Choose a color
+  colorLabel: Event color
   recordFeed:
-    colorPicker: Choose a color
-    colorLabel: Event color
     eventAllDay: Show as all-day-events
     eventEndFieldLabel: Event end
     eventEndFieldPlaceholder: Event will last 1 hour
@@ -63,9 +63,6 @@ calendar:
     prefilterPlaceholder: field1 = 1 AND field2 = 232
     titleLabel: Event title
     titlePlaceholder: Field used as event title
-  reminderFeed:
-    colorLabel: Event color
-    optionLabel: Reminders
   today: Today
   view:
     dayGridMonth: Month

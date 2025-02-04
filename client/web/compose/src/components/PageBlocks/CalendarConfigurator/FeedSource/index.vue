@@ -43,6 +43,30 @@
           :record="record"
           :module="module"
         />
+
+        <b-row>
+          <b-col
+            cols="12"
+            lg="6"
+          >
+            <b-form-group
+              :label="$t('calendar.colorLabel')"
+              label-class="text-primary"
+            >
+              <c-input-color-picker
+                v-model="feed.options.color"
+                :translations="{
+                  modalTitle: $t('calendar.colorPicker'),
+                  light: $t('general:themes.labels.light'),
+                  dark: $t('general:themes.labels.dark'),
+                  cancelBtnLabel: $t('general:label.cancel'),
+                  saveBtnLabel: $t('general:label.saveAndClose')
+                }"
+                :theme-settings="themeSettings"
+              />
+            </b-form-group>
+          </b-col>
+        </b-row>
       </b-card>
     </b-col>
 
@@ -58,14 +82,20 @@
   </b-row>
 </template>
 <script>
-import { mapGetters } from 'vuex'
 import base from '../../base'
+import { mapGetters } from 'vuex'
 import * as configs from './configs'
 import { compose } from '@cortezaproject/corteza-js'
+import { components } from '@cortezaproject/corteza-vue'
+const { CInputColorPicker } = components
 
 export default {
   i18nOptions: {
     namespaces: 'block',
+  },
+
+  components: {
+    CInputColorPicker,
   },
 
   extends: base,
@@ -91,6 +121,10 @@ export default {
         value,
         text: this.$t(`calendar.${key}Feed.optionLabel`),
       }))
+    },
+
+    themeSettings () {
+      return this.$Settings.get('ui.studio.themes', [])
     },
   },
 
