@@ -3,6 +3,7 @@ package dalutils
 import (
 	"context"
 	"fmt"
+
 	"github.com/cortezaproject/corteza/server/compose/types"
 	"github.com/cortezaproject/corteza/server/pkg/dal"
 	"github.com/cortezaproject/corteza/server/pkg/filter"
@@ -147,10 +148,10 @@ func drainIterator(ctx context.Context, iter dal.Iterator, mod *types.Module, f 
 	}
 
 	var (
-		ok       bool
-		fetched  uint
-		filtered uint
-		r        *types.Record
+		ok         bool
+		fetched    uint
+		filtered   uint
+		lastRecord *types.Record
 	)
 
 	// Get the requested number of record
@@ -161,11 +162,19 @@ func drainIterator(ctx context.Context, iter dal.Iterator, mod *types.Module, f 
 	}
 
 	for f.Limit == 0 || uint(len(set)) < f.Limit {
+		var firstRecord *types.Record
+
 		// reset counters every drain
 		fetched = 0
 		filtered = 0
 
+		add := make(types.RecordSet, 0, 12)
 		err = WalkIterator(ctx, iter, mod, func(r *types.Record) error {
+			lastRecord = r
+			if firstRecord == nil {
+				firstRecord = r
+			}
+
 			// check fetched record
 			if f.Check != nil {
 				if ok, err = f.Check(r); err != nil {
@@ -177,7 +186,7 @@ func drainIterator(ctx context.Context, iter dal.Iterator, mod *types.Module, f 
 			}
 
 			fetched++
-			set = append(set, r)
+			add = append(add, r)
 			return err
 		})
 
@@ -187,8 +196,15 @@ func drainIterator(ctx context.Context, iter dal.Iterator, mod *types.Module, f 
 			return
 		}
 
+		// If it's reverse, we need to add extra fetches to the start
+		if f.PageCursor != nil && f.PageCursor.ROrder {
+			set = append(add, set...)
+		} else {
+			set = append(set, add...)
+		}
+
 		total := fetched + filtered
-		if total == 0 || f.Limit == 0 || (0 < f.Limit && total < f.Limit) {
+		if total == 0 || f.Limit == 0 {
 			// do not re-fetch if:
 			// 1) nothing was fetch in the previous run
 			// 2) there was no limit (everything was fetched)
@@ -198,11 +214,18 @@ func drainIterator(ctx context.Context, iter dal.Iterator, mod *types.Module, f 
 
 		// Fetch more records
 		setLen := uint(len(set))
-		if setLen > 0 && setLen < f.Limit {
+		if total > 0 && setLen < f.Limit {
 			fetchMore := f.Limit - setLen
+			var crsrRec *types.Record
 
 			// request more items
-			if err = iter.More(fetchMore, r); err != nil {
+			if f.PageCursor == nil || !f.PageCursor.ROrder {
+				crsrRec = lastRecord
+			} else {
+				crsrRec = firstRecord
+			}
+
+			if err = iter.More(fetchMore, crsrRec); err != nil {
 				return
 			}
 		}
@@ -295,6 +318,18 @@ func generatePageNavigation(ctx context.Context, iter dal.Iterator, mod *types.M
 
 			return
 		}
+
+		recordChecker = func(i dal.Iterator) (ok bool, err error) {
+			rc := &types.Record{}
+			err = i.Scan(rc)
+			rc.SetModule(mod)
+
+			if err != nil {
+				return
+			}
+
+			return p.Check(rc)
+		}
 	)
 
 	if setLen == 0 {
@@ -314,13 +349,15 @@ func generatePageNavigation(ctx context.Context, iter dal.Iterator, mod *types.M
 	// if limit is not defined and set is empty
 	if p.Limit > 0 && len(set) > 0 {
 		// PrevPage
-		out.PrevPage, err = dal.PreLoadCursor(ctx, iter, 1, true, first)
-		if err != nil {
-			return
+		if p.PageCursor != nil {
+			out.PrevPage, err = dal.PreLoadCursor(ctx, iter, 100, true, first, recordChecker)
+			if err != nil {
+				return
+			}
 		}
 
 		// NextPage
-		out.NextPage, err = dal.PreLoadCursor(ctx, iter, 1, false, last)
+		out.NextPage, err = dal.PreLoadCursor(ctx, iter, 100, false, last, recordChecker)
 		if err != nil {
 			return
 		}

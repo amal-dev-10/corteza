@@ -69,7 +69,13 @@ func (i *iterator) More(max uint, last dal.ValueGetter) (err error) {
 
 	i.limit = max
 	if last != nil {
-		if i.cursor, err = i.collectCursorValues(last); err != nil {
+		if i.cursor == nil || !i.cursor.ROrder {
+			i.cursor, err = i.ForwardCursor(last)
+		} else {
+			i.cursor, err = i.BackCursor(last)
+		}
+
+		if err != nil {
 			return fmt.Errorf("could not collect cursor values: %w", err)
 		}
 	}
