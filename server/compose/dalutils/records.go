@@ -320,6 +320,10 @@ func generatePageNavigation(ctx context.Context, iter dal.Iterator, mod *types.M
 		}
 
 		recordChecker = func(i dal.Iterator) (ok bool, err error) {
+			if p.Check == nil {
+				return true, err
+			}
+
 			rc := &types.Record{}
 			err = i.Scan(rc)
 			rc.SetModule(mod)
