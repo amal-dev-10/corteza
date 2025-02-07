@@ -1031,10 +1031,10 @@
     "@babel/helper-validator-identifier" "^7.22.20"
     to-fast-properties "^2.0.0"
 
-"@cortezaproject/corteza-js@^2024.9.1-rc.1":
-  version "2024.9.1-rc.1"
-  resolved "https://registry.yarnpkg.com/@cortezaproject/corteza-js/-/corteza-js-2024.9.1-rc.1.tgz#c24acf894a59f24a36b5660b9678646db3080189"
-  integrity sha512-F/XwTQuhWxfD6NS2SuvKXoF+FPq+Hiu3boCjjCuAglAzKZeovDixxZaYsdW03kH9j9qwFYB6sXH/Qji7OwhDPw==
+"@cortezaproject/corteza-js@^2024.9.1-rc.2":
+  version "2024.9.1-rc.2"
+  resolved "https://registry.yarnpkg.com/@cortezaproject/corteza-js/-/corteza-js-2024.9.1-rc.2.tgz#997f00cde49c6e244c4de3413ad9b5ebb5641804"
+  integrity sha512-zHlhNBUs2lNVh7LuZkmdkTAxzoGuovqiXf4piv0cAXAD1ybA7YPivlI0gDYbF/aXklC39ZiDTkQ7c+Thm8i4ww==
   dependencies:
     axios "^0.28.0"
     hex-rgb "^4.1.0"

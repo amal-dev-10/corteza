@@ -974,10 +974,10 @@
     "@babel/helper-validator-identifier" "^7.16.7"
     to-fast-properties "^2.0.0"
 
-"@cortezaproject/corteza-js@^2024.9.1-rc.1":
-  version "2024.9.1-rc.1"
-  resolved "https://registry.yarnpkg.com/@cortezaproject/corteza-js/-/corteza-js-2024.9.1-rc.1.tgz#c24acf894a59f24a36b5660b9678646db3080189"
-  integrity sha512-F/XwTQuhWxfD6NS2SuvKXoF+FPq+Hiu3boCjjCuAglAzKZeovDixxZaYsdW03kH9j9qwFYB6sXH/Qji7OwhDPw==
+"@cortezaproject/corteza-js@^2024.9.1-rc.2":
+  version "2024.9.1-rc.2"
+  resolved "https://registry.yarnpkg.com/@cortezaproject/corteza-js/-/corteza-js-2024.9.1-rc.2.tgz#997f00cde49c6e244c4de3413ad9b5ebb5641804"
+  integrity sha512-zHlhNBUs2lNVh7LuZkmdkTAxzoGuovqiXf4piv0cAXAD1ybA7YPivlI0gDYbF/aXklC39ZiDTkQ7c+Thm8i4ww==
   dependencies:
     axios "^0.28.0"
     hex-rgb "^4.1.0"
@@ -988,12 +988,12 @@
     numeral "^2.0.6"
     pino "^5.16.0"
 
-"@cortezaproject/corteza-vue@^2024.9.1-rc.1":
-  version "2024.9.1-rc.1"
-  resolved "https://registry.yarnpkg.com/@cortezaproject/corteza-vue/-/corteza-vue-2024.9.1-rc.1.tgz#5e4b4aecabf69ce63a30441713c626ed36acc6ab"
-  integrity sha512-nHKqDdKWiMZGDDCVMekPLZi+TC9V706lsuhmgUzGZXCNCCXzJr2uVNWI4kiJPW17VXuUPWCm49+anEV9mMPMEQ==
+"@cortezaproject/corteza-vue@^2024.9.1-rc.2":
+  version "2024.9.1-rc.2"
+  resolved "https://registry.yarnpkg.com/@cortezaproject/corteza-vue/-/corteza-vue-2024.9.1-rc.2.tgz#84b6a7dc2b6b00b8c6d89bdc42547daef96e05ca"
+  integrity sha512-592NRhCdSS0Yyl6z/11UXVgnbX5XH2hSpG9EcKYiVJGiw5QWqgQI6ef4oRZjAjOVy00odijcE4C59ng8Q8fbvA==
   dependencies:
-    "@cortezaproject/corteza-js" "^2024.9.1-rc.1"
+    "@cortezaproject/corteza-js" "^2024.9.1-rc.2"
     "@fortawesome/fontawesome-svg-core" "^1.2.26"
     "@fortawesome/free-solid-svg-icons" "^5.12.0"
     "@fortawesome/vue-fontawesome" "^0.1.9"
