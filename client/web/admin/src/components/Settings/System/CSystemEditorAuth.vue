@@ -12,7 +12,7 @@
     </template>
 
     <b-form
-      @submit.prevent="$emit('submit', settings)"
+      @submit.prevent="$emit('submit', authSettings)"
     >
       <h5>
         {{ $t('internal.title') }}
@@ -28,7 +28,7 @@
             label-class="text-primary"
           >
             <c-input-checkbox
-              v-model="settings['auth.internal.enabled']"
+              v-model="authSettings['auth.internal.enabled']"
               switch
               :value="true"
               :unchecked-value="false"
@@ -46,7 +46,7 @@
             label-class="text-primary"
           >
             <c-input-checkbox
-              v-model="settings['auth.internal.password-reset.enabled']"
+              v-model="authSettings['auth.internal.password-reset.enabled']"
               switch
               data-test-id="checkbox-password-reset"
               :value="true"
@@ -65,7 +65,7 @@
             label-class="text-primary"
           >
             <c-input-checkbox
-              v-model="settings['auth.internal.signup.email-confirmation-required']"
+              v-model="authSettings['auth.internal.signup.email-confirmation-required']"
               switch
               :value="true"
               :labels="checkboxLabel"
@@ -83,7 +83,7 @@
             label-class="text-primary"
           >
             <c-input-checkbox
-              v-model="settings['auth.internal.signup.enabled']"
+              v-model="authSettings['auth.internal.signup.enabled']"
               :value="true"
               :unchecked-value="false"
               :labels="checkboxLabel"
@@ -101,7 +101,7 @@
             label-class="text-primary"
           >
             <c-input-checkbox
-              v-model="settings['auth.internal.profile-avatar.enabled']"
+              v-model="authSettings['auth.internal.profile-avatar.enabled']"
               :value="true"
               :unchecked-value="false"
               :labels="checkboxLabel"
@@ -119,7 +119,7 @@
             label-class="text-primary"
           >
             <c-input-checkbox
-              v-model="settings['auth.internal.split-credentials-check']"
+              v-model="authSettings['auth.internal.split-credentials-check']"
               :value="true"
               :unchecked-value="false"
               :labels="checkboxLabel"
@@ -155,7 +155,7 @@
               label-class="text-primary"
             >
               <b-form-input
-                v-model.number="settings['auth.internal.password-constraints.min-upper-case']"
+                v-model.number="authSettings['auth.internal.password-constraints.min-upper-case']"
                 type="number"
                 :placeholder="`${defaultMinUppCaseChrs}`"
                 :min="defaultMinUppCaseChrs"
@@ -173,7 +173,7 @@
               label-class="text-primary"
             >
               <b-form-input
-                v-model.number="settings['auth.internal.password-constraints.min-lower-case']"
+                v-model.number="authSettings['auth.internal.password-constraints.min-lower-case']"
                 type="number"
                 :placeholder="`${defaultMinLowCaseChrs}`"
                 :min="defaultMinLowCaseChrs"
@@ -193,7 +193,7 @@
               label-class="text-primary"
             >
               <b-form-input
-                v-model.number="settings['auth.internal.password-constraints.min-length']"
+                v-model.number="authSettings['auth.internal.password-constraints.min-length']"
                 :placeholder="`${defaultMinPwd}`"
                 :min="defaultMinPwd"
                 type="number"
@@ -211,7 +211,7 @@
               label-class="text-primary"
             >
               <b-form-input
-                v-model.number="settings['auth.internal.password-constraints.min-num-count']"
+                v-model.number="authSettings['auth.internal.password-constraints.min-num-count']"
                 placeholder="0"
                 min="0"
                 type="number"
@@ -231,7 +231,7 @@
               label-class="text-primary"
             >
               <b-form-input
-                v-model.number="settings['auth.internal.password-constraints.min-special-count']"
+                v-model.number="authSettings['auth.internal.password-constraints.min-special-count']"
                 placeholder="0"
                 min="0"
                 type="number"
@@ -254,12 +254,13 @@
               label-class="text-primary"
             >
               <c-input-checkbox
-                v-model="settings['auth.multi-factor.email-otp.enabled']"
+                v-model="authSettings['auth.multi-factor.email-otp.enabled']"
                 data-test-id="checkbox-enable-emailOTP"
                 :value="true"
                 :unchecked-value="false"
                 :labels="checkboxLabel"
                 switch
+                @change="handleEmailOTPEnabledChange"
               />
             </b-form-group>
           </b-col>
@@ -273,16 +274,40 @@
               label-class="text-primary"
             >
               <c-input-checkbox
-                v-model="settings['auth.multi-factor.email-otp.enforced']"
+                v-model="authSettings['auth.multi-factor.email-otp.enforced']"
                 :value="true"
                 :unchecked-value="false"
                 :labels="checkboxLabel"
+                :disabled="!authSettings['auth.multi-factor.email-otp.enabled']"
                 switch
               />
             </b-form-group>
           </b-col>
-        </b-row>
 
+          <b-col
+            cols="12"
+            lg="6"
+          >
+            <b-form-group
+              :label="$t('mfa.emailOTP.expires.label')"
+              :description="$t('mfa.emailOTP.expires.description')"
+              label-class="text-primary"
+            >
+              <b-input-group append="seconds">
+                <b-form-input
+                  v-model="authSettings['auth.multi-factor.email-otp.expires']"
+                  type="number"
+                  placeholder="60"
+                />
+              </b-input-group>
+            </b-form-group>
+          </b-col>
+        </b-row>
+      </div>
+
+      <hr>
+
+      <div>
         <b-row>
           <b-col
             cols="12"
@@ -293,12 +318,13 @@
               label-class="text-primary"
             >
               <c-input-checkbox
-                v-model="settings['auth.multi-factor.totp.enabled']"
+                v-model="authSettings['auth.multi-factor.totp.enabled']"
                 data-test-id="checkbox-enable-TOTP"
                 :value="true"
                 :unchecked-value="false"
                 :labels="checkboxLabel"
                 switch
+                @change="handleTOTPEnabledChange"
               />
             </b-form-group>
           </b-col>
@@ -312,33 +338,13 @@
               label-class="text-primary"
             >
               <c-input-checkbox
-                v-model="settings['auth.multi-factor.totp.enforced']"
+                v-model="authSettings['auth.multi-factor.totp.enforced']"
                 :value="true"
                 :unchecked-value="false"
                 :labels="checkboxLabel"
+                :disabled="!authSettings['auth.multi-factor.totp.enabled']"
                 switch
               />
-            </b-form-group>
-          </b-col>
-        </b-row>
-
-        <b-row>
-          <b-col
-            cols="12"
-            lg="6"
-          >
-            <b-form-group
-              :label="$t('mfa.emailOTP.expires.label')"
-              :description="$t('mfa.emailOTP.expires.description')"
-              label-class="text-primary"
-            >
-              <b-input-group append="seconds">
-                <b-form-input
-                  v-model="settings['auth.multi-factor.email-otp.expires']"
-                  type="number"
-                  placeholder="60"
-                />
-              </b-input-group>
             </b-form-group>
           </b-col>
 
@@ -353,7 +359,7 @@
             >
               <b-input-group>
                 <b-form-input
-                  v-model="settings['auth.multi-factor.totp.issuer']"
+                  v-model="authSettings['auth.multi-factor.totp.issuer']"
                   placeholder="Corteza"
                 />
               </b-input-group>
@@ -381,7 +387,7 @@
             >
               <b-input-group>
                 <b-form-input
-                  v-model="settings['auth.mail.from-address']"
+                  v-model="authSettings['auth.mail.from-address']"
                   type="email"
                 />
               </b-input-group>
@@ -397,7 +403,7 @@
               label-class="text-primary"
             >
               <b-input-group>
-                <b-form-input v-model="settings['auth.mail.from-name']" />
+                <b-form-input v-model="authSettings['auth.mail.from-name']" />
               </b-input-group>
             </b-form-group>
           </b-col>
@@ -422,7 +428,7 @@
               label-class="text-primary"
             >
               <c-input-checkbox
-                v-model="settings['auth.internal.send-user-invite-email.enabled']"
+                v-model="authSettings['auth.internal.send-user-invite-email.enabled']"
                 :value="true"
                 :unchecked-value="false"
                 :labels="checkboxLabel"
@@ -442,7 +448,7 @@
             >
               <b-input-group append="hours">
                 <b-form-input
-                  v-model="settings['auth.internal.send-user-invite-email.expires']"
+                  v-model="authSettings['auth.internal.send-user-invite-email.expires']"
                   type="number"
                   placeholder="72"
                 />
@@ -460,7 +466,7 @@
         :success="success"
         :text="$t('admin:general.label.submit')"
         class="ml-auto"
-        @submit="$emit('submit', settings)"
+        @submit="$emit('submit', authSettings)"
       />
     </template>
   </b-card>
@@ -500,6 +506,8 @@ export default {
 
   data () {
     return {
+      authSettings: {},
+
       defaultMinPwd: 8,
       defaultMinUppCaseChrs: 0,
       defaultMinLowCaseChrs: 0,
@@ -508,6 +516,30 @@ export default {
         off: this.$t('general:label.general.no'),
       },
     }
+  },
+
+  watch: {
+    settings: {
+      immediate: true,
+      deep: true,
+      handler () {
+        this.authSettings = this.settings
+      },
+    },
+  },
+
+  methods: {
+    handleEmailOTPEnabledChange (value) {
+      if (!value) {
+        this.authSettings['auth.multi-factor.email-otp.enforced'] = false
+      }
+    },
+
+    handleTOTPEnabledChange (value) {
+      if (!value) {
+        this.authSettings['auth.multi-factor.totp.enforced'] = false
+      }
+    },
   },
 }
 </script>
