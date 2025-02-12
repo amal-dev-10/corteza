@@ -39,7 +39,10 @@
             :errors="fieldErrors(field)"
             :record="record"
           >
-            <template #tools>
+            <template
+              v-if="allowAddField"
+              #tools
+            >
               <c-input-confirm
                 :tooltip="$t('recordList.bulkRecord.field.remove')"
                 show-icon
