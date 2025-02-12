@@ -291,11 +291,11 @@ export default {
 
               this.mock.module.fields.push({ ...field, name: `${f.name}-end` })
               this.mock.module.fields.push({ ...field, name: `${f.name}-start` })
+            } else if (Object.keys(f.record.values).includes(f.name)) {
+              f.record.values[f.name] = value
             } else if (Object.keys(f.record).includes(f.name)) {
               // If its a system field add value to root of record
               f.record[f.name] = value
-            } else {
-              f.record.values[f.name] = value
             }
 
             return f
@@ -315,12 +315,8 @@ export default {
     processFilter () {
       return this.componentFilter.map(({ groupCondition, filter = [], name }) => {
         filter = filter.map(({ record, ...f }) => {
-          if (!f.name) {
+          if (!f.name || !record) {
             return
-          }
-
-          if (record) {
-            f.value = record[f.name] || record.values[f.name]
           }
 
           if (this.isBetweenOperator(f.operator)) {
@@ -328,6 +324,10 @@ export default {
               start: this.getField(f.name).isSystem ? record[`${f.name}-start`] : record.values[`${f.name}-start`],
               end: this.getField(f.name).isSystem ? record[`${f.name}-end`] : record.values[`${f.name}-end`],
             }
+          } else if (Object.keys(record.values).includes(f.name)) {
+            f.value = record.values[f.name]
+          } else if (Object.keys(record).includes(f.name)) {
+            f.value = record[f.name]
           }
 
           return f
@@ -374,7 +374,6 @@ export default {
     max-height: 25rem;
     padding: 0;
     color: var(--black);
-    text-align: center;
     background: var(--white);
     border-radius: 0.25rem;
     opacity: 1 !important;

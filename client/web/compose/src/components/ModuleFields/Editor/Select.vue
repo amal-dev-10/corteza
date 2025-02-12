@@ -33,27 +33,25 @@
     </template>
 
     <template v-if="field.isMulti">
-      <template v-if="field.options.selectType === 'list'">
-        <div>
-          <b-form-checkbox
-            v-for="option in selectOptions"
-            :key="option.value"
-            v-model="value"
-            :value="option.value"
-            class="d-block mb-1"
+      <div v-if="field.options.selectType === 'list'">
+        <b-form-checkbox
+          v-for="option in selectOptions"
+          :key="option.value"
+          v-model="value"
+          :value="option.value"
+          class="d-block mb-1"
+        >
+          <span
+            class="pointer"
+            :class="{ 'badge badge-pill': field.options.displayType === 'badge' }"
+            :style="getOptionStyle(option.value)"
           >
-            <span
-              class="pointer"
-              :class="{ 'badge badge-pill': field.options.displayType === 'badge' }"
-              :style="getOptionStyle(option.value)"
-            >
-              {{ option.text }}
-            </span>
-          </b-form-checkbox>
-        </div>
+            {{ option.text }}
+          </span>
+        </b-form-checkbox>
 
         <errors :errors="errors" />
-      </template>
+      </div>
 
       <multi
         v-else
@@ -114,8 +112,15 @@
     <template
       v-else
     >
+      <b-form-radio-group
+        v-if="field.options.selectType === 'list'"
+        v-model="value"
+        :options="selectOptions"
+        stacked
+      />
+
       <c-input-select
-        v-if="field.options.selectType === 'default'"
+        v-else
         v-model="value"
         :placeholder="$t('kind.select.optionNotSelected')"
         :options="selectOptions"
@@ -125,17 +130,11 @@
         :badge="field.options.displayType === 'badge'"
       />
 
-      <b-form-radio-group
-        v-else
-        v-model="value"
-        :options="selectOptions"
-        stacked
-      />
-
       <errors :errors="errors" />
     </template>
   </b-form-group>
 </template>
+
 <script>
 import base from './base'
 

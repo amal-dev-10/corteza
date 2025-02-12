@@ -124,7 +124,7 @@
 
         <div
           v-if="options.showDeletedRecordsOption || groupRecordListFilter.length"
-          class="d-flex align-items-start gap-1"
+          class="d-flex align-items-start flex-wrap gap-1"
         >
           <div
             v-if="groupRecordListFilter.length"
@@ -241,15 +241,20 @@
             </b-button>
           </div>
 
-          <b-button
+          <div
             v-if="options.showDeletedRecordsOption"
-            variant="outline-extra-light"
-            size="sm"
-            class="text-primary border-0 text-nowrap ml-auto"
-            @click="handleShowDeleted()"
+            class="d-flex align-items-center ml-auto"
+            style="min-height: 39.61px;"
           >
-            {{ showingDeletedRecords ? $t('recordList.showRecords.existing') : $t('recordList.showRecords.deleted') }}
-          </b-button>
+            <b-button
+              variant="outline-extra-light"
+              size="sm"
+              class="text-primary border-0 text-nowrap"
+              @click="handleShowDeleted()"
+            >
+              {{ showingDeletedRecords ? $t('recordList.showRecords.existing') : $t('recordList.showRecords.deleted') }}
+            </b-button>
+          </div>
         </div>
 
         <div

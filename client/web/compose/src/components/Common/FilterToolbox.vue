@@ -450,31 +450,6 @@ export default {
       this.$emit('input', value)
       this.$emit('prevent-close')
     },
-
-    processFilter (filterGroup = this.value) {
-      return filterGroup.map(({ groupCondition, filter = [], name }) => {
-        filter = filter.map(({ record, ...f }) => {
-          if (record) {
-            f.value = record[f.name] || record.values[f.name]
-          }
-
-          if (this.isBetweenOperator(f.operator)) {
-            f.value = {
-              start: this.getField(f.name).isSystem
-                ? record[`${f.name}-start`]
-                : record.values[`${f.name}-start`],
-              end: this.getField(f.name).isSystem
-                ? record[`${f.name}-end`]
-                : record.values[`${f.name}-end`],
-            }
-          }
-
-          return f
-        })
-
-        return { groupCondition, filter, name }
-      })
-    },
   },
 }
 </script>
