@@ -244,7 +244,6 @@
           <div
             v-if="options.showDeletedRecordsOption"
             class="d-flex align-items-center ml-auto"
-            style="min-height: 39.61px;"
           >
             <b-button
               variant="outline-extra-light"
@@ -1970,19 +1969,26 @@ export default {
       const fields = [...this.recordListModule.fields, ...this.recordListModule.systemFields()]
       const moduleField = (fields.find(({ name }) => name === field.name) || {})
 
-      const record = !this.isBetweenOperator(operator)
-        ? { recordID: '0', values: { [moduleField.name]: value } }
-        : [
-          { recordID: '0', values: { [moduleField.name]: value.start } },
-          { recordID: '0', values: { [moduleField.name]: value.end } },
+      let record = new compose.Record(this.recordListModule)
+
+      if (this.isBetweenOperator(operator)) {
+        record = [
+          new compose.Record(this.recordListModule),
+          new compose.Record(this.recordListModule),
         ]
 
-      if (moduleField.isSystem) {
-        if (!this.isBetweenOperator(operator)) {
-          record[moduleField.name] = value
-        } else {
+        if (moduleField.isSystem) {
           record[0][moduleField.name] = value.start
           record[1][moduleField.name] = value.end
+        } else {
+          record[0].values[moduleField.name] = value.start
+          record[1].values[moduleField.name] = value.end
+        }
+      } else {
+        if (moduleField.isSystem) {
+          record[moduleField.name] = value
+        } else {
+          record.values[moduleField.name] = value
         }
       }
 
@@ -1994,12 +2000,7 @@ export default {
         kind: moduleField.kind,
         label: moduleField.label || moduleField.name,
         field: moduleField,
-        record: !this.isBetweenOperator(operator)
-          ? new compose.Record(this.recordListModule, { ...record })
-          : [
-            new compose.Record(this.recordListModule, { ...record[0] }),
-            new compose.Record(this.recordListModule, { ...record[1] }),
-          ],
+        record,
       }
     },
 

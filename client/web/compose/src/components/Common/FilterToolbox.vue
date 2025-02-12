@@ -245,9 +245,10 @@ export default {
 
   methods: {
     getField (name = '') {
-      const field = name
-        ? this.mock.module.fields.find((f) => f.name === name)
-        : undefined
+      const field = name ? (
+        this.mock.module.fields.find(f => f.name === name) ||
+        this.mock.module.systemFields().find(f => f.name === name)
+      ) : undefined
 
       return field ? { ...field } : undefined
     },

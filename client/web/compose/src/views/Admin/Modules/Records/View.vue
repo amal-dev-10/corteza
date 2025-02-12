@@ -340,7 +340,9 @@ export default {
             }
           })
       } else {
-        this.record = new compose.Record(module, { values: this.values })
+        const { userID } = this.$auth.user
+        // Prefill ownedBy field with current user
+        this.record = new compose.Record(module, { ownedBy: userID, values: this.values })
         this.initialRecordState = undefined
       }
     },

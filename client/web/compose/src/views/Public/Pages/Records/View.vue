@@ -415,7 +415,10 @@ export default {
             })
           }
 
-          return new compose.Record(module, { values: this.values })
+          const { userID } = this.$auth.user
+
+          // Prefill ownedBy field with current user
+          return new compose.Record(module, { ownedBy: userID, values: this.values })
         }
       }
     },

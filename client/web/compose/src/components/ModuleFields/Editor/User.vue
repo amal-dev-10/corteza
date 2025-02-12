@@ -241,10 +241,7 @@ export default {
   },
 
   created () {
-    // Prefill value with current user
-    const isNewRecord = this.record && this.record.recordID === NoID
-
-    if ((!this.value || this.value.length === 0) && (this.field.options.presetWithAuthenticated || (isNewRecord && this.field.name === 'ownedBy'))) {
+    if ((!this.value || this.value.length === 0) && (this.field.options.presetWithAuthenticated)) {
       this.updateValue(this.$auth.user)
     }
 

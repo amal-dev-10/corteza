@@ -178,25 +178,20 @@ export default {
 
   created () {
     // Change all module fields to single value to keep multi value fields and single value
-    const module = JSON.parse(JSON.stringify(this.module || {}))
+    const module = new compose.Module(this.module)
 
-    module.fields = [
-      ...[...module.fields].map(f => {
-        f.multi = f.isMulti
-        f.isMulti = false
+    module.fields = module.fields.map(f => {
+      f.multi = f.isMulti
+      f.isMulti = false
 
-        // Disable edge case options
-        if (f.kind === 'DateTime') {
-          f.options.onlyFutureValues = false
-          f.options.onlyPastValues = false
-        }
+      // Disable edge case options
+      if (f.kind === 'DateTime') {
+        f.options.onlyFutureValues = false
+        f.options.onlyPastValues = false
+      }
 
-        return f
-      }),
-      ...this.module.systemFields().map(sf => {
-        return { ...sf, label: this.$t(`field:system.${sf.name}`) }
-      }),
-    ]
+      return f
+    })
 
     this.mock = {
       namespace: this.namespace,
@@ -225,7 +220,10 @@ export default {
     },
 
     getField (name = '') {
-      const field = name ? this.mock.module.fields.find(f => f.name === name) : undefined
+      const field = name ? (
+        this.mock.module.fields.find(f => f.name === name) ||
+        this.mock.module.systemFields().find(f => f.name === name)
+      ) : undefined
 
       return field ? { ...field } : undefined
     },
