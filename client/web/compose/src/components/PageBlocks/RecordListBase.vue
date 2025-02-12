@@ -1967,7 +1967,7 @@ export default {
 
     createDefaultFilter (condition, field = {}, value = undefined, operator = undefined) {
       const fields = [...this.recordListModule.fields, ...this.recordListModule.systemFields()]
-      const moduleField = (fields.find(({ name }) => name === field.name) || {})
+      const moduleField = { ...(fields.find(({ name }) => name === field.name) || {}), isMulti: false }
 
       let record = new compose.Record(this.recordListModule)
 
