@@ -675,10 +675,10 @@
     lodash "^4.17.19"
     to-fast-properties "^2.0.0"
 
-"@cortezaproject/corteza-js@^2024.9.1":
-  version "2024.9.1"
-  resolved "https://registry.yarnpkg.com/@cortezaproject/corteza-js/-/corteza-js-2024.9.1.tgz#958cb65b086787ad1b063730232784ca0c468df5"
-  integrity sha512-c4G8/7gxftquts/YgCZ3twBoXNr7q68Uj0lF8kVEdR+Ijr2z1TAAF3bCwkJdWxzBbwrn4Z54Np4vU5lVXCDw5A==
+"@cortezaproject/corteza-js@^2024.9.1-a":
+  version "2024.9.1-a"
+  resolved "https://registry.yarnpkg.com/@cortezaproject/corteza-js/-/corteza-js-2024.9.1-a.tgz#dca3598d4a7b7c266bb2a4f301572dcf3d0326e6"
+  integrity sha512-DDBDL8nmCwsvEwnkJNXLWDEox2OSuPrlC5kPyz7P+/sHxUXqk6nZu0e9zX3OhCN1XWtgUJeeXB3LM0YkCEYdLQ==
   dependencies:
     axios "^0.28.0"
     hex-rgb "^4.1.0"
@@ -689,12 +689,12 @@
     numeral "^2.0.6"
     pino "^5.16.0"
 
-"@cortezaproject/corteza-vue@^2024.9.1":
-  version "2024.9.1"
-  resolved "https://registry.yarnpkg.com/@cortezaproject/corteza-vue/-/corteza-vue-2024.9.1.tgz#1d7d69699014c29743fe1a5af8409e6a02c88fde"
-  integrity sha512-V032/blZZMRq8LefPwLBooDkFHdnIOkFMw+lo9drjrZr745MwzBVytnzTqBnNxjXAkW+EoYx01nFpf68nfWNaA==
+"@cortezaproject/corteza-vue@^2024.9.1-a":
+  version "2024.9.1-a"
+  resolved "https://registry.yarnpkg.com/@cortezaproject/corteza-vue/-/corteza-vue-2024.9.1-a.tgz#4dfc14afe222efb7038beafbd6928c0910c30eca"
+  integrity sha512-RzaZNEFQhF7lqbKNls6H128gJ1C+0EgfYLvGecIbcJOWWyr9HcsB1fz1G5erHqzjdfHRhNLWq8RfhXI6QzNdww==
   dependencies:
-    "@cortezaproject/corteza-js" "^2024.9.1"
+    "@cortezaproject/corteza-js" "^2024.9.1-a"
     "@fortawesome/fontawesome-svg-core" "^1.2.26"
     "@fortawesome/free-solid-svg-icons" "^5.12.0"
     "@fortawesome/vue-fontawesome" "^0.1.9"
@@ -3831,7 +3831,7 @@ escodegen@^1.11.0:
     source-map "~0.6.1"
 
 "eslint-config-corteza-client@file:../../../lib/eslint-client":
-  version "2023.9.1"
+  version "2024.9.1-a"
 
 eslint-config-standard@^12.0.0:
   version "12.0.0"

@@ -1031,10 +1031,10 @@
     "@babel/helper-validator-identifier" "^7.22.20"
     to-fast-properties "^2.0.0"
 
-"@cortezaproject/corteza-js@^2024.9.1":
-  version "2024.9.1"
-  resolved "https://registry.yarnpkg.com/@cortezaproject/corteza-js/-/corteza-js-2024.9.1.tgz#958cb65b086787ad1b063730232784ca0c468df5"
-  integrity sha512-c4G8/7gxftquts/YgCZ3twBoXNr7q68Uj0lF8kVEdR+Ijr2z1TAAF3bCwkJdWxzBbwrn4Z54Np4vU5lVXCDw5A==
+"@cortezaproject/corteza-js@^2024.9.1-a":
+  version "2024.9.1-a"
+  resolved "https://registry.yarnpkg.com/@cortezaproject/corteza-js/-/corteza-js-2024.9.1-a.tgz#dca3598d4a7b7c266bb2a4f301572dcf3d0326e6"
+  integrity sha512-DDBDL8nmCwsvEwnkJNXLWDEox2OSuPrlC5kPyz7P+/sHxUXqk6nZu0e9zX3OhCN1XWtgUJeeXB3LM0YkCEYdLQ==
   dependencies:
     axios "^0.28.0"
     hex-rgb "^4.1.0"
@@ -4606,7 +4606,7 @@ escape-string-regexp@^4.0.0:
   integrity sha512-TtpcNJ3XAzx3Gq8sWRzJaVajRs0uVxA2YAkdb1jm2YkPz4G6egUFAyA3n5vtEIZefPk5Wa4UXbKuS5fKkJWdgA==
 
 "eslint-config-corteza-lib@file:../eslint-lib":
-  version "2023.9.1"
+  version "2024.9.1-a"
 
 eslint-config-standard@^14.1.0:
   version "14.1.1"
