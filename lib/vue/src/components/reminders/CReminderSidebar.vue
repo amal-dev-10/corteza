@@ -19,13 +19,13 @@
       </h4>
 
       <b-button
-        variant="outline-light border-0"
-        class="d-flex align-items-center justify-content-center p-2"
+        variant="outline-light"
+        class="d-flex align-items-center justify-content-center p-2 border-0 text-secondary"
         @click="isVisible = false"
       >
         <font-awesome-icon
           :icon="['fas', 'times']"
-          class="h6 mb-0 text-dark"
+          class="h6 mb-0"
         />
       </b-button>
     </template>

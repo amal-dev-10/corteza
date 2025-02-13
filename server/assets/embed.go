@@ -43,9 +43,9 @@ func Files(log *zap.Logger, aPath string) (files fs.FS) {
 }
 
 func fromPath(path string) (assets fs.FS, err error) {
-	// at least favicon file should exist in the custom asset path
+	// at least icon file should exist in the custom asset path
 	// otherwise we default to embedded files
-	const check = "favicon32x32.png"
+	const check = "icon.svg"
 
 	var (
 		fi os.FileInfo

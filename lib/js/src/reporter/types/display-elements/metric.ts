@@ -28,7 +28,7 @@ const defaults: Readonly<Options> = Object.freeze({
   prefix: '',
   suffix: '',
 
-  color: '#162425',
+  color: '#0B344E',
   backgroundColor: '#FFFFFF00',
 })
 

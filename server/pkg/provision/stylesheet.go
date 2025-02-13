@@ -98,12 +98,12 @@ func processBrandingTheme(oldBranding *types.SettingValue) (themes []types.Theme
 	var brandingMap map[string]string
 
 	lightModeMap := map[string]string{
-		"black":       "#162425",
+		"black":       "#0B344E",
 		"white":       "#FFFFFF",
-		"primary":     "#0B344E",
+		"primary":     "#FF9661",
 		"secondary":   "#758D9B",
 		"success":     "#43AA8B",
-		"warning":     "#E2A046",
+		"warning":     "#E27646",
 		"danger":      "#E54122",
 		"light":       "#F3F5F7",
 		"extra-light": "#E4E9EF",
@@ -141,7 +141,7 @@ func processBrandingTheme(oldBranding *types.SettingValue) (themes []types.Theme
         "primary":"#FF9661",
         "secondary":"#758D9B",
         "success":"#43AA8B",
-        "warning":"#E2A046",
+        "warning":"#E27646",
         "danger":"#E54122",
         "light":"#23495F",
         "extra-light":"#3E5A6F",

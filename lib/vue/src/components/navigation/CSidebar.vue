@@ -31,28 +31,13 @@
             >
 
             <b-button
-              v-if="isMobile"
               variant="outline-light"
-              class="d-flex align-items-center justify-content-center p-2 border-0 text-primary"
+              class="d-flex align-items-center justify-content-center p-2 border-0 text-secondary"
               @click="closeSidebar()"
             >
               <font-awesome-icon
                 :icon="['fas', 'times']"
                 class="h6 mb-0"
-              />
-            </b-button>
-
-            <b-button
-              v-else
-              data-test-id="button-pin-icon"
-              variant="outline-light"
-              class="d-flex align-items-center justify-content-center p-2 border-0"
-              @click="closeSidebar()"
-            >
-              <font-awesome-icon
-                data-test-id="pin-icon"
-                :icon="['fas', 'times']"
-                :class="`h6 mb-0 ${isPinned ? 'text-primary' : 'text-secondary'}`"
               />
             </b-button>
           </div>

@@ -18,11 +18,11 @@ $headings-font-family:  $font-bold !default;
 
 // Color system
 $white:         #FFFFFF !default;
-$black:         #162425 !default;
-$primary:       #0B344E !default;
+$black:         #0B344E !default;
+$primary:       #FF9661 !default;
 $secondary:     #758D9B !default;
 $success:       #43AA8B !default;
-$warning:       #E2A046 !default;
+$warning:       #E27646 !default;
 $danger:        #E54122 !default;
 $light:         #F3F5F7 !default;
 $extra-light:   #E4E9EF !default;
@@ -38,7 +38,8 @@ $gray-700: if(lightness($black) < lightness($white), mix($black, $white, 70%), m
 $gray-800: if(lightness($black) < lightness($white), mix($black, $white, 80%), mix($white, $black, 80%));
 $gray-900: if(lightness($black) < lightness($white), mix($black, $white, 90%), mix($white, $black, 90%));
 
-$yiq-contrasted-threshold: 45; // Our magic number, we can pretend its 42..
+// Adjusting YIQ contrast settings for better text contrast
+$yiq-contrasted-threshold: 45;
 $yiq-text-dark:             $black !default;
 $yiq-text-light:            $white !default;
 

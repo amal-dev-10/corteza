@@ -24,7 +24,7 @@ attachment: schema.#optionsGroup & {
 			env:          "AVATAR_INITIALS_BACKGROUND_COLOR"
 		}
 		avatar_initials_color: {
-			defaultValue: "#162425"
+			defaultValue: "#0B344E"
 			description:  "Avatar initials text color"
 			env:          "AVATAR_INITIALS_COLOR"
 		}

@@ -1,14 +1,30 @@
 <template>
   <div
-    class="d-flex flex-column h-100"
+    class="d-flex flex-column gap-2 h-100 p-3"
   >
-    <div class="d-flex flex-column flex-fill gap-2 overflow-auto p-3">
+    <div
+      class="text-center bg-white sticky-top"
+    >
+      <b-button
+        data-test-id="button-add-reminder"
+        size="sm"
+        variant="outline-primary"
+        @click="$emit('edit')"
+      >
+        + {{ $t('reminder.add') }}
+      </b-button>
+    </div>
+
+    <div class="d-flex flex-column flex-fill gap-2 overflow-auto">
       <div
         v-for="(r, i) in sortedReminders"
         :key="r.reminderID"
         :style="`${!!r.dismissedAt ? 'opacity:.6;' : ''}`"
       >
-        <hr v-if="r.dismissedAt && sortedReminders[i - 1] ? !sortedReminders[i - 1].dismissedAt : false ">
+        <hr
+          v-if="r.dismissedAt && sortedReminders[i - 1] ? !sortedReminders[i - 1].dismissedAt : false "
+          class="mt-0"
+        >
 
         <div
           class="border card shadow-sm p-1"
@@ -89,19 +105,6 @@
           </div>
         </div>
       </div>
-    </div>
-
-    <div
-      class="text-center bg-white py-3 sticky-top"
-    >
-      <b-button
-        data-test-id="button-add-reminder"
-        size="sm"
-        variant="outline-primary"
-        @click="$emit('edit')"
-      >
-        + {{ $t('reminder.add') }}
-      </b-button>
     </div>
   </div>
 </template>

@@ -11,7 +11,7 @@
     @vdropzone-error="onError"
     @vdropzone-upload-progress="onUploadProgress"
   >
-    <div class="w-100 h-100 position-relative bg-light rounded">
+    <div class="drop-container w-100 h-100 position-relative bg-light rounded">
       <template v-if="active">
         <div
           class="bg-primary h-100 progress-bar position-absolute"
@@ -22,6 +22,7 @@
           {{ labels.uploading || 'Uploading files' }} {{ active.file.name }} ({{ size(active.file) }})
         </span>
       </template>
+
       <div
         v-else
         data-test-id="drop-area"
@@ -169,20 +170,24 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-div {
-  .droparea {
-    cursor: pointer;
+.drop-container {
+  &:hover {
+    background-color: var(--extra-light) !important;
   }
+}
 
-  .progress-bar {
-    width: 0;
-    opacity: 0.3;
-  }
+.droparea {
+  cursor: pointer;
+}
 
-  .uploading {
-    background-size: 100% 100%;
-    background-position: right bottom;
-    cursor: wait;
-  }
+.progress-bar {
+  width: 0;
+  opacity: 0.3;
+}
+
+.uploading {
+  background-size: 100% 100%;
+  background-position: right bottom;
+  cursor: wait;
 }
 </style>
