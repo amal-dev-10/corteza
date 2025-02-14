@@ -39,9 +39,9 @@ $gray-800: if(lightness($black) < lightness($white), mix($black, $white, 80%), m
 $gray-900: if(lightness($black) < lightness($white), mix($black, $white, 90%), mix($white, $black, 90%));
 
 // Adjusting YIQ contrast settings for better text contrast
-$yiq-contrasted-threshold: 45;
-$yiq-text-dark:             $black !default;
-$yiq-text-light:            $white !default;
+$yiq-contrasted-threshold: 180;
+$yiq-text-dark:             if(lightness($black) < lightness($white), $black, $white);
+$yiq-text-light:            if(lightness($black) < lightness($white), $white, $black);
 
 $theme-colors: () !default;
 $theme-colors: map-merge(
