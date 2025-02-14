@@ -381,7 +381,7 @@ func (s *Store) Query{{ .expIdentPlural }}(
 	}
 
 	if err != nil {
-		err = fmt.Errorf("could generate filter expression for {{ .expIdent }}: %w", err)
+		err = fmt.Errorf("could not generate filter expression for {{ .expIdent }}: %w", err)
 		return
 	}
 
@@ -408,7 +408,7 @@ func (s *Store) Query{{ .expIdentPlural }}(
 	{{ if .features.sorting }}
 	// sorting feature is enabled
 	if sortExpr, err = order(f.Sort, s.{{ .api.sortableFields.fnIdent }}()); err != nil {
-		err = fmt.Errorf("could generate order expression for {{ .expIdent }}: %w", err)
+		err = fmt.Errorf("could not generate order expression for {{ .expIdent }}: %w", err)
 		return
 	}
 

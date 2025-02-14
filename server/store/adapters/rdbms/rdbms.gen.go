@@ -218,7 +218,7 @@ func (s *Store) QueryActionlogs(
 	}
 
 	if err != nil {
-		err = fmt.Errorf("could generate filter expression for Actionlog: %w", err)
+		err = fmt.Errorf("could not generate filter expression for Actionlog: %w", err)
 		return
 	}
 
@@ -228,7 +228,7 @@ func (s *Store) QueryActionlogs(
 
 	// sorting feature is enabled
 	if sortExpr, err = order(f.Sort, s.sortableActionlogFields()); err != nil {
-		err = fmt.Errorf("could generate order expression for Actionlog: %w", err)
+		err = fmt.Errorf("could not generate order expression for Actionlog: %w", err)
 		return
 	}
 
@@ -736,7 +736,7 @@ func (s *Store) QueryApigwFilters(
 	}
 
 	if err != nil {
-		err = fmt.Errorf("could generate filter expression for ApigwFilter: %w", err)
+		err = fmt.Errorf("could not generate filter expression for ApigwFilter: %w", err)
 		return
 	}
 
@@ -755,7 +755,7 @@ func (s *Store) QueryApigwFilters(
 
 	// sorting feature is enabled
 	if sortExpr, err = order(f.Sort, s.sortableApigwFilterFields()); err != nil {
-		err = fmt.Errorf("could generate order expression for ApigwFilter: %w", err)
+		err = fmt.Errorf("could not generate order expression for ApigwFilter: %w", err)
 		return
 	}
 
@@ -1334,7 +1334,7 @@ func (s *Store) QueryApigwRoutes(
 	}
 
 	if err != nil {
-		err = fmt.Errorf("could generate filter expression for ApigwRoute: %w", err)
+		err = fmt.Errorf("could not generate filter expression for ApigwRoute: %w", err)
 		return
 	}
 
@@ -1353,7 +1353,7 @@ func (s *Store) QueryApigwRoutes(
 
 	// sorting feature is enabled
 	if sortExpr, err = order(f.Sort, s.sortableApigwRouteFields()); err != nil {
-		err = fmt.Errorf("could generate order expression for ApigwRoute: %w", err)
+		err = fmt.Errorf("could not generate order expression for ApigwRoute: %w", err)
 		return
 	}
 
@@ -1936,7 +1936,7 @@ func (s *Store) QueryApplications(
 	}
 
 	if err != nil {
-		err = fmt.Errorf("could generate filter expression for Application: %w", err)
+		err = fmt.Errorf("could not generate filter expression for Application: %w", err)
 		return
 	}
 
@@ -1955,7 +1955,7 @@ func (s *Store) QueryApplications(
 
 	// sorting feature is enabled
 	if sortExpr, err = order(f.Sort, s.sortableApplicationFields()); err != nil {
-		err = fmt.Errorf("could generate order expression for Application: %w", err)
+		err = fmt.Errorf("could not generate order expression for Application: %w", err)
 		return
 	}
 
@@ -2493,7 +2493,7 @@ func (s *Store) QueryAttachments(
 	}
 
 	if err != nil {
-		err = fmt.Errorf("could generate filter expression for Attachment: %w", err)
+		err = fmt.Errorf("could not generate filter expression for Attachment: %w", err)
 		return
 	}
 
@@ -2512,7 +2512,7 @@ func (s *Store) QueryAttachments(
 
 	// sorting feature is enabled
 	if sortExpr, err = order(f.Sort, s.sortableAttachmentFields()); err != nil {
-		err = fmt.Errorf("could generate order expression for Attachment: %w", err)
+		err = fmt.Errorf("could not generate order expression for Attachment: %w", err)
 		return
 	}
 
@@ -3045,7 +3045,7 @@ func (s *Store) QueryAuthClients(
 	}
 
 	if err != nil {
-		err = fmt.Errorf("could generate filter expression for AuthClient: %w", err)
+		err = fmt.Errorf("could not generate filter expression for AuthClient: %w", err)
 		return
 	}
 
@@ -3064,7 +3064,7 @@ func (s *Store) QueryAuthClients(
 
 	// sorting feature is enabled
 	if sortExpr, err = order(f.Sort, s.sortableAuthClientFields()); err != nil {
-		err = fmt.Errorf("could generate order expression for AuthClient: %w", err)
+		err = fmt.Errorf("could not generate order expression for AuthClient: %w", err)
 		return
 	}
 
@@ -3494,7 +3494,7 @@ func (s *Store) QueryAuthConfirmedClients(
 	}
 
 	if err != nil {
-		err = fmt.Errorf("could generate filter expression for AuthConfirmedClient: %w", err)
+		err = fmt.Errorf("could not generate filter expression for AuthConfirmedClient: %w", err)
 		return
 	}
 
@@ -3826,7 +3826,7 @@ func (s *Store) QueryAuthOa2tokens(
 	}
 
 	if err != nil {
-		err = fmt.Errorf("could generate filter expression for AuthOa2token: %w", err)
+		err = fmt.Errorf("could not generate filter expression for AuthOa2token: %w", err)
 		return
 	}
 
@@ -4271,7 +4271,7 @@ func (s *Store) QueryAuthSessions(
 	}
 
 	if err != nil {
-		err = fmt.Errorf("could generate filter expression for AuthSession: %w", err)
+		err = fmt.Errorf("could not generate filter expression for AuthSession: %w", err)
 		return
 	}
 
@@ -4784,7 +4784,7 @@ func (s *Store) QueryAutomationSessions(
 	}
 
 	if err != nil {
-		err = fmt.Errorf("could generate filter expression for AutomationSession: %w", err)
+		err = fmt.Errorf("could not generate filter expression for AutomationSession: %w", err)
 		return
 	}
 
@@ -4803,7 +4803,7 @@ func (s *Store) QueryAutomationSessions(
 
 	// sorting feature is enabled
 	if sortExpr, err = order(f.Sort, s.sortableAutomationSessionFields()); err != nil {
-		err = fmt.Errorf("could generate order expression for AutomationSession: %w", err)
+		err = fmt.Errorf("could not generate order expression for AutomationSession: %w", err)
 		return
 	}
 
@@ -5351,7 +5351,7 @@ func (s *Store) QueryAutomationTriggers(
 	}
 
 	if err != nil {
-		err = fmt.Errorf("could generate filter expression for AutomationTrigger: %w", err)
+		err = fmt.Errorf("could not generate filter expression for AutomationTrigger: %w", err)
 		return
 	}
 
@@ -5370,7 +5370,7 @@ func (s *Store) QueryAutomationTriggers(
 
 	// sorting feature is enabled
 	if sortExpr, err = order(f.Sort, s.sortableAutomationTriggerFields()); err != nil {
-		err = fmt.Errorf("could generate order expression for AutomationTrigger: %w", err)
+		err = fmt.Errorf("could not generate order expression for AutomationTrigger: %w", err)
 		return
 	}
 
@@ -5914,7 +5914,7 @@ func (s *Store) QueryAutomationWorkflows(
 	}
 
 	if err != nil {
-		err = fmt.Errorf("could generate filter expression for AutomationWorkflow: %w", err)
+		err = fmt.Errorf("could not generate filter expression for AutomationWorkflow: %w", err)
 		return
 	}
 
@@ -5933,7 +5933,7 @@ func (s *Store) QueryAutomationWorkflows(
 
 	// sorting feature is enabled
 	if sortExpr, err = order(f.Sort, s.sortableAutomationWorkflowFields()); err != nil {
-		err = fmt.Errorf("could generate order expression for AutomationWorkflow: %w", err)
+		err = fmt.Errorf("could not generate order expression for AutomationWorkflow: %w", err)
 		return
 	}
 
@@ -6539,7 +6539,7 @@ func (s *Store) QueryComposeAttachments(
 	}
 
 	if err != nil {
-		err = fmt.Errorf("could generate filter expression for ComposeAttachment: %w", err)
+		err = fmt.Errorf("could not generate filter expression for ComposeAttachment: %w", err)
 		return
 	}
 
@@ -6558,7 +6558,7 @@ func (s *Store) QueryComposeAttachments(
 
 	// sorting feature is enabled
 	if sortExpr, err = order(f.Sort, s.sortableComposeAttachmentFields()); err != nil {
-		err = fmt.Errorf("could generate order expression for ComposeAttachment: %w", err)
+		err = fmt.Errorf("could not generate order expression for ComposeAttachment: %w", err)
 		return
 	}
 
@@ -7095,7 +7095,7 @@ func (s *Store) QueryComposeCharts(
 	}
 
 	if err != nil {
-		err = fmt.Errorf("could generate filter expression for ComposeChart: %w", err)
+		err = fmt.Errorf("could not generate filter expression for ComposeChart: %w", err)
 		return
 	}
 
@@ -7114,7 +7114,7 @@ func (s *Store) QueryComposeCharts(
 
 	// sorting feature is enabled
 	if sortExpr, err = order(f.Sort, s.sortableComposeChartFields()); err != nil {
-		err = fmt.Errorf("could generate order expression for ComposeChart: %w", err)
+		err = fmt.Errorf("could not generate order expression for ComposeChart: %w", err)
 		return
 	}
 
@@ -7692,7 +7692,7 @@ func (s *Store) QueryComposeModules(
 	}
 
 	if err != nil {
-		err = fmt.Errorf("could generate filter expression for ComposeModule: %w", err)
+		err = fmt.Errorf("could not generate filter expression for ComposeModule: %w", err)
 		return
 	}
 
@@ -7711,7 +7711,7 @@ func (s *Store) QueryComposeModules(
 
 	// sorting feature is enabled
 	if sortExpr, err = order(f.Sort, s.sortableComposeModuleFields()); err != nil {
-		err = fmt.Errorf("could generate order expression for ComposeModule: %w", err)
+		err = fmt.Errorf("could not generate order expression for ComposeModule: %w", err)
 		return
 	}
 
@@ -8175,7 +8175,7 @@ func (s *Store) QueryComposeModuleFields(
 	}
 
 	if err != nil {
-		err = fmt.Errorf("could generate filter expression for ComposeModuleField: %w", err)
+		err = fmt.Errorf("could not generate filter expression for ComposeModuleField: %w", err)
 		return
 	}
 
@@ -8778,7 +8778,7 @@ func (s *Store) QueryComposeNamespaces(
 	}
 
 	if err != nil {
-		err = fmt.Errorf("could generate filter expression for ComposeNamespace: %w", err)
+		err = fmt.Errorf("could not generate filter expression for ComposeNamespace: %w", err)
 		return
 	}
 
@@ -8797,7 +8797,7 @@ func (s *Store) QueryComposeNamespaces(
 
 	// sorting feature is enabled
 	if sortExpr, err = order(f.Sort, s.sortableComposeNamespaceFields()); err != nil {
-		err = fmt.Errorf("could generate order expression for ComposeNamespace: %w", err)
+		err = fmt.Errorf("could not generate order expression for ComposeNamespace: %w", err)
 		return
 	}
 
@@ -9400,7 +9400,7 @@ func (s *Store) QueryComposePages(
 	}
 
 	if err != nil {
-		err = fmt.Errorf("could generate filter expression for ComposePage: %w", err)
+		err = fmt.Errorf("could not generate filter expression for ComposePage: %w", err)
 		return
 	}
 
@@ -9419,7 +9419,7 @@ func (s *Store) QueryComposePages(
 
 	// sorting feature is enabled
 	if sortExpr, err = order(f.Sort, s.sortableComposePageFields()); err != nil {
-		err = fmt.Errorf("could generate order expression for ComposePage: %w", err)
+		err = fmt.Errorf("could not generate order expression for ComposePage: %w", err)
 		return
 	}
 
@@ -10046,7 +10046,7 @@ func (s *Store) QueryComposePageLayouts(
 	}
 
 	if err != nil {
-		err = fmt.Errorf("could generate filter expression for ComposePageLayout: %w", err)
+		err = fmt.Errorf("could not generate filter expression for ComposePageLayout: %w", err)
 		return
 	}
 
@@ -10065,7 +10065,7 @@ func (s *Store) QueryComposePageLayouts(
 
 	// sorting feature is enabled
 	if sortExpr, err = order(f.Sort, s.sortableComposePageLayoutFields()); err != nil {
-		err = fmt.Errorf("could generate order expression for ComposePageLayout: %w", err)
+		err = fmt.Errorf("could not generate order expression for ComposePageLayout: %w", err)
 		return
 	}
 
@@ -10506,7 +10506,7 @@ func (s *Store) QueryCredentials(
 	}
 
 	if err != nil {
-		err = fmt.Errorf("could generate filter expression for Credential: %w", err)
+		err = fmt.Errorf("could not generate filter expression for Credential: %w", err)
 		return
 	}
 
@@ -11033,7 +11033,7 @@ func (s *Store) QueryDalConnections(
 	}
 
 	if err != nil {
-		err = fmt.Errorf("could generate filter expression for DalConnection: %w", err)
+		err = fmt.Errorf("could not generate filter expression for DalConnection: %w", err)
 		return
 	}
 
@@ -11052,7 +11052,7 @@ func (s *Store) QueryDalConnections(
 
 	// sorting feature is enabled
 	if sortExpr, err = order(f.Sort, s.sortableDalConnectionFields()); err != nil {
-		err = fmt.Errorf("could generate order expression for DalConnection: %w", err)
+		err = fmt.Errorf("could not generate order expression for DalConnection: %w", err)
 		return
 	}
 
@@ -11656,7 +11656,7 @@ func (s *Store) QueryDalSchemaAlterations(
 	}
 
 	if err != nil {
-		err = fmt.Errorf("could generate filter expression for DalSchemaAlteration: %w", err)
+		err = fmt.Errorf("could not generate filter expression for DalSchemaAlteration: %w", err)
 		return
 	}
 
@@ -11675,7 +11675,7 @@ func (s *Store) QueryDalSchemaAlterations(
 
 	// sorting feature is enabled
 	if sortExpr, err = order(f.Sort, s.sortableDalSchemaAlterationFields()); err != nil {
-		err = fmt.Errorf("could generate order expression for DalSchemaAlteration: %w", err)
+		err = fmt.Errorf("could not generate order expression for DalSchemaAlteration: %w", err)
 		return
 	}
 
@@ -12201,7 +12201,7 @@ func (s *Store) QueryDalSensitivityLevels(
 	}
 
 	if err != nil {
-		err = fmt.Errorf("could generate filter expression for DalSensitivityLevel: %w", err)
+		err = fmt.Errorf("could not generate filter expression for DalSensitivityLevel: %w", err)
 		return
 	}
 
@@ -12220,7 +12220,7 @@ func (s *Store) QueryDalSensitivityLevels(
 
 	// sorting feature is enabled
 	if sortExpr, err = order(f.Sort, s.sortableDalSensitivityLevelFields()); err != nil {
-		err = fmt.Errorf("could generate order expression for DalSensitivityLevel: %w", err)
+		err = fmt.Errorf("could not generate order expression for DalSensitivityLevel: %w", err)
 		return
 	}
 
@@ -12756,7 +12756,7 @@ func (s *Store) QueryDataPrivacyRequests(
 	}
 
 	if err != nil {
-		err = fmt.Errorf("could generate filter expression for DataPrivacyRequest: %w", err)
+		err = fmt.Errorf("could not generate filter expression for DataPrivacyRequest: %w", err)
 		return
 	}
 
@@ -12775,7 +12775,7 @@ func (s *Store) QueryDataPrivacyRequests(
 
 	// sorting feature is enabled
 	if sortExpr, err = order(f.Sort, s.sortableDataPrivacyRequestFields()); err != nil {
-		err = fmt.Errorf("could generate order expression for DataPrivacyRequest: %w", err)
+		err = fmt.Errorf("could not generate order expression for DataPrivacyRequest: %w", err)
 		return
 	}
 
@@ -13318,7 +13318,7 @@ func (s *Store) QueryDataPrivacyRequestComments(
 	}
 
 	if err != nil {
-		err = fmt.Errorf("could generate filter expression for DataPrivacyRequestComment: %w", err)
+		err = fmt.Errorf("could not generate filter expression for DataPrivacyRequestComment: %w", err)
 		return
 	}
 
@@ -13337,7 +13337,7 @@ func (s *Store) QueryDataPrivacyRequestComments(
 
 	// sorting feature is enabled
 	if sortExpr, err = order(f.Sort, s.sortableDataPrivacyRequestCommentFields()); err != nil {
-		err = fmt.Errorf("could generate order expression for DataPrivacyRequestComment: %w", err)
+		err = fmt.Errorf("could not generate order expression for DataPrivacyRequestComment: %w", err)
 		return
 	}
 
@@ -13824,7 +13824,7 @@ func (s *Store) QueryFederationExposedModules(
 	}
 
 	if err != nil {
-		err = fmt.Errorf("could generate filter expression for FederationExposedModule: %w", err)
+		err = fmt.Errorf("could not generate filter expression for FederationExposedModule: %w", err)
 		return
 	}
 
@@ -13843,7 +13843,7 @@ func (s *Store) QueryFederationExposedModules(
 
 	// sorting feature is enabled
 	if sortExpr, err = order(f.Sort, s.sortableFederationExposedModuleFields()); err != nil {
-		err = fmt.Errorf("could generate order expression for FederationExposedModule: %w", err)
+		err = fmt.Errorf("could not generate order expression for FederationExposedModule: %w", err)
 		return
 	}
 
@@ -14374,7 +14374,7 @@ func (s *Store) QueryFederationModuleMappings(
 	}
 
 	if err != nil {
-		err = fmt.Errorf("could generate filter expression for FederationModuleMapping: %w", err)
+		err = fmt.Errorf("could not generate filter expression for FederationModuleMapping: %w", err)
 		return
 	}
 
@@ -14393,7 +14393,7 @@ func (s *Store) QueryFederationModuleMappings(
 
 	// sorting feature is enabled
 	if sortExpr, err = order(f.Sort, s.sortableFederationModuleMappingFields()); err != nil {
-		err = fmt.Errorf("could generate order expression for FederationModuleMapping: %w", err)
+		err = fmt.Errorf("could not generate order expression for FederationModuleMapping: %w", err)
 		return
 	}
 
@@ -14962,7 +14962,7 @@ func (s *Store) QueryFederationNodes(
 	}
 
 	if err != nil {
-		err = fmt.Errorf("could generate filter expression for FederationNode: %w", err)
+		err = fmt.Errorf("could not generate filter expression for FederationNode: %w", err)
 		return
 	}
 
@@ -14981,7 +14981,7 @@ func (s *Store) QueryFederationNodes(
 
 	// sorting feature is enabled
 	if sortExpr, err = order(f.Sort, s.sortableFederationNodeFields()); err != nil {
-		err = fmt.Errorf("could generate order expression for FederationNode: %w", err)
+		err = fmt.Errorf("could not generate order expression for FederationNode: %w", err)
 		return
 	}
 
@@ -15608,7 +15608,7 @@ func (s *Store) QueryFederationNodeSyncs(
 	}
 
 	if err != nil {
-		err = fmt.Errorf("could generate filter expression for FederationNodeSync: %w", err)
+		err = fmt.Errorf("could not generate filter expression for FederationNodeSync: %w", err)
 		return
 	}
 
@@ -15627,7 +15627,7 @@ func (s *Store) QueryFederationNodeSyncs(
 
 	// sorting feature is enabled
 	if sortExpr, err = order(f.Sort, s.sortableFederationNodeSyncFields()); err != nil {
-		err = fmt.Errorf("could generate order expression for FederationNodeSync: %w", err)
+		err = fmt.Errorf("could not generate order expression for FederationNodeSync: %w", err)
 		return
 	}
 
@@ -16206,7 +16206,7 @@ func (s *Store) QueryFederationSharedModules(
 	}
 
 	if err != nil {
-		err = fmt.Errorf("could generate filter expression for FederationSharedModule: %w", err)
+		err = fmt.Errorf("could not generate filter expression for FederationSharedModule: %w", err)
 		return
 	}
 
@@ -16225,7 +16225,7 @@ func (s *Store) QueryFederationSharedModules(
 
 	// sorting feature is enabled
 	if sortExpr, err = order(f.Sort, s.sortableFederationSharedModuleFields()); err != nil {
-		err = fmt.Errorf("could generate order expression for FederationSharedModule: %w", err)
+		err = fmt.Errorf("could not generate order expression for FederationSharedModule: %w", err)
 		return
 	}
 
@@ -16584,7 +16584,7 @@ func (s *Store) QueryFlags(
 	}
 
 	if err != nil {
-		err = fmt.Errorf("could generate filter expression for Flag: %w", err)
+		err = fmt.Errorf("could not generate filter expression for Flag: %w", err)
 		return
 	}
 
@@ -16932,7 +16932,7 @@ func (s *Store) QueryLabels(
 	}
 
 	if err != nil {
-		err = fmt.Errorf("could generate filter expression for Label: %w", err)
+		err = fmt.Errorf("could not generate filter expression for Label: %w", err)
 		return
 	}
 
@@ -17456,7 +17456,7 @@ func (s *Store) QueryQueues(
 	}
 
 	if err != nil {
-		err = fmt.Errorf("could generate filter expression for Queue: %w", err)
+		err = fmt.Errorf("could not generate filter expression for Queue: %w", err)
 		return
 	}
 
@@ -17475,7 +17475,7 @@ func (s *Store) QueryQueues(
 
 	// sorting feature is enabled
 	if sortExpr, err = order(f.Sort, s.sortableQueueFields()); err != nil {
-		err = fmt.Errorf("could generate order expression for Queue: %w", err)
+		err = fmt.Errorf("could not generate order expression for Queue: %w", err)
 		return
 	}
 
@@ -18046,7 +18046,7 @@ func (s *Store) QueryQueueMessages(
 	}
 
 	if err != nil {
-		err = fmt.Errorf("could generate filter expression for QueueMessage: %w", err)
+		err = fmt.Errorf("could not generate filter expression for QueueMessage: %w", err)
 		return
 	}
 
@@ -18065,7 +18065,7 @@ func (s *Store) QueryQueueMessages(
 
 	// sorting feature is enabled
 	if sortExpr, err = order(f.Sort, s.sortableQueueMessageFields()); err != nil {
-		err = fmt.Errorf("could generate order expression for QueueMessage: %w", err)
+		err = fmt.Errorf("could not generate order expression for QueueMessage: %w", err)
 		return
 	}
 
@@ -18353,7 +18353,7 @@ func (s *Store) QueryRbacRules(
 	}
 
 	if err != nil {
-		err = fmt.Errorf("could generate filter expression for RbacRule: %w", err)
+		err = fmt.Errorf("could not generate filter expression for RbacRule: %w", err)
 		return
 	}
 
@@ -18835,7 +18835,7 @@ func (s *Store) QueryReminders(
 	}
 
 	if err != nil {
-		err = fmt.Errorf("could generate filter expression for Reminder: %w", err)
+		err = fmt.Errorf("could not generate filter expression for Reminder: %w", err)
 		return
 	}
 
@@ -18854,7 +18854,7 @@ func (s *Store) QueryReminders(
 
 	// sorting feature is enabled
 	if sortExpr, err = order(f.Sort, s.sortableReminderFields()); err != nil {
-		err = fmt.Errorf("could generate order expression for Reminder: %w", err)
+		err = fmt.Errorf("could not generate order expression for Reminder: %w", err)
 		return
 	}
 
@@ -19396,7 +19396,7 @@ func (s *Store) QueryReports(
 	}
 
 	if err != nil {
-		err = fmt.Errorf("could generate filter expression for Report: %w", err)
+		err = fmt.Errorf("could not generate filter expression for Report: %w", err)
 		return
 	}
 
@@ -19415,7 +19415,7 @@ func (s *Store) QueryReports(
 
 	// sorting feature is enabled
 	if sortExpr, err = order(f.Sort, s.sortableReportFields()); err != nil {
-		err = fmt.Errorf("could generate order expression for Report: %w", err)
+		err = fmt.Errorf("could not generate order expression for Report: %w", err)
 		return
 	}
 
@@ -19830,7 +19830,7 @@ func (s *Store) QueryResourceActivitys(
 	}
 
 	if err != nil {
-		err = fmt.Errorf("could generate filter expression for ResourceActivity: %w", err)
+		err = fmt.Errorf("could not generate filter expression for ResourceActivity: %w", err)
 		return
 	}
 
@@ -20296,7 +20296,7 @@ func (s *Store) QueryResourceTranslations(
 	}
 
 	if err != nil {
-		err = fmt.Errorf("could generate filter expression for ResourceTranslation: %w", err)
+		err = fmt.Errorf("could not generate filter expression for ResourceTranslation: %w", err)
 		return
 	}
 
@@ -20315,7 +20315,7 @@ func (s *Store) QueryResourceTranslations(
 
 	// sorting feature is enabled
 	if sortExpr, err = order(f.Sort, s.sortableResourceTranslationFields()); err != nil {
-		err = fmt.Errorf("could generate order expression for ResourceTranslation: %w", err)
+		err = fmt.Errorf("could not generate order expression for ResourceTranslation: %w", err)
 		return
 	}
 
@@ -20833,7 +20833,7 @@ func (s *Store) QueryRoles(
 	}
 
 	if err != nil {
-		err = fmt.Errorf("could generate filter expression for Role: %w", err)
+		err = fmt.Errorf("could not generate filter expression for Role: %w", err)
 		return
 	}
 
@@ -20852,7 +20852,7 @@ func (s *Store) QueryRoles(
 
 	// sorting feature is enabled
 	if sortExpr, err = order(f.Sort, s.sortableRoleFields()); err != nil {
-		err = fmt.Errorf("could generate order expression for Role: %w", err)
+		err = fmt.Errorf("could not generate order expression for Role: %w", err)
 		return
 	}
 
@@ -21345,7 +21345,7 @@ func (s *Store) QueryRoleMembers(
 	}
 
 	if err != nil {
-		err = fmt.Errorf("could generate filter expression for RoleMember: %w", err)
+		err = fmt.Errorf("could not generate filter expression for RoleMember: %w", err)
 		return
 	}
 
@@ -21633,7 +21633,7 @@ func (s *Store) QuerySettingValues(
 	}
 
 	if err != nil {
-		err = fmt.Errorf("could generate filter expression for SettingValue: %w", err)
+		err = fmt.Errorf("could not generate filter expression for SettingValue: %w", err)
 		return
 	}
 
@@ -22152,7 +22152,7 @@ func (s *Store) QueryTemplates(
 	}
 
 	if err != nil {
-		err = fmt.Errorf("could generate filter expression for Template: %w", err)
+		err = fmt.Errorf("could not generate filter expression for Template: %w", err)
 		return
 	}
 
@@ -22171,7 +22171,7 @@ func (s *Store) QueryTemplates(
 
 	// sorting feature is enabled
 	if sortExpr, err = order(f.Sort, s.sortableTemplateFields()); err != nil {
-		err = fmt.Errorf("could generate order expression for Template: %w", err)
+		err = fmt.Errorf("could not generate order expression for Template: %w", err)
 		return
 	}
 
@@ -22787,7 +22787,7 @@ func (s *Store) QueryUsers(
 	}
 
 	if err != nil {
-		err = fmt.Errorf("could generate filter expression for User: %w", err)
+		err = fmt.Errorf("could not generate filter expression for User: %w", err)
 		return
 	}
 
@@ -22806,7 +22806,7 @@ func (s *Store) QueryUsers(
 
 	// sorting feature is enabled
 	if sortExpr, err = order(f.Sort, s.sortableUserFields()); err != nil {
-		err = fmt.Errorf("could generate order expression for User: %w", err)
+		err = fmt.Errorf("could not generate order expression for User: %w", err)
 		return
 	}
 

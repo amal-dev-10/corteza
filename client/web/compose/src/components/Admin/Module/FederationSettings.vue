@@ -474,7 +474,7 @@ export default {
               // Reset update flag
               crtModule.updated = false
             })
-            .catch(this.toastErrorHandler(this.$t('edit.federationSettings.persist.mmap')))
+            .catch(this.toastErrorHandler(this.$t('edit.federationSettings.error.persist.mmap')))
         }
       }
 
@@ -504,7 +504,7 @@ export default {
             // Reset update flag
             (this.upstream[nodeID] || {}).updated = false
           })
-          .catch(this.toastErrorHandler(this.$t('edit.federationSettings.persist.exposed')))
+          .catch(this.toastErrorHandler(this.$t('edit.federationSettings.error.persist.exposed')))
 
         if (!response && !response.moduleID) {
           return
