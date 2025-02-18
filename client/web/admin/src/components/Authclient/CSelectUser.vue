@@ -1,17 +1,22 @@
 <template>
   <c-input-select
+    v-model="user.value"
     data-test-id="select-user"
     :options="user.options"
     :get-option-label="getOptionLabel"
     :get-option-key="getOptionKey"
-    :value="user.value"
+    :placeholder="placeholder"
+    :loading="processing"
     :filterable="false"
+    :reduce="o => o.userID"
+    v-bind="$attrs"
     @search="search"
-    @input="updateRunAs"
+    @input="onUserUpdate"
   />
 </template>
 
 <script>
+import { NoID } from '@cortezaproject/corteza-js'
 import { debounce } from 'lodash'
 
 export default {
@@ -21,6 +26,10 @@ export default {
       default: null,
     },
 
+    placeholder: {
+      type: String,
+      default: '',
+    },
   },
 
   data () {
@@ -34,12 +43,23 @@ export default {
           limit: 10,
         },
       },
+
+      processing: false,
     }
   },
 
+  watch: {
+    userID: {
+      handler (userID) {
+        this.getUserByID(userID)
+      },
+    },
+  },
+
   created () {
-    this.fetchUsers()
-    this.getUserByID()
+    this.fetchUsers().then(() => {
+      this.getUserByID(this.userID)
+    })
   },
 
   methods: {
@@ -49,34 +69,39 @@ export default {
         this.user.filter.page = 1
       }
 
-      if (query) {
-        this.fetchUsers()
-      }
+      this.fetchUsers()
     }, 300),
 
     fetchUsers () {
-      this.$SystemAPI.userList(this.user.filter)
-        .then(({ set }) => {
-          this.user.options = set.map(m => Object.freeze(m))
-        })
+      this.processing = true
+
+      return this.$SystemAPI.userList(this.user.filter).then(({ set }) => {
+        this.user.options = set.map(m => Object.freeze(m))
+      }).finally(() => {
+        setTimeout(() => {
+          this.processing = false
+        }, 500)
+      })
     },
 
-    async getUserByID () {
-      this.$SystemAPI.userRead({ userID: this.userID })
-        .then(user => {
-          this.user.value = user
-        }).catch(() => {
-          return {}
-        })
-    },
-
-    updateRunAs (user) {
-      if (user && user.userID) {
-        this.user.value = user
-      } else {
-        this.user.value = null
+    getUserByID (userID) {
+      if (!userID || userID === NoID) {
+        this.user.value = userID
+        return
       }
-      this.$emit('updateUser', user)
+
+      if (this.user.options.some(o => o.userID === userID)) {
+        this.user.value = userID
+      } else {
+        this.$SystemAPI.userRead({ userID }).then(user => {
+          this.user.value = user.userID
+          this.user.options.push(Object.freeze(user))
+        })
+      }
+    },
+
+    onUserUpdate () {
+      this.$emit('input', this.user.value)
     },
 
     getOptionKey ({ userID }) {

@@ -52,6 +52,7 @@ import {
   faEllipsisV,
   faTrashRestore,
   faLocationArrow,
+  faEyeSlash,
 } from '@fortawesome/free-solid-svg-icons'
 
 import {
@@ -122,5 +123,6 @@ library.add(
   faEdit,
   faLocationArrow,
   faAngleUp,
-  faAngleDown
+  faAngleDown,
+  faEyeSlash,
 )

@@ -66,7 +66,6 @@
             <c-form-table-wrapper
               :labels="{ addButton: $t('general:label.add') }"
               test-id="button-add-redirect-uris"
-              add-button-class="mt-2"
               @add-item="redirectURI.push('')"
             >
               <div
@@ -75,7 +74,7 @@
                 <b-input-group
                   v-for="(value, index) in redirectURI"
                   :key="index"
-                  class="mt-2"
+                  class="mb-2"
                 >
                   <b-form-input
                     v-model="redirectURI[index]"
@@ -104,6 +103,37 @@
             :label="$t('secret')"
             label-class="text-primary"
           >
+            <template #label>
+              {{ $t('secret') }}
+              <b-button
+                v-if="!secretVisible"
+                v-b-tooltip.noninteractive.hover="{ title: $t('tooltip.show-client-secret'), container: '#body' }"
+                data-test-id="button-show-client-secret"
+                variant="outline-light"
+                size="sm"
+                class="text-secondary border-0"
+                @click="showSecret()"
+              >
+                <font-awesome-icon
+                  :icon="['fas', 'eye']"
+                />
+              </b-button>
+
+              <b-button
+                v-else
+                v-b-tooltip.noninteractive.hover="{ title: $t('tooltip.hide-client-secret'), container: '#body' }"
+                data-test-id="button-hide-client-secret"
+                variant="outline-light"
+                size="sm"
+                class="text-secondary border-0"
+                @click="hideSecret()"
+              >
+                <font-awesome-icon
+                  :icon="['fas', 'eye-slash']"
+                />
+              </b-button>
+            </template>
+
             <b-input-group>
               <b-form-input
                 v-model="secret"
@@ -113,24 +143,11 @@
               />
 
               <b-button
-                v-if="!secretVisible"
-                data-test-id="button-show-client-secret"
-                class="ml-1 text-primary"
-                variant="link"
-                @click="$emit('request-secret')"
-              >
-                <font-awesome-icon
-                  :icon="['fas', 'eye']"
-                />
-              </b-button>
-
-              <b-button
-                v-else
                 v-b-tooltip.noninteractive.hover="{ title: $t('tooltip.regenerate-secret'), container: '#body' }"
                 data-test-id="button-regenerate-client-secret"
-                class="ml-1 text-primary"
-                variant="link"
-                @click="$emit('regenerate-secret')"
+                variant="outline-light"
+                class="text-secondary border-0"
+                @click="regenerateSecret()"
               >
                 <font-awesome-icon
                   :icon="['fas', 'sync']"
@@ -152,6 +169,7 @@
                 { value: 'authorization_code', text: $t('grant.authorization_code') },
                 { value: 'client_credentials', text: $t('grant.client_credentials') },
               ]"
+              @change="onGrantChange"
             />
           </b-form-group>
         </b-col>
@@ -279,108 +297,23 @@
 
       <b-row>
         <b-col
-          v-if="isClientCredentialsGrant"
+          v-show="isClientCredentialsGrant"
           cols="12"
           lg="6"
         >
-          <div>
-            <b-form-group
-              data-test-id="impersonate-user"
-              :label="$t('security.impersonateUser.label')"
-              :description="$t('security.impersonateUser.description')"
-            >
-              <c-select-user
-                :user-i-d="resource.security.impersonateUser"
-                @updateUser="onUpdateUser"
-              />
-            </b-form-group>
-
-            <div v-if="!fresh">
-              <b-form-group>
-                <b-button
-                  data-test-id="button-cURL-snippet"
-                  variant="light"
-                  class="align-top"
-                  @click="toggleCurlSnippet()"
-                >
-                  <template v-if="curlVisible">
-                    {{ $t('hideCurl') }}
-                  </template>
-
-                  <template v-else>
-                    {{ $t('generateCurl') }}
-                  </template>
-                </b-button>
-              </b-form-group>
-
-              <b-form-group
-                v-if="curlVisible"
-                :label="$t('cUrl')"
-                class="curl"
-                label-class="text-primary"
-              >
-                <div>
-                  <div class="w-50 d-flex">
-                    <pre
-                      ref="cUrl"
-                      data-test-id="cURL-string"
-                      style="word-break: break-word;"
-                    >
-          curl -X POST {{ curlURL }} \
-          -d grant_type=client_credentials \
-          -d scope='profile api' \
-          -u {{ resource.resourceID }}:{{ secret || 'PLACE-YOUR-CLIENT-SECRET-HERE' }}
-                  </pre>
-                    <b-button
-                      data-test-id="button-copy-cURL"
-                      variant="link"
-                      class="align-top ml-auto fit-content text-secondary mr-5"
-                      @click="copyToClipboard('cUrl')"
-                    >
-                      <font-awesome-icon
-                        :icon="['far', 'copy']"
-                      />
-                    </b-button>
-                  </div>
-                </div>
-
-                <div class="d-flex w-50 my-3">
-                  <div
-                    class="overflow-wrap"
-                    :class="[tokenRequest.token ? 'text-success' : 'text-danger']"
-                  >
-                    {{ tokenRequest.token || tokenRequest.error }}
-                  </div>
-
-                  <b-button
-                    v-if="tokenRequest.token"
-                    data-test-id="copy-token-from-request"
-                    variant="link"
-                    class="ml-auto fit-content text-secondary"
-                    @click="copyToClipboard('token')"
-                  >
-                    <font-awesome-icon
-                      :icon="['far', 'copy']"
-                    />
-                  </b-button>
-                </div>
-
-                <div
-                  v-if="secretVisible"
-                  class="d-flex mb-3"
-                >
-                  <b-button
-                    data-test-id="button-test-cURL"
-                    variant="light"
-                    class="align-top fit-content"
-                    @click="getAccessTokenAPI()"
-                  >
-                    {{ $t('testCurl') }}
-                  </b-button>
-                </div>
-              </b-form-group>
-            </div>
-          </div>
+          <b-form-group
+            data-test-id="impersonate-user"
+            :label="$t('security.impersonateUser.label')"
+            :description="$t('security.impersonateUser.description')"
+            label-class="text-primary"
+          >
+            <c-select-user
+              :user-i-d="resource.security.impersonateUser"
+              :placeholder="$t('security.impersonateUser.placeholder')"
+              :clearable="false"
+              @input="onUpdateUser"
+            />
+          </b-form-group>
         </b-col>
 
         <b-col
@@ -438,6 +371,81 @@
                 {{ $t('security.forcedRoles.description') }}
               </template>
             </c-role-picker>
+          </b-form-group>
+        </b-col>
+
+        <b-col
+          v-if="!fresh && isClientCredentialsGrant"
+          cols="12"
+        >
+          <b-form-group label-class="text-primary">
+            <template #label>
+              {{ $t('cUrl') }}
+              <b-button
+                v-b-tooltip.noninteractive.hover="{ title: $t('tooltip.copy-cURL'), container: '#body' }"
+                data-test-id="button-copy-cURL"
+                variant="outline-light"
+                size="sm"
+                class="text-secondary border-0"
+                @click="copyToClipboard(exampleCurl)"
+              >
+                <font-awesome-icon
+                  :icon="['far', 'copy']"
+                />
+              </b-button>
+            </template>
+
+            <b-textarea
+              :value="exampleCurl"
+              disabled
+              data-test-id="cURL-string"
+              rows="3"
+              class="mb-2"
+            />
+          </b-form-group>
+
+          <b-form-group label-class="text-primary">
+            <template #label>
+              {{ $t('accessToken') }}
+
+              <b-button
+                v-if="tokenRequest.token"
+                v-b-tooltip.noninteractive.hover="{ title: $t('tooltip.copy-access-token'), container: '#body' }"
+                data-test-id="copy-token-from-request"
+                variant="outline-light"
+                size="sm"
+                class="text-secondary border-0"
+                @click="copyToClipboard(tokenRequest.token)"
+              >
+                <font-awesome-icon
+                  :icon="['far', 'copy']"
+                />
+              </b-button>
+            </template>
+
+            <b-textarea
+              v-if="tokenRequest.token"
+              data-test-id="cURL-string"
+              :value="tokenRequest.token"
+              disabled
+              rows="5"
+            />
+
+            <b-button
+              v-else
+              data-test-id="button-test-cURL"
+              variant="light"
+              @click="getAccessTokenAPI()"
+            >
+              {{ $t('generateAccessToken') }}
+            </b-button>
+
+            <p
+              v-if="tokenRequest.error"
+              class="text-danger mt-2"
+            >
+              {{ tokenRequest.error }}
+            </p>
           </b-form-group>
         </b-col>
       </b-row>
@@ -531,11 +539,6 @@ export default {
       value: false,
     },
 
-    secret: {
-      type: String,
-      default: () => '',
-    },
-
     success: {
       type: Boolean,
       value: false,
@@ -549,10 +552,13 @@ export default {
 
   data () {
     return {
+      requestedSecret: '',
+      secret: '',
+
       redirectURI: this.resource.redirectURI ? this.resource.redirectURI.split(' ') : [],
 
       curlVisible: false,
-      curlURL: '',
+
       tokenRequest: {
         token: '',
         error: '',
@@ -601,6 +607,14 @@ export default {
     saveDisabled () {
       return !this.editable || [this.nameState, this.handleState].includes(false)
     },
+
+    curlURL () {
+      return this.$auth.cortezaAuthURL + '/oauth2/token'
+    },
+
+    exampleCurl () {
+      return `curl -X POST ${this.curlURL} -d grant_type=${this.resource.validGrant} -d scope='${this.resource.scope}' -u ${this.resource.authClientID}:${this.secret || 'PLACE-YOUR-CLIENT-SECRET-HERE'}`
+    },
   },
 
   watch: {
@@ -612,43 +626,27 @@ export default {
   },
 
   methods: {
-    onUpdateUser (user) {
-      this.resource.security.impersonateUser = (user || {}).userID
+    onUpdateUser (userID) {
+      this.resource.security.impersonateUser = userID
     },
 
-    getAccessTokenAPI () {
-      const params = new URLSearchParams()
-      params.append('grant_type', 'client_credentials')
-      params.append('scope', 'profile api')
-      axios.post(
-        this.curlURL,
-        params,
-        { auth: { username: this.resource.authClientID, password: this.secret } }
-      ).then(response => {
-        this.tokenRequest.token = (response.data || {}).access_token
-      }).catch(error => {
-        this.tokenRequest.error = error
-      })
-    },
-
-    copyToClipboard (name) {
-      if (name === 'cUrl') {
-        copy(this.$refs.cUrl.innerHTML)
-      } else {
-        copy(this.tokenRequest.token)
+    onGrantChange (grant) {
+      if (grant === 'client_credentials' && (!this.resource.security.impersonateUser || this.resource.security.impersonateUser === NoID)) {
+        this.resource.security.impersonateUser = this.$auth.user.userID
       }
+    },
+
+    copyToClipboard (value) {
+      copy(value)
     },
 
     toggleCurlSnippet () {
-      if (!this.curlVisible) {
-        this.curlURL = this.$auth.cortezaAuthURL + '/oauth2/token'
-      }
       this.curlVisible = !this.curlVisible
     },
 
     submit () {
       if (!this.isClientCredentialsGrant || !this.resource.security.impersonateUser) {
-        this.resource.security.impersonateUser = '0'
+        this.resource.security.impersonateUser = NoID
       }
 
       this.$emit('submit', this.resource)
@@ -665,26 +663,56 @@ export default {
 
       this.resource.scope = items.join(' ')
     },
+
+    requestSecret () {
+      const clientID = this.resource.authClientID
+
+      return this.$SystemAPI.authClientExposeSecret(({ clientID })).then(secret => {
+        this.requestedSecret = secret
+      })
+    },
+
+    async showSecret () {
+      if (!this.requestedSecret) {
+        await this.requestSecret()
+      }
+
+      this.secret = this.requestedSecret
+    },
+
+    hideSecret () {
+      this.secret = ''
+    },
+
+    async regenerateSecret () {
+      const clientID = this.resource.authClientID
+
+      this.$SystemAPI.authClientRegenerateSecret(({ clientID })).then(secret => {
+        this.requestedSecret = secret
+      })
+    },
+
+    async getAccessTokenAPI () {
+      const clientID = this.resource.authClientID
+
+      if (!this.requestedSecret) {
+        await this.requestSecret()
+      }
+
+      const params = new URLSearchParams()
+
+      params.append('grant_type', this.resource.validGrant)
+      params.append('scope', this.resource.scope)
+
+      axios.post(this.curlURL, params, { auth: { username: clientID, password: this.requestedSecret } }).then(response => {
+        this.tokenRequest.token = (response.data || {}).access_token
+        this.tokenRequest.error = ''
+      }).catch(e => {
+        const { error } = e.response.data || {}
+        this.tokenRequest.error = error
+        this.tokenRequest.token = ''
+      })
+    },
   },
 }
 </script>
-<style lang="scss">
-.auth-clients {
-  .fit-content {
-    height:fit-content;
-  }
-  .overflow-wrap {
-      overflow-wrap: anywhere;
-  }
-  .curl .form-row {
-    flex-wrap: nowrap !important;
-    .col {
-      max-width: 84.3%;
-    }
-  }
-
-  pre {
-    white-space: collapse;
-  }
-}
-</style>

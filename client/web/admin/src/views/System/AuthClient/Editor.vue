@@ -30,11 +30,8 @@
       :resource="authclient"
       :processing="info.processing"
       :success="info.success"
-      :secret="secret"
       :can-delete="authclient && authclient.authClientID && !authclient.isDefault && authclient.canDeleteAuthClient"
       :can-create="canCreate"
-      @regenerate-secret="onRegenerateSecret"
-      @request-secret="onRequestSecret"
       @submit="onSubmit($event)"
       @delete="onDelete($event)"
       @undelete="onUndelete($event)"
@@ -203,18 +200,6 @@ export default {
         })
         .catch(this.toastErrorHandler(this.$t('notification:authclient.authclient.error')))
         .finally(() => this.decLoader())
-    },
-
-    onRequestSecret (clientID = this.authClientID) {
-      this.$SystemAPI
-        .authClientExposeSecret(({ clientID }))
-        .then(secret => { this.secret = secret })
-    },
-
-    onRegenerateSecret (clientID = this.authClientID) {
-      this.$SystemAPI
-        .authClientRegenerateSecret(({ clientID }))
-        .then(newSecret => { this.secret = newSecret })
     },
 
     checkUnsavedChanges (next, to) {
