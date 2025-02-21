@@ -91,23 +91,6 @@
             </b-col>
 
             <b-col
-              cols="12"
-              lg="6"
-            >
-              <b-form-group
-                :label="$t('recordList.hideConfigureFieldsButton')"
-                label-class="text-primary"
-              >
-                <c-input-checkbox
-                  v-model="options.hideConfigureFieldsButton"
-                  switch
-                  invert
-                  :labels="checkboxLabel"
-                />
-              </b-form-group>
-            </b-col>
-
-            <b-col
               v-if="onRecordPage"
               cols="12"
               lg="6"
@@ -126,6 +109,23 @@
                 <b-form-text class="text-secondary small">
                   {{ $t('recordList.refField.footnote') }}
                 </b-form-text>
+              </b-form-group>
+            </b-col>
+
+            <b-col
+              cols="12"
+              lg="6"
+            >
+              <b-form-group
+                :label="$t('recordList.hideConfigureFieldsButton')"
+                label-class="text-primary"
+              >
+                <c-input-checkbox
+                  v-model="options.hideConfigureFieldsButton"
+                  switch
+                  invert
+                  :labels="checkboxLabel"
+                />
               </b-form-group>
             </b-col>
 
@@ -190,6 +190,7 @@
               >
                 <c-input-select
                   v-model="options.positionField"
+                  :options="positionFields"
                   :placeholder="$t('recordList.positionField.placeholder')"
                   :reduce="f => f.name"
                   label="label"
@@ -203,6 +204,7 @@
 
             <b-col
               cols="12"
+              lg="6"
             >
               <b-form-group
                 v-if="options.positionField"
