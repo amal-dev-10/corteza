@@ -42,7 +42,7 @@ kind:
       gallery: Gallery of images
       grid: Grid
       list: List
-      maxSizeLabel: Maximum file size
+      maxSizeLabel: Maximum file size (MB)
       mimetypesFootnote: 'MIME types, separated with ",". Example: "text/plain,text/csv"'
       webcam:
         enable:
