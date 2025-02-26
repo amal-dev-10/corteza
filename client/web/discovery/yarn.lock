@@ -988,10 +988,10 @@
     numeral "^2.0.6"
     pino "^5.16.0"
 
-"@cortezaproject/corteza-vue@^2024.9.1-a":
-  version "2024.9.1-a"
-  resolved "https://registry.yarnpkg.com/@cortezaproject/corteza-vue/-/corteza-vue-2024.9.1-a.tgz#4dfc14afe222efb7038beafbd6928c0910c30eca"
-  integrity sha512-RzaZNEFQhF7lqbKNls6H128gJ1C+0EgfYLvGecIbcJOWWyr9HcsB1fz1G5erHqzjdfHRhNLWq8RfhXI6QzNdww==
+"@cortezaproject/corteza-vue@^2024.9.1-b":
+  version "2024.9.1-b"
+  resolved "https://registry.yarnpkg.com/@cortezaproject/corteza-vue/-/corteza-vue-2024.9.1-b.tgz#eef4d311f7089dae00020f4f1b8ae75c4085048d"
+  integrity sha512-F3IpKqlZRCBsu0XmR0G5jtsIm1wKmcK6Xzy+RIjONiO0QvjF7Z/7eYpnkk7v+41kbm0P6ko7Yd1Sn2USSv6+mQ==
   dependencies:
     "@cortezaproject/corteza-js" "^2024.9.1-a"
     "@fortawesome/fontawesome-svg-core" "^1.2.26"
@@ -4761,7 +4761,7 @@ escodegen@^1.11.1:
     source-map "~0.6.1"
 
 "eslint-config-corteza-client@file:../../../lib/eslint-client":
-  version "2024.9.1-a"
+  version "2024.9.1"
 
 eslint-config-standard@^12.0.0:
   version "12.0.0"

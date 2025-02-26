@@ -1,7 +1,7 @@
 {
   "name": "eslint-config-corteza-lib",
   "description": "Eslint config for corteza libs",
-  "version": "2024.9.1-a",
+  "version": "2024.9.1",
   "license": "Apache-2.0",
   "main": "./index.js",
   "peerDependencies": {

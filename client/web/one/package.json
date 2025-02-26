@@ -1,7 +1,7 @@
 {
   "name": "corteza-webapp-one",
   "description": "Corteza One WebApp",
-  "version": "2024.9.1-a",
+  "version": "2024.9.1",
   "license": "Apache-2.0",
   "contributors": [
     "Denis Arh <denis.arh@gmail.com>"
@@ -21,7 +21,7 @@
   },
   "dependencies": {
     "@cortezaproject/corteza-js": "^2024.9.1-a",
-    "@cortezaproject/corteza-vue": "^2024.9.1-a",
+    "@cortezaproject/corteza-vue": "^2024.9.1-b",
     "@fortawesome/fontawesome-svg-core": "^1.2.21",
     "@fortawesome/free-regular-svg-icons": "^5.10.1",
     "@fortawesome/free-solid-svg-icons": "^5.10.1",

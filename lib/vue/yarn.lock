@@ -4606,7 +4606,7 @@ escape-string-regexp@^4.0.0:
   integrity sha512-TtpcNJ3XAzx3Gq8sWRzJaVajRs0uVxA2YAkdb1jm2YkPz4G6egUFAyA3n5vtEIZefPk5Wa4UXbKuS5fKkJWdgA==
 
 "eslint-config-corteza-lib@file:../eslint-lib":
-  version "2024.9.1-a"
+  version "2024.9.1-b"
 
 eslint-config-standard@^14.1.0:
   version "14.1.1"

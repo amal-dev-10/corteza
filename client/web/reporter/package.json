@@ -1,7 +1,6 @@
 {
   "name": "corteza-reporter",
-  "version": "2024.9.1-a",
-  "private": true,
+  "version": "2024.9.1",
   "scripts": {
     "serve": "vue-cli-service serve",
     "dev-env": "vue-cli-service serve src/dev-env.js",
@@ -16,7 +15,7 @@
   },
   "dependencies": {
     "@cortezaproject/corteza-js": "^2024.9.1-a",
-    "@cortezaproject/corteza-vue": "^2024.9.1-a",
+    "@cortezaproject/corteza-vue": "^2024.9.1-b",
     "@fortawesome/fontawesome-svg-core": "^1.2.21",
     "@fortawesome/free-regular-svg-icons": "^5.10.1",
     "@fortawesome/free-solid-svg-icons": "^5.10.1",
