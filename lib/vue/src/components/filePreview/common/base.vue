@@ -7,6 +7,7 @@ export default {
   props: {
     inline: {
       type: Boolean,
+      default: true,
     },
   },
 

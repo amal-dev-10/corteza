@@ -33,14 +33,18 @@ export default {
     canPreview () {
       const meta = this.attachment.meta || {}
       const type = (meta.preview || meta.original || {}).mimetype
-      const src = (this.attachment.meta.original && this.attachment.meta.original.ext === 'pdf' ? this.attachment.download : this.attachment.url)
+      const src = this.attachment.url
       return canPreview({ type, src, name: this.attachment.name })
     },
   },
 
   methods: {
     openLightbox (e) {
-      this.$root.$emit('showAttachmentsModal', e)
+      if (this.attachment.meta.original.ext === 'pdf') {
+        window.open(this.attachment.url, '_blank')
+      } else {
+        this.$root.$emit('showAttachmentsModal', e)
+      }
     },
   },
 }

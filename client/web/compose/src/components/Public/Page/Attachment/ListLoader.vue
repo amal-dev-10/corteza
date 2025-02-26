@@ -73,13 +73,13 @@
 
     <div
       v-else
-      class="d-flex align-items-center justify-content-around flex-wrap h-100"
+      class="d-flex align-items-center justify-content-around gap-3 flex-wrap h-100"
     >
       <div
         v-for="a in attachments"
         :key="a.attachmentID"
         :class="{ 'h-100': attachments.length === 1, 'w-100': !canPreview(a) }"
-        class="item mb-2"
+        class="item"
       >
         <c-preview-inline
           v-if="canPreview(a)"
@@ -90,16 +90,14 @@
           :preview-style="{ width: 'unset', ...inlineCustomStyles(a) }"
           :preview-class="[
             !previewOptions.clickToView ? 'disable-zoom-cursor' : '',
-
           ]"
           :labels="previewLabels"
-          class="mb-1"
           @openPreview="openLightbox({ ...a, ...$event })"
         />
 
         <div
           v-if="!hideFileName"
-          class="d-flex align-items-start justify-content-between"
+          class="d-flex align-items-center justify-content-center gap-1"
           :class="{ 'w-100': canPreview(a) }"
         >
           <div
@@ -115,6 +113,7 @@
             v-if="a.download"
             :href="a.download"
             variant="outline-light"
+            size="sm"
             class="border-0 text-primary px-2"
           >
             <font-awesome-icon :icon="['fas', 'download']" />
@@ -195,7 +194,7 @@ export default {
 
   computed: {
     inlineUrl () {
-      return (a) => (this.ext(a) === 'pdf' ? a.download : a.url)
+      return (a) => a.url
     },
 
     previewLabels () {
@@ -284,7 +283,11 @@ export default {
     openLightbox (e) {
       if (!this.previewOptions.clickToView) return
 
-      this.$root.$emit('showAttachmentsModal', e)
+      if (this.ext(e) === 'pdf') {
+        window.open(e.url, '_blank')
+      } else {
+        this.$root.$emit('showAttachmentsModal', e)
+      }
     },
 
     deleteAttachment (index) {

@@ -8,7 +8,7 @@ export default {
 
     src: {
       required: true,
-      type: [ String, Object ],
+      type: [String, Object],
       default: undefined,
     },
 
@@ -39,6 +39,7 @@ export default {
 
     inline: {
       type: Boolean,
+      default: false,
     },
   },
 }

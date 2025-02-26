@@ -15,35 +15,30 @@
       v-if="loadError"
       class="doc-msg doc-err"
     >
-      <div>
-        <h4 class="err-message">
-          {{ loadError.message }}
-        </h4>
-        <p v-if="labels.clickToRetry">
-          {{ labels.clickToRetry }}
-        </p>
-      </div>
+      <p class="err-message">
+        {{ loadError.message }}
+      </p>
     </div>
+
     <div
       v-else-if="!show && labels.loading"
-      class="doc-msg doc-err"
+      class="doc-msg"
     >
-      <p>{{ labels.loading }}</p>
+      <p class="d-flex align-items-center gap-1">
+        <b-spinner
+          variant="primary"
+          small
+        />
+        {{ labels.loading }}
+      </p>
     </div>
+
     <div
       v-else-if="!pageCount && labels.noPages"
       class="doc-msg doc-err"
     >
       <p>{{ labels.noPages }}</p>
     </div>
-    <template v-else>
-      <div v-if="!inline && labels.downloadForAll && show && hasMore">
-        <p>{{ labels.downloadForAll }}</p>
-      </div>
-      <div v-else-if="inline && labels.firstPagePreview && show">
-        <p>{{ labels.firstPagePreview }}</p>
-      </div>
-    </template>
   </div>
 </template>
 
@@ -257,6 +252,7 @@ export default {
         const viewport = np.page.getViewport({ scale })
         const canvasContext = canvas.getContext('2d')
         const renderContext = { canvasContext, viewport }
+
         canvas.height = viewport.height
         canvas.width = viewport.width
 
@@ -305,8 +301,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-$white: #FFFFFF !default;
-$danger: #E54122 !default;
 
 .doc-msg {
   display: flex;
@@ -314,13 +308,13 @@ $danger: #E54122 !default;
   justify-content: center;
   height: 100%;
   width: 100%;
-  background-color: $white;
+  background-color: var(--white);
 }
 .doc-err {
   cursor: pointer;
 
   .err-message {
-    color: $danger;
+    color: var(--danger);
   }
 }
 
@@ -331,32 +325,23 @@ $danger: #E54122 !default;
 
 .pdf-preview {
   text-align: center;
-  &:not(.inline) {
-    padding-top: 20px;
-    padding-bottom: 20px;
-    canvas {
-      box-shadow: 0 0 3px #1E1E1E41;
-    }
-  }
+  width: 100%;
+  height: auto;
+
   &.inline {
-    height: 200px;
-    overflow-y: scroll;
-    display: inline-block;
     cursor: zoom-in;
-    width: 100%;
-    max-width: 500px;
+
+    canvas {
+      width: 100%;
+      height: auto;
+    }
   }
 
   canvas {
     margin-bottom: 10px;
-    &.inline {
-      width: 100%;
-    }
-
-    &:not(.inline) {
-      margin: 0 auto 10px auto;
-      display: block;
-    }
+    box-shadow: 0 0 3px #1E1E1E41;
+    width: 80%;
+    height: auto;
 
     &:last-of-type {
       margin-bottom: unset;
