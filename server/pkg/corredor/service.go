@@ -825,7 +825,7 @@ func (svc service) exec(ctx context.Context, script string, runAs string, args S
 
 			case codes.NotFound:
 				// When requested script is not found on automation server
-				return errors.NotFound(msg)
+				return errors.NotFound("%s", msg)
 
 			case codes.Aborted:
 				// Scripts can be (softly) aborted by terminating with:
@@ -842,7 +842,7 @@ func (svc service) exec(ctx context.Context, script string, runAs string, args S
 			case codes.Unknown:
 				// When script was aborted or an unknown (to gRPC proto) error occurred.
 				// This is always a hard error
-				return errors.Automation(msg).Apply(
+				return errors.Automation("%s", msg).Apply(
 					errors.Meta("script", script),
 					errors.AddNodeStack(trailer.Get("stack")),
 				)
@@ -851,7 +851,7 @@ func (svc service) exec(ctx context.Context, script string, runAs string, args S
 				// Automation server might yield INVALID_ARGUMENT status.
 				// This can be caused by JSON encoding and it is highly unlikely
 				// when arguments are prepared by the server
-				return errors.InvalidData(msg)
+				return errors.InvalidData("%s", msg)
 
 			default:
 				// When script execution fails and it is not handled otherwise,

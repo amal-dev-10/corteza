@@ -1,6 +1,6 @@
 module github.com/cortezaproject/corteza/extra/server-discovery
 
-go 1.19
+go 1.24.1
 
 require (
 	github.com/cortezaproject/corteza/server v0.0.0-00010101000000-000000000000
@@ -11,10 +11,10 @@ require (
 	github.com/go-chi/jwtauth v1.2.0
 	github.com/go-oauth2/oauth2/v4 v4.4.3
 	github.com/jmoiron/sqlx v1.3.5
-	github.com/lestrrat-go/jwx v1.2.28
+	github.com/lestrrat-go/jwx v1.2.29
 	github.com/microcosm-cc/bluemonday v1.0.18
 	github.com/spf13/cast v1.4.1
-	github.com/stretchr/testify v1.8.4
+	github.com/stretchr/testify v1.9.0
 	go.uber.org/atomic v1.9.0
 	go.uber.org/zap v1.21.0
 )
@@ -48,10 +48,10 @@ require (
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/tidwall/btree v1.3.1 // indirect
 	go.uber.org/multierr v1.7.0 // indirect
-	golang.org/x/crypto v0.19.0 // indirect
-	golang.org/x/net v0.21.0 // indirect
+	golang.org/x/crypto v0.31.0 // indirect
+	golang.org/x/net v0.33.0 // indirect
 	golang.org/x/oauth2 v0.16.0 // indirect
-	golang.org/x/text v0.14.0 // indirect
+	golang.org/x/text v0.21.0 // indirect
 	google.golang.org/appengine v1.6.8 // indirect
 	google.golang.org/protobuf v1.32.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
