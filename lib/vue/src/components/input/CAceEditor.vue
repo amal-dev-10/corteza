@@ -183,21 +183,17 @@ export default {
 
       if (this.initExpressions) {
         this.processExpressionAutoComplete(editor)
-      } else {
-        // eslint-disable-next-line @typescript-eslint/no-this-alias
-        const self = this
+      } else if (this.autoComplete) {
         const staticWordCompleter = {
-          getCompletions: function (editor, session, pos, prefix, callback) {
-            const autoCompleteSuggestions = self.autoCompleteSuggestions
+          getCompletions: (editor, session, pos, prefix, callback) => {
+            const autoCompleteSuggestions = this.autoCompleteSuggestions
             callback(
               null,
-              autoCompleteSuggestions.map(function ({ caption, value, meta }) {
-                return {
-                  caption,
-                  value,
-                  meta,
-                }
-              }),
+              autoCompleteSuggestions.map(({ caption, value, meta }) => ({
+                caption,
+                value,
+                meta,
+              })),
             )
           },
         }

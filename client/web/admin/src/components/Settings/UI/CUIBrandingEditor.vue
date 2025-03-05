@@ -132,7 +132,7 @@
               <c-ace-editor
                 v-model="theme.customCSS"
                 auto-complete
-                lang="scss"
+                lang="css"
                 height="400px"
                 font-size="14px"
                 show-line-numbers
@@ -152,6 +152,7 @@
       :title="$t('custom-css')"
       cancel-variant="light"
       size="lg"
+      centered
       :ok-title="$t('general:label.saveAndClose')"
       :cancel-title="$t('general:label.cancel')"
       body-class="p-0"
@@ -161,7 +162,7 @@
       <c-ace-editor
         v-model="customCSSModal.value"
         auto-complete
-        lang="scss"
+        lang="css"
         height="500px"
         font-size="14px"
         show-line-numbers

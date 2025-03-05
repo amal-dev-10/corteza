@@ -165,17 +165,13 @@
           cols="12"
           lg="6"
         >
-          <b-form-group
+          <b-button
             v-if="showOpenRoute"
-            label-cols="2"
+            variant="light"
+            :to="{ name: 'system.apigw.edit', params: { routeID: request.routeID } }"
           >
-            <b-button
-              variant="light"
-              :to="{ name: 'system.apigw.edit', params: { routeID: request.routeID } }"
-            >
-              {{ $t('general.openRoute') }}
-            </b-button>
-          </b-form-group>
+            {{ $t('general.openRoute') }}
+          </b-button>
         </b-col>
       </b-row>
     </b-card>
