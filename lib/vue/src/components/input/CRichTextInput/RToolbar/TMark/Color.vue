@@ -34,7 +34,7 @@
 <script>
 import base from './base.vue'
 import Swatches from 'vue-swatches'
-import 'vue-swatches/dist/vue-swatches.min.css'
+import 'vue-swatches/dist/vue-swatches.css'
 
 /**
  * Component is used to display link formatters. It provides an interface to
