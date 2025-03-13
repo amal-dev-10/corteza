@@ -55,7 +55,7 @@
             <div
               v-if="unsavedBlocks.has(tab.block.blockID !== '0' ? tab.block.blockID : tab.block.meta.tempID)"
               v-b-tooltip.noninteractive.hover="{ title: $t('unsavedChanges'), container: '#body' }"
-              class="btn btn-sm border-0"
+              class="btn btn-sm border-0 p-0 px-1"
             >
               <font-awesome-icon
                 :icon="['fas', 'exclamation-triangle']"
@@ -67,7 +67,7 @@
               <b-button
                 v-b-tooltip.noninteractive.hover="{ title: $t('tooltip.edit'), container: '#body' }"
                 variant="outline-light"
-                class="text-primary border-0 toolbox-button"
+                class="text-primary border-0 toolbox-button p-0 px-1"
                 @click="editTabbedBlock(tab)"
               >
                 <font-awesome-icon
@@ -78,7 +78,7 @@
               <b-button
                 v-b-tooltip.noninteractive.hover="{ title: $t('tooltip.clone'), container: '#body' }"
                 variant="outline-light"
-                class="text-primary border-0 toolbox-button"
+                class="text-primary border-0 toolbox-button p-0 px-1"
                 @click="cloneTabbedBlock(tab)"
               >
                 <font-awesome-icon
@@ -89,7 +89,7 @@
               <b-button
                 v-b-tooltip.noninteractive.hover="{ title: $t('tooltip.copy'), container: '#body' }"
                 variant="outline-light"
-                class="text-primary border-0 toolbox-button"
+                class="text-primary border-0 toolbox-button p-0 px-1"
                 @click="copyTabbedBlock(tab)"
               >
                 <font-awesome-icon
@@ -101,6 +101,7 @@
             <c-input-confirm
               :tooltip="$t('tooltip.delete')"
               show-icon
+              button-class="p-0 px-1"
               class="ml-1"
               @confirmed="deleteTab(index)"
             />
@@ -198,6 +199,8 @@ export default {
         style = `${style} overflow-auto`
       } else if (position === 'end') {
         border = 'border-top'
+      } else if (this.block.options.style.appearance === 'pills') {
+        style = `${style} pb-2 mt-2`
       }
 
       return `${border} ${style}`
