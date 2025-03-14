@@ -1,4 +1,4 @@
-.PHONY: build dev test test-js test-vue lint fresh
+.PHONY: build dev test test-js test-vue lint fresh audit
 
 build:
 	@echo "---Building js---"
@@ -33,5 +33,11 @@ fresh:
 	@(cd $(CURDIR)/js && rm -rf node_modules yarn.lock && yarn && yarn link && yarn build) || (echo "Failed to fresh js"; exit 1)
 	@echo "---Fresh vue---"
 	@(cd $(CURDIR)/vue && rm -rf node_modules yarn.lock && yarn && yarn cdeps && yarn build && yarn link) || (echo "Failed to fresh vue"; exit 1)
+
+audit:
+	@echo "---Audit js---"
+	@(cd $(CURDIR)/js && yarn audit) || true
+	@echo "---Audit vue---"
+	@(cd $(CURDIR)/vue && yarn audit) || true
 
 .DEFAULT_GOAL := dev

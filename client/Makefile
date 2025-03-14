@@ -1,6 +1,6 @@
 WEB_SUBDIRS := $(filter %/, $(wildcard $(CURDIR)/web/*/))
 
-.PHONY: dev test lint fresh build
+.PHONY: dev test lint fresh build audit
 
 yarn:
 	@for dir in $(WEB_SUBDIRS); do \
@@ -36,6 +36,12 @@ build:
 	@for dir in $(WEB_SUBDIRS); do \
 		echo "---Building $$dir---"; \
 		(cd $$dir && yarn build) || (echo "Failed to build $$dir"; exit 1); \
+	done
+
+audit:
+	@for dir in $(WEB_SUBDIRS); do \
+		echo "---Auditing $$dir---"; \
+		(cd $$dir && yarn audit) || true; \
 	done
 
 .DEFAULT_GOAL := dev

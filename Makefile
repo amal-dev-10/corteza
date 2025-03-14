@@ -1,4 +1,4 @@
-.PHONY: dev test lint fresh
+.PHONY: dev test lint fresh audit
 
 dev:
 	@echo "---Processing libs---"
@@ -25,5 +25,12 @@ fresh:
 	@(cd $(CURDIR)/lib && make fresh) || (echo "Failed to fresh libs"; exit 1)
 	@echo "---Fresh clients---"
 	@(cd $(CURDIR)/client && make fresh) || (echo "Failed to fresh clients"; exit 1)
+
+
+audit:
+	@echo "---Audit---"
+	@(cd $(CURDIR)/lib && make audit) || true
+	@echo "---Audit clients---"
+	@(cd $(CURDIR)/client && make audit) || true
 
 .DEFAULT_GOAL := dev

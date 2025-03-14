@@ -29,6 +29,10 @@
       "no-empty-source": null
     }
   },
+  "resolutions": {
+    "cross-spawn": "^7.0.6",
+    "postcss": "^8.5.3"
+  },
   "dependencies": {
     "@cortezaproject/corteza-js": "^2024.9.2-dev.2",
     "@cortezaproject/corteza-vue": "^2024.9.2-dev.2",
@@ -75,7 +79,7 @@
     "eslint-plugin-vue": "^9.32.0",
     "jest": "^27.1.0",
     "null-loader": "^4.0.1",
-    "resolve-url-loader": "^3.1.0",
+    "resolve-url-loader": "^5.0.0",
     "rtlcss": "^4.3.0",
     "sass": "^1.85.1",
     "sass-loader": "^10",
