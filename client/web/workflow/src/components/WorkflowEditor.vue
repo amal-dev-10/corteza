@@ -580,10 +580,7 @@ export default {
       edges: {},
       issues: {},
 
-      highlights: {
-        success: undefined,
-        error: undefined,
-      },
+      highlights: [],
 
       runAsUser: undefined,
 
@@ -796,6 +793,8 @@ export default {
         this.sidebarClose()
       }
       this.graph.removeCells()
+      // Clear path highlights when cells are deleted
+      this.clearHighlights()
     },
 
     sidebarClose () {
@@ -910,7 +909,7 @@ export default {
 
         if (cell.edge) {
           if (cell.value) {
-            label = `<div id="openSidebar" class="text-nowrap py-1 px-3 mb-0 rounded bg-white pointer" style="border: 2px solid #A7D0E3; border-radius: 5px; color: var(--dark);">${encodeHTML(cell.value)}</div>`
+            label = `<div class="text-nowrap py-1 px-3 mb-0 rounded bg-white pointer" style="border: 2px solid #A7D0E3; border-radius: 5px; color: var(--dark);">${encodeHTML(cell.value)}</div>`
           }
         } else if (this.vertices[cell.id]) {
           const vertex = this.vertices[cell.id]
@@ -922,7 +921,6 @@ export default {
             const type = this.$t(`steps:${style}.short`)
             const isSelected = this.selection.includes(cell.mxObjectId)
             const shadow = isSelected ? 'shadow' : 'shadow-sm'
-            const cog = this.getIcon('cog')
             const issue = this.getIcon('issue')
             const playIcon = this.getIcon('play')
             const stopIcon = this.getIcon('stop')
@@ -1037,14 +1035,14 @@ export default {
                 test = `<img id="testWorkflow" title="${this.$t('configurator:tooltip.run-workflow')}" src="${playIcon}" class="hide pointer" style="width: 20px;"/>`
               } else if (this.dryRun.cellID === cell.id) {
                 // If this is the trigger that is currently running
-                test = `<span class="spinner-border text-success" data-toggle="tooltip" data-placement="top" style="width: 20px; height: 20px; cursor: default;" title="Testing in progress. If your workflow includes Prompt or Delay steps, it may be waiting for them to complete">
+                test = `<span class="spinner-border text-secondary" data-toggle="tooltip" data-placement="top" style="width: 20px; height: 20px; cursor: default;" title="Testing in progress. If your workflow includes Prompt or Delay steps, it may be waiting for them to complete">
                           <span class="sr-only">
                             Spinning
                           </span>
                         </span>
                       `
                 if (this.dryRun.sessionID) {
-                  test = test + `<img id="cancelWorkflow" src="${stopIcon}" class="ml-2 hide pointer" style="width: 20px; height: 20px;"/>`
+                  test = test + `<img id="cancelWorkflow" src="${stopIcon}" class="ml-2 pointer" style="width: 20px; height: 20px;"/>`
                 }
               }
             }
@@ -1055,7 +1053,6 @@ export default {
                           `<img src="${icon}" class="mr-2"/>${type}` +
                           '<div class="d-flex h-100 ml-auto align-items-center">' +
                             test +
-                            `<img id="openSidebar" title="${this.$t('steps:tooltip.configure-step')}" src="${cog}" class="hide pointer ml-2" style="width: 20px;"/>` +
                             id +
                             issues +
                           '</div>' +
@@ -1710,14 +1707,20 @@ export default {
           if (event) {
             if (mxEvent.isControlDown(event) || (mxClient.IS_MAC && mxEvent.isMetaDown(event))) {
               // Prevent sidebar opening/closing when CTRL(CMD) is pressed while clicking
+              if (cell) {
+                this.highlightConnectedPaths(cell)
+              }
             } else if (cell) {
+              // Clear any existing path highlights before adding new ones
+              this.clearHighlights()
+              // Highlight the clicked cell and its connected paths
+              this.highlightConnectedPaths(cell)
+
               // If clicked on Cog icon
               const item = cell.edge ? this.edges[cell.id] : this.vertices[cell.id]
               const itemType = cell.edge ? 'edge' : item.config.kind
 
-              if (event.target.id === 'openSidebar' || item.config.kind === 'visual') {
-                this.sidebarReopen(item, itemType)
-              } else if (event.target.id === 'openIssues') {
+              if (event.target.id === 'openIssues') {
                 this.issuesModal.issues = this.issues[cell.id]
                 this.issuesModal.show = true
               } else if (event.target.id === 'testWorkflow') {
@@ -1725,6 +1728,8 @@ export default {
                 this.loadTestScope()
               } else if (event.target.id === 'cancelWorkflow') {
                 this.cancelWorkflow()
+              } else {
+                this.sidebarReopen(item, itemType)
               }
             } else if (!event.defaultPrevented) {
               // If click is on background and is not multiple selection, deselect all selected cells
@@ -1733,6 +1738,9 @@ export default {
               if (this.getSelectedItem) {
                 this.sidebarClose()
               }
+
+              // Clear path highlights when clicking on the background
+              this.clearHighlights()
             }
           }
 
@@ -1742,7 +1750,6 @@ export default {
 
       this.graph.model.addListener(mxEvent.CHANGE, (sender, evt) => {
         if (!this.rendering) {
-          this.removeDryRunOverlay()
           this.$root.$emit('change-detected')
         }
       })
@@ -1751,14 +1758,16 @@ export default {
     styling () {
       // General
       mxConstants.VERTEX_SELECTION_COLOR = '#A7D0E3'
-      mxConstants.VERTEX_SELECTION_STROKEWIDTH = 2
+      mxConstants.VERTEX_SELECTION_STROKEWIDTH = 2 // Changed from 2 to 0 to hide default selection border
+      mxConstants.VERTEX_SELECTION_DASHED = false
       mxConstants.EDGE_SELECTION_COLOR = '#A7D0E3'
-      mxConstants.EDGE_SELECTION_STROKEWIDTH = 2
+      mxConstants.EDGE_SELECTION_STROKEWIDTH = 2 // Changed from 2 to 0 to hide default selection border
       mxConstants.DEFAULT_FONTFAMILY = 'Poppins-Regular'
       mxConstants.DEFAULT_FONTSIZE = 13
 
-      mxConstants.HANDLE_FILLCOLOR = '#A7D0E3'
+      mxConstants.HANDLE_FILLCOLOR = 'var(--primary)'
       mxConstants.HANDLE_STROKECOLOR = 'none'
+      mxConstants.HANDLE_SIZE = 9
       mxConstants.CONNECT_HANDLE_FILLCOLOR = '#A7D0E3'
       mxConstants.OUTLINE_HIGHLIGHT_COLOR = '#A7D0E3'
       mxConstants.TARGET_HIGHLIGHT_COLOR = '#A7D0E3'
@@ -1798,8 +1807,8 @@ export default {
       style[mxConstants.STYLE_STROKEWIDTH] = 2
       style[mxConstants.STYLE_ENDSIZE] = 15
       style[mxConstants.STYLE_STARTSIZE] = 15
-      style[mxConstants.STYLE_SOURCE_JETTY_SIZE] = 40
-      style[mxConstants.STYLE_TARGET_JETTY_SIZE] = 40
+      style[mxConstants.STYLE_SOURCE_JETTY_SIZE] = 48
+      style[mxConstants.STYLE_TARGET_JETTY_SIZE] = 48
       this.graph.getStylesheet().putDefaultEdgeStyle(style)
 
       // Swimlane
@@ -2088,13 +2097,48 @@ export default {
       }
     },
 
-    removeDryRunOverlay () {
+    clearHighlights () {
       if (this.highlights.length > 0) {
         this.highlights.forEach(h => {
           h.destroy()
         })
         this.highlights = []
         this.graph.clearCellOverlays()
+      }
+    },
+
+    highlightConnectedPaths (cell) {
+      if (cell.vertex) {
+        // If a vertex (step) is selected, highlight all connected edges
+        const edges = cell.edges || []
+        edges.forEach(edge => {
+          const state = this.graph.view.getState(edge)
+          if (state) {
+            const highlight = new mxCellHighlight(this.graph, 'var(--primary)', 2) // Changed color to green and increased width
+            highlight.highlight(state)
+            this.highlights.push(highlight)
+          }
+        })
+      } else if (cell.edge) {
+        // 2. Highlight the source vertex
+        if (cell.source) {
+          const sourceState = this.graph.view.getState(cell.source)
+          if (sourceState) {
+            const highlight = new mxCellHighlight(this.graph, 'var(--primary)', 2) // Changed color to green and increased width
+            highlight.highlight(sourceState)
+            this.highlights.push(highlight)
+          }
+        }
+
+        // 3. Highlight the target vertex
+        if (cell.target) {
+          const targetState = this.graph.view.getState(cell.target)
+          if (targetState) {
+            const highlight = new mxCellHighlight(this.graph, 'var(--primary)', 2) // Changed color to green and increased width
+            highlight.highlight(targetState)
+            this.highlights.push(highlight)
+          }
+        }
       }
     },
 
@@ -2198,7 +2242,7 @@ export default {
     },
 
     async testWorkflow (input = {}) {
-      this.removeDryRunOverlay()
+      this.clearHighlights()
       this.dryRun.processing = true
       this.redrawLabel(this.graph.model.getCell(this.dryRun.cellID).mxObjectId)
 
@@ -2213,55 +2257,51 @@ export default {
 
       this.toastInfo(this.$t('notification:started-test'), this.$t('notification:test-in-progress'))
 
-      await this.$AutomationAPI.workflowExec(testParams)
-        .then(({ sessionID, error: wfExecErr }) => {
-          this.dryRun.sessionID = sessionID
-          this.redrawLabel(this.graph.model.getCell(this.dryRun.cellID).mxObjectId)
+      this.$AutomationAPI.workflowExec(testParams).then(({ sessionID, error: wfExecErr }) => {
+        this.dryRun.sessionID = sessionID
+        this.redrawLabel(this.graph.model.getCell(this.dryRun.cellID).mxObjectId)
 
-          const sessionHandler = ({ completedAt, status, stacktrace, error = false }) => {
-            if (completedAt) {
-              // If stacktrace exists, render it
-              if (stacktrace) {
-                this.renderTrace(testParams.stepID, stacktrace)
+        // Create a polling function that returns a promise
+        const pollSession = () => {
+          return new Promise((resolve, reject) => {
+            const checkSession = () => {
+              this.$AutomationAPI.sessionRead({ sessionID }).then(session => {
+                const { completedAt, status, stacktrace, error = false } = session
 
-                if (status === 'completed') {
-                  this.toastSuccess(this.$t('notification:workflow-test-completed'), this.$t('notification:test-completed'))
-                }
-              }
+                setTimeout(() => {
+                  if (completedAt) {
+                    // Session is complete
+                    if (stacktrace) {
+                      this.renderTrace(testParams.stepID, stacktrace)
+                      if (status === 'completed') {
+                        this.toastSuccess(this.$t('notification:workflow-test-completed'), this.$t('notification:test-completed'))
+                      }
+                    } else if (error) {
+                      this.toastError(error, this.$t('notification:failed-test'))
+                    } else {
+                      this.toastWarning(this.$t('notification:trace-unavailable'), this.$t('notification:test-completed'))
+                    }
 
-              // If error or no stacktrace, raise an error/warning
-              if (error) {
-                throw new Error(error)
-              } else if (!stacktrace) {
-                this.toastWarning(this.$t('notification:trace-unavailable'), this.$t('notification:test-completed'))
-              }
-            } else {
-              setTimeout(sessionReader, 1000)
+                    resolve() // Resolve the promise when session is complete
+                  } else {
+                    checkSession()
+                  }
+                }, 1000)
+              }).catch(err => {
+                reject(err) // Reject on other errors
+              })
             }
-          }
 
-          // Check if session is completed/failed every second
-          const sessionReader = () => {
-            this.$AutomationAPI.sessionRead({ sessionID })
-              .then(sessionHandler)
-              .catch(err => {
-                // In case of a workflow step crashing, the session may not always be available
-                //
-                // In this case, if the wf exec raises an error and the session is not found,
-                // make a dummy session so the UI is able to recover without needing to
-                // refresh the page.
-                if (wfExecErr && err.meta && err.meta.resource === 'automation:session' && err.meta.type === 'notFound') {
-                  sessionHandler({ completedAt: new Date(), status: 'failed', error: wfExecErr })
-                  return
-                }
-                throw err
-              }).catch(this.toastErrorHandler(this.$t('notification:failed-test')))
-          }
+            // Start the polling
+            checkSession()
+          })
+        }
 
-          setTimeout(sessionReader, 1000)
-        }).catch(this.toastErrorHandler(this.$t('notification:failed-test')))
+        // Return the polling promise to continue the chain
+        return pollSession()
+      }).catch(this.toastErrorHandler(this.$t('notification:failed-test')))
         .finally(() => {
-          // Reset state and refresh the trigger label so spinner disappears
+          // Reset state only after polling is complete
           this.dryRun.lookup = true
           this.dryRun.processing = false
           this.dryRun.sessionID = undefined
@@ -2273,14 +2313,13 @@ export default {
       const { sessionID, processing } = this.dryRun
       if (processing && sessionID) {
         this.dryRun.sessionID = undefined
+        this.dryRun.processing = false
         this.redrawLabel(this.graph.model.getCell(this.dryRun.cellID).mxObjectId)
 
         this.$AutomationAPI.sessionCancel({ sessionID })
           .then(() => {
             this.toastInfo('Workflow test canceled', 'Stopping test')
-          })
-          .catch(e => {
-            this.dryRun.sessionID = sessionID
+          }).catch(e => {
             this.toastErrorHandler('Test cancel failed')(e)
           })
       }
@@ -2292,6 +2331,9 @@ export default {
       if (this.sidebar.show) {
         this.sidebarClose()
       }
+
+      // Clear any existing path highlights
+      this.clearHighlights()
 
       const { x = originPoint, y = originPoint } = this.graph.view.translate
       const { scale } = this.graph.view
@@ -2425,6 +2467,7 @@ export default {
 
     renderTrace (firstStepID, trace = []) {
       const cells = {}
+      this.clearHighlights()
 
       // Build cells object for easier drawing of overlay
       trace.filter(t => t).forEach(({ stepID, parentID, stepTime, error = false }, index) => {
