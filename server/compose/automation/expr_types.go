@@ -547,17 +547,81 @@ func (t *ComposeRecordValues) Each(fn func(k string, v expr.TypedValue) error) (
 		return
 	}
 
+	// Helper to check if field is a multi value or not; defaulting to false
+	isMulti := func(name string) (multi bool) {
+		m := t.value.GetModule()
+		if m == nil {
+			return
+		}
+
+		if m.Fields == nil {
+			return
+		}
+
+		f := m.Fields.FindByName(name)
+		if f == nil {
+			return
+		}
+
+		return f.Multi
+	}
+
+	// RecordValues can have multi value fields which need to be presented as an Array
+	lastKey := ""
+	values := []expr.TypedValue{}
+
+	// Processes the current set of values keeping multi values in mind
+	processChunk := func() (err error) {
+		if isMulti(lastKey) {
+			ar := &expr.Array{}
+			for _, x := range values {
+				ar.Push(x)
+			}
+
+			if err = fn(lastKey, ar); err != nil {
+				return
+			}
+		} else {
+			for _, v := range values {
+				if err = fn(lastKey, v); err != nil {
+					return
+				}
+			}
+		}
+
+		return
+	}
+
 	for _, vv := range t.GetValue() {
 		key := vv.Name
 		if len(key) == 0 {
 			continue
 		}
 
+		// Reset placement since it's not valid on non multi value fields
+		if !isMulti(key) {
+			vv.Place = 0
+		}
+
+		// Mismatch, process prev values
+		if key != lastKey {
+			err = processChunk()
+			if err != nil {
+				return
+			}
+
+			values = values[0:0]
+			lastKey = key
+		}
+
 		var val expr.TypedValue
 		val, err = expr.Typify(vv)
-		if err = fn(key, val); err != nil {
-			return
-		}
+		values = append(values, val)
+	}
+
+	err = processChunk()
+	if err != nil {
+		return
 	}
 
 	return
@@ -568,30 +632,54 @@ func (t *ComposeRecordValues) Each(fn func(k string, v expr.TypedValue) error) (
 func (t *ComposeRecordValues) Merge(nn ...expr.Iterator) (out expr.TypedValue, err error) {
 	rv := EmptyComposeRecordValues()
 
+	rv.value.ID = t.value.ID
+	rv.value.ModuleID = t.value.ModuleID
+	rv.value.SetModule(t.value.GetModule())
+	rv.value.NamespaceID = t.value.NamespaceID
+
 	nn = append([]expr.Iterator{t}, nn...)
+
+	procValue := func(v expr.TypedValue) (err error) {
+		var (
+			rVal types.RecordValue
+			bb   []byte
+		)
+
+		// @todo implement casting of RecordValue from TypedValue
+		bb, err = json.Marshal(v.Get())
+		if err != nil {
+			return err
+		}
+
+		err = json.Unmarshal(bb, &rVal)
+		if err != nil {
+			return err
+		}
+
+		rr := rv.GetValue().Set(&rVal)
+		err = rv.Assign(rr)
+		if err != nil {
+			return err
+		}
+
+		return
+	}
 
 	for _, i := range nn {
 		err = i.Each(func(k string, v expr.TypedValue) error {
-			var (
-				rVal types.RecordValue
-				bb   []byte
-			)
-
-			// @todo implement casting of RecordValue from TypedValue
-			bb, err = json.Marshal(v.Get())
-			if err != nil {
-				return err
-			}
-
-			err = json.Unmarshal(bb, &rVal)
-			if err != nil {
-				return err
-			}
-
-			rr := rv.GetValue().Set(&rVal)
-			err = rv.Assign(rr)
-			if err != nil {
-				return err
+			if v.Type() == "Array" {
+				// This holds since it's an array
+				for _, v := range (v.(*expr.Array)).Get().([]expr.TypedValue) {
+					err = procValue(v)
+					if err != nil {
+						return err
+					}
+				}
+			} else {
+				err = procValue(v)
+				if err != nil {
+					return err
+				}
 			}
 
 			return err

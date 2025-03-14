@@ -146,6 +146,10 @@ loop:
 //
 // Only if not previously set and if matches record specs
 func (r *Record) SetModule(m *Module) {
+	if m == nil {
+		return
+	}
+
 	if (r.module == nil || r.module.ID == m.ID) && r.ModuleID == m.ID {
 		r.module = m
 	}

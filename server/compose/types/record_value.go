@@ -22,7 +22,7 @@ type (
 		Name      string     `json:"name"`
 		Value     string     `json:"value,omitempty"`
 		Ref       uint64     `json:"-"`
-		Place     uint       `json:"-"`
+		Place     uint       `json:"place,omitempty"`
 		DeletedAt *time.Time `json:"deletedAt,omitempty"`
 
 		Updated  bool   `json:"-"`
