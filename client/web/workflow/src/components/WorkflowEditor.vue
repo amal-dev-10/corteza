@@ -2270,26 +2270,25 @@ export default {
 
                 setTimeout(() => {
                   if (completedAt) {
-                    // Session is complete
                     if (stacktrace) {
                       this.renderTrace(testParams.stepID, stacktrace)
                       if (status === 'completed') {
                         this.toastSuccess(this.$t('notification:workflow-test-completed'), this.$t('notification:test-completed'))
                       }
-                    } else if (error) {
-                      this.toastError(error, this.$t('notification:failed-test'))
                     } else {
                       this.toastWarning(this.$t('notification:trace-unavailable'), this.$t('notification:test-completed'))
                     }
 
-                    resolve() // Resolve the promise when session is complete
+                    if (error) {
+                      reject(new Error(error))
+                    } else {
+                      resolve() // Resolve the promise when session is complete
+                    }
                   } else {
                     checkSession()
                   }
                 }, 1000)
-              }).catch(err => {
-                reject(err) // Reject on other errors
-              })
+              }).catch(reject)
             }
 
             // Start the polling
@@ -2301,7 +2300,7 @@ export default {
         return pollSession()
       }).catch(this.toastErrorHandler(this.$t('notification:failed-test')))
         .finally(() => {
-          // Reset state only after polling is complete
+        // Reset state only after polling is complete
           this.dryRun.lookup = true
           this.dryRun.processing = false
           this.dryRun.sessionID = undefined
