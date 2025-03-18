@@ -2095,25 +2095,35 @@ export default {
 
     filterByValue (record, { moduleField: field }) {
       const value = field.isSystem ? record[field.name] : record.values[field.name]
+      const operator = field.isMulti ? 'IN' : '='
 
-      if (!this.recordListFilter.length) {
-        this.recordListFilter = [
-          {
-            groupCondition: undefined,
-            filter: [
-              this.createDefaultFilter('Where', field, value, '='),
-            ],
-          },
-        ]
-      } else {
-        const { filter } = this.recordListFilter[0]
-        if (!filter.length || (filter.length && !filter[0].name)) {
-          this.recordListFilter[0].filter = []
-          this.recordListFilter[0].filter.push(this.createDefaultFilter('Where', field, value))
+      const setFilter = (field, value) => {
+        if (!this.recordListFilter.length) {
+          this.recordListFilter = [
+            {
+              groupCondition: undefined,
+              filter: [
+                this.createDefaultFilter('Where', field, value, field.isMulti ? 'IN' : operator),
+              ],
+            },
+          ]
         } else {
-          this.recordListFilter[0].filter.push(this.createDefaultFilter('OR', field, value))
+          const { filter } = this.recordListFilter[0]
+          if (!filter.length || (filter.length && !filter[0].name)) {
+            this.recordListFilter[0].filter = []
+            this.recordListFilter[0].filter.push(this.createDefaultFilter('Where', field, value, operator))
+          } else if (!this.recordListFilter[0].filter.some(f => f.name === field.name && f.value === value)) {
+            this.recordListFilter[0].filter.push(this.createDefaultFilter('OR', field, value, operator))
+          }
         }
       }
+
+      if (field.isMulti) {
+        value.forEach(v => setFilter(field, v))
+      } else {
+        setFilter(field, value)
+      }
+
       this.pullRecords(true)
     },
 

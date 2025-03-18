@@ -63,9 +63,10 @@ export default {
       const style = {}
 
       if (this.field.options.displayType === 'badge') {
+        const optStyle = opt.style || {}
         style.fontSize = '0.9rem'
-        style.color = opt.style.textColor || 'var(--dark)'
-        style.backgroundColor = opt.style.backgroundColor || 'var(--extra-light)'
+        style.color = optStyle.textColor || 'var(--dark)'
+        style.backgroundColor = optStyle.backgroundColor || 'var(--extra-light)'
       }
 
       return style
