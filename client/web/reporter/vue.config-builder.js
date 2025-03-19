@@ -43,7 +43,7 @@ module.exports = ({ appFlavour, appLabel, version = process.env.BUILD_VERSION, t
       }
 
   return {
-    publicPath: '/',
+    publicPath: isDevelopment ? '/' : './',
     lintOnSave: true,
     runtimeCompiler: true,
 

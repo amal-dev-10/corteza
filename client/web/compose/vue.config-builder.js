@@ -43,7 +43,7 @@ module.exports = ({ appFlavour, appLabel, version = process.env.BUILD_VERSION, t
       }
 
   return {
-    publicPath: '/',
+    publicPath: isDevelopment ? '/' : './',
     lintOnSave: true,
     runtimeCompiler: true,
 
@@ -154,8 +154,6 @@ module.exports = ({ appFlavour, appLabel, version = process.env.BUILD_VERSION, t
           root: path.join(root, 'src/themes', theme),
         })
         .before('sass-loader')
-
-      // Keep this to ensure we don't have multiple HTML plugins
     },
 
     devServer: {
@@ -167,6 +165,9 @@ module.exports = ({ appFlavour, appLabel, version = process.env.BUILD_VERSION, t
       headers: {
         'Access-Control-Allow-Origin': '*',
       },
+
+      // Add historyApiFallback to handle history mode routing
+      historyApiFallback: true,
 
       proxy: {
         '^/custom.css': {
