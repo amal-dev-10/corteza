@@ -15,6 +15,9 @@ type (
 		BackgroundUI              BackgroundUI
 		ProfileAvatarEnabled      bool
 		SendUserInviteEmail       bool
+
+		AutoLogoutEnabled bool
+		AutoLogoutTimeout int
 	}
 
 	SAML struct {

@@ -659,6 +659,9 @@ func updateAuthSettings(svc authServicer, current *types.AppSettings) {
 			BackgroundImageSrcUrl: setAuthBgImageSrcUrl(current.Auth.UI.BackgroundImageSrc),
 			Styles:                setAuthBgStyles(current.Auth.UI.Styles),
 		},
+
+		AutoLogoutEnabled: current.Auth.AutoLogOut.Enabled,
+		AutoLogoutTimeout: current.Auth.AutoLogOut.Timeout,
 	}
 
 	for _, p := range current.Auth.External.Providers {

@@ -127,6 +127,11 @@ type (
 				Providers ExternalAuthProviderSet `json:"providers"`
 			} `json:"external"`
 
+			AutoLogOut struct {
+				Enabled bool `kv:"enabled" json:"enabled"`
+				Timeout int  `kv:"timeout" json:"timeout"`
+			} `json:"autoLogout" kv:"auto-logout"`
+
 			MultiFactor struct {
 				EmailOTP struct {
 					// Can users use email for MFA
@@ -418,9 +423,9 @@ type (
 	}
 
 	CodeSnippet struct {
-		Name   string `json:"name"`
-		Script string `json:"script"`
-        Enabled bool `json:"enabled"`
+		Name    string `json:"name"`
+		Script  string `json:"script"`
+		Enabled bool   `json:"enabled"`
 	}
 
 	SmtpServers struct {
