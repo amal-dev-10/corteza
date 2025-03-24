@@ -555,8 +555,8 @@ export class Auth {
 
     // Schedule next refresh
     this.refreshTimeout = window.setTimeout(async () => {
-      this.log.debug('refreshing token')
-      this.exchangeRefresh(oa2tkn.refresh_token)
+      const tkn = this.sessionStorage.getItem(storeKeyRefreshToken) || '';
+      await this.exchangeRefresh(tkn)
         .catch((err) => {
           this.log.error('refresh token exchange failed', err)
           this.startAuthenticationFlow()
