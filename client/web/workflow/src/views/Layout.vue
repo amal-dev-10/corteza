@@ -94,18 +94,28 @@
         },
       }"
     />
+
+    <c-extend-session
+      v-if="isAutoLogoutEnabled"
+      :timeout="$Settings.get('auth.autoLogout.timeout')"
+      :labels="{
+        extend: $t('general:extendSession.labels.extend'),
+        warning: (countdownTime) => $t('general:extendSession.labels.warning', { countdownTime }),
+      }"
+    />
   </div>
 </template>
 
 <script>
 import { components } from '@cortezaproject/corteza-vue'
-const { CPermissionsModal, CTopbar, CSidebar } = components
+const { CPermissionsModal, CTopbar, CSidebar, CExtendSession } = components
 
 export default {
   components: {
     CPermissionsModal,
     CTopbar,
     CSidebar,
+    CExtendSession,
   },
 
   data () {
@@ -128,6 +138,10 @@ export default {
 
     logo () {
       return this.$Settings.attachment('ui.mainLogo')
+    },
+
+    isAutoLogoutEnabled () {
+      return this.$Settings.get('auth.autoLogout.enabled')
     },
   },
 

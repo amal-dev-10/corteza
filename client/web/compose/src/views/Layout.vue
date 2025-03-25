@@ -111,6 +111,15 @@
     />
 
     <c-translation-modal />
+
+    <c-extend-session
+      v-if="isAutoLogoutEnabled"
+      :timeout="$Settings.get('auth.autoLogout.timeout')"
+      :labels="{
+        extend: $t('general:extendSession.labels.extend'),
+        warning: (countdownTime) => $t('general:extendSession.labels.warning', { countdownTime }),
+      }"
+    />
   </div>
 </template>
 
@@ -120,7 +129,7 @@ import CTranslationModal from '../components/Translator/CTranslatorModal'
 import { mapGetters, mapActions } from 'vuex'
 import { debounce } from 'lodash'
 import { components } from '@cortezaproject/corteza-vue'
-const { CToaster, CPrompts, CPermissionsModal, CTopbar, CSidebar } = components
+const { CToaster, CPrompts, CPermissionsModal, CTopbar, CSidebar, CExtendSession } = components
 
 export default {
   i18nOptions: {
@@ -134,6 +143,7 @@ export default {
     CTopbar,
     CSidebar,
     CToaster, // Only used for reminders
+    CExtendSession,
   },
 
   data () {
@@ -196,6 +206,10 @@ export default {
       }
 
       return classes.join(' ')
+    },
+
+    isAutoLogoutEnabled () {
+      return this.$Settings.get('auth.autoLogout.enabled')
     },
   },
 

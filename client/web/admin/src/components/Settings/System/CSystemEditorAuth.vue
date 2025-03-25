@@ -450,7 +450,53 @@
                 <b-form-input
                   v-model="authSettings['auth.internal.send-user-invite-email.expires']"
                   type="number"
-                  placeholder="72"
+                />
+              </b-input-group>
+            </b-form-group>
+          </b-col>
+        </b-row>
+      </div>
+
+      <hr>
+
+      <div>
+        <h5>
+          {{ $t('auto-logout.title') }}
+        </h5>
+
+        <b-row>
+          <b-col
+            cols="12"
+            lg="6"
+          >
+            <b-form-group
+              :label="$t('auto-logout.enabled.label')"
+              :description="$t('auto-logout.enabled.description')"
+              label-class="text-primary"
+            >
+              <c-input-checkbox
+                v-model="authSettings['auth.auto-logout.enabled']"
+                :value="true"
+                :unchecked-value="false"
+                :labels="checkboxLabel"
+                switch
+              />
+            </b-form-group>
+          </b-col>
+
+          <b-col
+            cols="12"
+            lg="6"
+          >
+            <b-form-group
+              :label="$t('auto-logout.timeout.label')"
+              :description="$t('auto-logout.timeout.description')"
+              label-class="text-primary"
+            >
+              <b-input-group append="seconds">
+                <b-form-input
+                  v-model="authSettings['auth.auto-logout.timeout']"
+                  type="number"
                 />
               </b-input-group>
             </b-form-group>

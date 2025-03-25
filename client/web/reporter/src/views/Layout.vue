@@ -112,13 +112,22 @@
       }"
     />
     <report-sidebar />
+
+    <c-extend-session
+      v-if="isAutoLogoutEnabled"
+      :timeout="$Settings.get('auth.autoLogout.timeout')"
+      :labels="{
+        extend: $t('general:extendSession.labels.extend'),
+        warning: (countdownTime) => $t('general:extendSession.labels.warning', { countdownTime }),
+      }"
+    />
   </div>
 </template>
 
 <script>
 import { components } from '@cortezaproject/corteza-vue'
 import ReportSidebar from 'corteza-webapp-reporter/src/components/ReportSidebar'
-const { CPermissionsModal, CTopbar, CSidebar } = components
+const { CPermissionsModal, CTopbar, CSidebar, CExtendSession } = components
 
 export default {
   components: {
@@ -126,6 +135,7 @@ export default {
     CTopbar,
     CSidebar,
     ReportSidebar,
+    CExtendSession,
   },
 
   data () {
@@ -152,6 +162,10 @@ export default {
 
     logo () {
       return this.$Settings.attachment('ui.mainLogo')
+    },
+
+    isAutoLogoutEnabled () {
+      return this.$Settings.get('auth.autoLogout.enabled')
     },
   },
 

@@ -38,6 +38,15 @@
     />
 
     <c-prompts />
+
+    <c-extend-session
+      v-if="isAutoLogoutEnabled"
+      :timeout="$Settings.get('auth.autoLogout.timeout')"
+      :labels="{
+        extend: $t('extendSession.labels.extend'),
+        warning: (countdownTime) => $t('extendSession.labels.warning', { countdownTime }),
+      }"
+    />
   </div>
 </template>
 
@@ -46,7 +55,7 @@ import { mapActions } from 'vuex'
 import CAppSelector from '../components/CAppSelector'
 import { components } from '@cortezaproject/corteza-vue'
 
-const { CTopbar, CLoaderLogo, CPrompts } = components
+const { CTopbar, CLoaderLogo, CPrompts, CExtendSession } = components
 
 export default {
   i18nOptions: {
@@ -58,6 +67,7 @@ export default {
     CTopbar,
     CLoaderLogo,
     CPrompts,
+    CExtendSession,
   },
 
   data () {
@@ -80,6 +90,10 @@ export default {
     user () {
       const { user } = this.$auth
       return user.name || user.handle || user.email || ''
+    },
+
+    isAutoLogoutEnabled () {
+      return this.$Settings.get('auth.autoLogout.enabled')
     },
   },
 

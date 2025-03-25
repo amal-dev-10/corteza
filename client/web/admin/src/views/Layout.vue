@@ -77,7 +77,9 @@
         <router-view />
       </div>
     </main>
+
     <c-prompts />
+
     <c-permissions-modal
       :labels="{
         save: $t('permissions:ui.save'),
@@ -106,6 +108,15 @@
         },
       }"
     />
+
+    <c-extend-session
+      v-if="isAutoLogoutEnabled"
+      :timeout="$Settings.get('auth.autoLogout.timeout')"
+      :labels="{
+        extend: $t('general:extendSession.labels.extend'),
+        warning: (countdownTime) => $t('general:extendSession.labels.warning', { countdownTime }),
+      }"
+    />
   </div>
 </template>
 
@@ -114,7 +125,7 @@ import CTheMainNav from 'corteza-webapp-admin/src/components/CTheMainNav'
 import { components, mixins } from '@cortezaproject/corteza-vue'
 import { mapGetters } from 'vuex'
 
-const { CPermissionsModal, CPrompts, CTopbar, CSidebar } = components
+const { CExtendSession, CPermissionsModal, CPrompts, CTopbar, CSidebar } = components
 
 export default {
   i18nOptions: {
@@ -127,6 +138,7 @@ export default {
     CTopbar,
     CSidebar,
     CTheMainNav,
+    CExtendSession,
   },
 
   mixins: [
@@ -136,7 +148,6 @@ export default {
   data () {
     return {
       allowed: false,
-
       error: null,
       expanded: window.innerWidth > 576,
       pinned: window.innerWidth > 576,
@@ -159,6 +170,10 @@ export default {
 
     logo () {
       return this.$Settings.attachment('ui.mainLogo')
+    },
+
+    isAutoLogoutEnabled () {
+      return this.$Settings.get('auth.autoLogout.enabled')
     },
   },
 

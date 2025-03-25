@@ -145,6 +145,7 @@ export class Auth {
    * @private
    */
   private refreshTimeout?: number
+  private expiresIn: number
 
   private $emit?: (event: string, ...args: unknown[]) => unknown
 
@@ -162,6 +163,7 @@ export class Auth {
     this.registerEventListener = registerEventListener
     this.refreshFactor = refreshFactor
     this.entrypointURL = entrypointURL
+    this.expiresIn = 0
 
     this.log.debug('initialized auth plugin', {
       app,
@@ -492,6 +494,28 @@ export class Auth {
     )
   }
 
+  startAutoLogout (): Promise<number> {
+    const tkn = this.sessionStorage.getItem(storeKeyRefreshToken) || ''
+    return this.exchangeRefresh(tkn).then(() => {
+      if (this.refreshTimeout) {
+        window.clearTimeout(this.refreshTimeout)
+      }
+
+      return this.expiresIn
+    }).catch((err) => {
+      this.log.error('refresh token exchange failed', err)
+      throw err
+    })
+  }
+
+  stopAutoLogout (): Promise<AuthInfo | null> {
+    const tkn = this.sessionStorage.getItem(storeKeyRefreshToken) || ''
+    return this.exchangeRefresh(tkn).catch((err) => {
+      this.log.error('refresh token exchange failed', err)
+      throw err
+    })
+  }
+
   /**
    * Exchanges authorization code for access and refresh tokens
    */
@@ -546,10 +570,12 @@ export class Auth {
       window.clearTimeout(this.refreshTimeout)
     }
 
-    const timeout = oa2tkn.expires_in * this.refreshFactor
+    this.expiresIn = oa2tkn.expires_in
+
+    const timeout = this.expiresIn * this.refreshFactor
 
     this.log.debug('setting up refresh timeout callback', {
-      expires_in: oa2tkn.expires_in,
+      expires_in: this.expiresIn,
       timeout,
     })
 

@@ -1,4 +1,8 @@
 export {
+  CExtendSession,
+} from './auth'
+
+export {
   CCorredorManualButtons,
 } from './corredor'
 
