@@ -1270,7 +1270,7 @@ export default {
           // Get cells from actual system clipboard
           const { cells = {}, edges = [] } = JSON.parse(evt.clipboardData.getData('text')) || {}
 
-          const delta = mxClipboard.insertCount * this.graph.gridSize
+          const delta = mxClipboard.insertCount * this.graph.gridSize * 20
           const defaultParent = this.graph.getDefaultParent()
           const newCellIDs = {}
           const allCells = []
@@ -2488,7 +2488,6 @@ export default {
       this.highlights = []
 
       // Handle first cell & edge
-      this.highlights[this.highlights.push(new mxCellHighlight(this.graph, 'var(--success)', 2)) - 1].highlight(this.graph.view.getState(this.graph.model.getCell(this.dryRun.cellID)))
       const firstEdge = this.graph.model.getEdgesBetween(this.graph.model.getCell(this.dryRun.cellID), this.graph.model.getCell(firstStepID), true)[0]
       if (firstEdge) {
         this.highlights[this.highlights.push(new mxCellHighlight(this.graph, 'var(--success)', 2)) - 1].highlight(this.graph.view.getState(firstEdge))
