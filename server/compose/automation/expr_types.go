@@ -159,6 +159,12 @@ func CastToComposeRecordValues(val interface{}) (out types.RecordValueSet, err e
 	case expr.Iterator:
 		return out, val.Each(func(k string, v expr.TypedValue) error {
 			// try with slice of strings first:
+
+			if v.Type() == "String" {
+				out = out.Set(&types.RecordValue{Name: k, Value: v.Get().(string)})
+				return nil
+			}
+
 			if ss, err := cast.ToStringSliceE(expr.UntypedValue(v)); err == nil {
 				for i, v := range ss {
 					out = out.Set(&types.RecordValue{Name: k, Value: v, Place: uint(i)})
