@@ -637,6 +637,9 @@ func (t *ComposeRecordValues) Each(fn func(k string, v expr.TypedValue) error) (
 // NOTE: It will return CLONE of the original ComposeRecordValues, if it's called without any parameters
 func (t *ComposeRecordValues) Merge(nn ...expr.Iterator) (out expr.TypedValue, err error) {
 	rv := EmptyComposeRecordValues()
+	if t.value == nil {
+		t.value = &types.Record{}
+	}
 
 	rv.value.ID = t.value.ID
 	rv.value.ModuleID = t.value.ModuleID
