@@ -55,7 +55,7 @@ func (i *informationSchema) columnSelect(dbname string) *goqu.SelectDataset {
 		"DATETIME_PRECISION",
 	).
 		// @note this goqu.I is a cheat; try to figure out if we have something nicer available (same applies to lower code)
-		From(goqu.I(fmt.Sprintf("%s.information_schema.columns", dbname))).
+		From(goqu.I(fmt.Sprintf("%s.INFORMATION_SCHEMA.COLUMNS", dbname))).
 		Order(
 			exp.NewOrderedExpression(exp.ParseIdentifier("TABLE_SCHEMA"), exp.AscDir, exp.NoNullsSortType),
 			exp.NewOrderedExpression(exp.ParseIdentifier("ORDINAL_POSITION"), exp.AscDir, exp.NoNullsSortType),
