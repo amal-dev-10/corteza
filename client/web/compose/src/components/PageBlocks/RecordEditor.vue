@@ -224,8 +224,12 @@ export default {
     },
   },
 
+  mounted () {
+    this.createEvents()
+  },
+
   beforeDestroy () {
-    this.destroyEvents(this.$refs.fieldContainer)
+    this.destroyEvents()
   },
 
   methods: {
@@ -245,12 +249,18 @@ export default {
     },
 
     onFieldChange: debounce(function (field) {
-      this.evaluateExpressions()
-
       this.$root.$emit('record-field-change', {
         fieldName: field.name,
       })
     }, 500),
+
+    createEvents () {
+      this.$root.$on('record-field-change', this.evaluateExpressions)
+    },
+
+    destroyEvents () {
+      this.$root.$off('record-field-change', this.evaluateExpressions)
+    },
   },
 }
 </script>

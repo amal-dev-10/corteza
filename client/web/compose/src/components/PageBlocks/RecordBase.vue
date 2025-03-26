@@ -45,9 +45,9 @@
                 <b-button
                   v-b-tooltip.noninteractive.hover="{ title: $t('record.inlineEdit.button.title'), container: '#body' }"
                   variant="outline-light"
-                  size="sm"
                   :disabled="editable"
-                  class="text-secondary border-0"
+                  size="sm"
+                  class="d-flex align-items-center text-secondary border-0 px-1"
                   @click="editInlineField(fieldRecord, field)"
                 >
                   <font-awesome-icon
@@ -351,7 +351,7 @@ export default {
       this.inlineEdit.record = {}
       this.inlineEdit.query = ''
 
-      this.$root.$emit('refetch-record-blocks')
+      this.$root.$emit('refetch-records')
     },
 
     onInlineEditClose () {

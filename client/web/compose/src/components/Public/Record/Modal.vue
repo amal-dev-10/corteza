@@ -144,7 +144,6 @@ export default {
 
   mounted () {
     this.$root.$on('show-record-modal', this.loadRecord)
-    this.$root.$on('refetch-records', this.refetchRecords)
   },
 
   beforeDestroy () {
@@ -232,10 +231,6 @@ export default {
       })
     },
 
-    refetchRecords () {
-      this.$root.$emit('refetch-record-blocks')
-    },
-
     setDefaultValues () {
       this.showModal = false
       this.edit = false
@@ -249,7 +244,6 @@ export default {
 
     destroyEvents () {
       this.$root.$off('show-record-modal', this.loadRecord)
-      this.$root.$off('refetch-records', this.refetchRecords)
     },
   },
 }

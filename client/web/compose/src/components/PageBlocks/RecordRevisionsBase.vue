@@ -224,10 +224,15 @@ export default {
   },
 
   mounted () {
-    this.$root.$on('module-records-updated', this.refreshOnRelatedRecordsUpdate)
+    this.createEvents()
   },
 
   methods: {
+    createEvents () {
+      this.$root.$on('module-records-updated', this.refreshOnRelatedRecordsUpdate)
+      this.$root.$on('refetch-non-record-blocks', this.refresh)
+    },
+
     refreshOnRelatedRecordsUpdate ({ moduleID }) {
       if (this.module.moduleID === moduleID) {
         this.refresh()
@@ -274,6 +279,7 @@ export default {
 
     destroyEvents () {
       this.$root.$off('module-records-updated', this.refreshOnRelatedRecordsUpdate)
+      this.$root.$off('refetch-non-record-blocks', this.refresh)
     },
   },
 }

@@ -36,7 +36,9 @@ export default {
     isRecordPage () {
       return this.recordID || this.$route.name === 'page.record.create'
     },
+  },
 
+  methods: {
     expressionVariables () {
       return {
         user: this.$auth.user,
@@ -56,19 +58,10 @@ export default {
         }),
       }
     },
-  },
 
-  mounted () {
-    this.createEvents()
-  },
-
-  methods: {
-    evaluateLayoutExpressions (variables = {}) {
+    evaluateLayoutExpressions () {
       const expressions = {}
-      variables = {
-        ...this.expressionVariables,
-        ...variables,
-      }
+      const variables = this.expressionVariables()
 
       this.layouts.forEach(layout => {
         const { config = {} } = layout
@@ -87,7 +80,7 @@ export default {
       })
     },
 
-    async determineLayout (pageLayoutID, variables = {}, redirectOnFail = true) {
+    async determineLayout (pageLayoutID, redirectOnFail = true) {
       // Clear stored records so they can be refetched with latest values
       this.clearRecordSet()
 
@@ -99,7 +92,7 @@ export default {
 
       // Only evaluate if one of the layouts has an expressions variable
       if (this.layouts.some(({ config = {} }) => config.visibility.expression)) {
-        expressions = await this.evaluateLayoutExpressions(variables)
+        expressions = await this.evaluateLayoutExpressions()
       }
 
       // Check layouts for expressions/roles and find the first one that fits
@@ -146,43 +139,52 @@ export default {
         document.title = [title, this.namespace.name, this.$t('general:label.app-name.public')].filter(v => v).join(' | ')
       }
 
-      this.updateBlocks(variables)
+      this.prepareBlocks()
     },
 
-    async updateBlocks (variables = {}) {
+    prepareBlocks () {
+      this.blocks = []
       const tempBlocks = []
       const { blocks = [] } = this.layout || {}
-
-      let blocksExpressions = {}
-
-      if (blocks.some(({ meta = {} }) => (meta.visibility || {}).expression)) {
-        blocksExpressions = await this.evaluateBlocksExpressions(variables)
-      }
 
       blocks.forEach(({ blockID, xywh }) => {
         const block = this.page.blocks.find(b => b.blockID === blockID)
 
-        const { meta = {} } = block || {}
-        const { roles = [], expression = '' } = meta.visibility || {}
-
-        if (block && (!expression || blocksExpressions[blockID])) {
-          block.xywh = xywh
-
-          if (!roles.length || this.$auth.user.roles.some(roleID => roles.includes(roleID))) {
-            tempBlocks.push(block)
-          }
-        }
+        block.xywh = xywh
+        block.meta.hidden = true
+        tempBlocks.push(block)
       })
 
       this.blocks = tempBlocks
     },
 
-    evaluateBlocksExpressions (variables = {}) {
-      const expressions = {}
-      variables = {
-        ...this.expressionVariables,
-        ...variables,
+    async evaluateBlocks (blocks = this.page.blocks) {
+      const layoutBlocks = this.layout.blocks
+      let layoutBlocksExpressions = {}
+
+      // Only evaluate expressions if any blocks have visibility expressions
+      if (layoutBlocks.some(({ meta = {} }) => (meta.visibility || {}).expression)) {
+        layoutBlocksExpressions = await this.evaluateBlocksExpressions()
       }
+
+      blocks.forEach(block => {
+        const { blockID, meta = {} } = block
+        const visibility = meta.visibility || {}
+        const { roles = [] } = visibility
+
+        // Determine if block should be shown based on expression and roles
+        const passesExpression = !visibility.expression || layoutBlocksExpressions[blockID]
+        const passesRoleCheck = !roles.length || this.$auth.user.roles.some(roleID => roles.includes(roleID))
+        const showBlock = block && passesExpression && passesRoleCheck
+
+        // Update hidden status based on visibility evaluation
+        block.meta.hidden = !showBlock
+      })
+    },
+
+    evaluateBlocksExpressions () {
+      const expressions = {}
+      const variables = this.expressionVariables()
 
       this.layout.blocks.forEach(block => {
         const { visibility } = block.meta
@@ -193,7 +195,7 @@ export default {
 
       return this.$SystemAPI.expressionEvaluate({ variables, expressions }).catch(e => {
         this.toastErrorHandler(this.$t('notification:evaluate.failed'))(e)
-        Object.keys(expressions).forEach(key => (expressions[key] = false))
+        Object.keys(expressions).forEach(key => (expressions[`${key}`] = false))
 
         return expressions
       })

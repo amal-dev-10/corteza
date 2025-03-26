@@ -26,7 +26,7 @@
 <script>
 import { mapGetters, mapActions } from 'vuex'
 import { chartConstructor } from 'corteza-webapp-compose/src/lib/charts'
-import { compose, NoID } from '@cortezaproject/corteza-js'
+import { compose } from '@cortezaproject/corteza-js'
 import { components } from '@cortezaproject/corteza-vue'
 const { CChart } = components
 
@@ -77,15 +77,12 @@ export default {
     'record.updatedAt': {
       immediate: true,
       handler () {
-        const { pageID = NoID } = this.$route.params
-        this.$root.$on(`refetch-non-record-blocks:${pageID}`, this.requestChartUpdate)
         this.updateChart()
       },
     },
   },
 
   beforeDestroy () {
-    this.destroyEvents()
     this.setDefaultValues()
   },
 
@@ -258,11 +255,6 @@ export default {
       this.processing = false
       this.renderer = undefined
       this.valueMap = {}
-    },
-
-    destroyEvents () {
-      const { pageID = NoID } = this.$route.params
-      this.$root.$off(`refetch-non-record-blocks:${pageID}`)
     },
   },
 }

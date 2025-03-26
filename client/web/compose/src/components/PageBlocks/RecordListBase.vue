@@ -1259,8 +1259,7 @@ export default {
       this.$root.$on(`record-line:collect:${this.uniqueID}`, this.resolveRecords)
       this.$root.$on(`page-block:validate:${this.uniqueID}`, this.validatePageBlock)
       this.$root.$on(`drill-down-recordList:${this.uniqueID}`, this.setDrillDownFilter)
-      this.$root.$on(`refetch-non-record-blocks:${pageID}`, this.refreshAndResetPagination)
-
+      this.$root.$on('refetch-non-record-blocks', this.refreshAndResetPagination)
       this.$root.$on('module-records-updated', this.refreshOnRelatedRecordsUpdate)
       this.$root.$on('record-field-change', this.refetchOnPrefilterValueChange)
     },
@@ -1538,7 +1537,11 @@ export default {
         filter.push(`(${pf})`)
       }
 
-      if (refField && this.record.recordID) {
+      if (refField) {
+        if (!this.record) {
+          throw Error(this.$t('record.invalidRecordVar'))
+        }
+
         filter.push(`(${refField} = ${this.record.recordID})`)
       }
 
@@ -2235,12 +2238,10 @@ export default {
     },
 
     destroyEvents () {
-      const { pageID = NoID } = this.page
-
       this.$root.$off(`record-line:collect:${this.uniqueID}`, this.resolveRecords)
       this.$root.$off(`page-block:validate:${this.uniqueID}`, this.validatePageBlock)
       this.$root.$off(`drill-down-recordList:${this.uniqueID}`, this.setDrillDownFilter)
-      this.$root.$off(`refetch-non-record-blocks:${pageID}`, this.refreshAndResetPagination)
+      this.$root.$off('refetch-non-record-blocks', this.refreshAndResetPagination)
       this.$root.$off('module-records-updated', this.refreshOnRelatedRecordsUpdate)
       this.$root.$off('record-field-change', this.refetchOnPrefilterValueChange)
     },

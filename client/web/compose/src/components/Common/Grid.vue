@@ -123,13 +123,18 @@ export default {
           return meta.hidden ? { i, x: 0, y: 0, w: 0, h: 0 } : { i, x, y, w, h }
         })
 
-        if (this.layout.length && !this.editable) {
-          this.layout = []
-        }
-
         // Next tick is important, otherwise it can lead to overlapping blocks
         this.$nextTick(() => {
-          this.layout = blocks
+          if (this.layout.length !== blocks.length) {
+            this.layout = blocks
+          } else {
+            this.layout.forEach((item, index) => {
+              item.x = blocks[index].x
+              item.y = blocks[index].y
+              item.w = blocks[index].w
+              item.h = blocks[index].h
+            })
+          }
         })
       },
     },

@@ -313,7 +313,9 @@ export default {
 
           this.refresh()
         } else if (edit !== oldEdit) {
-          this.determineLayout()
+          this.determineLayout().then(() => {
+            return this.evaluateBlocks()
+          })
         }
       },
     },
@@ -345,6 +347,10 @@ export default {
     },
   },
 
+  mounted () {
+    this.createEvents()
+  },
+
   beforeDestroy () {
     this.abortRequests()
     this.destroyEvents()
@@ -361,7 +367,7 @@ export default {
     }),
 
     createEvents () {
-      this.$root.$on('refetch-record-blocks', this.refetchRecordBlocks)
+      this.$root.$on('refetch-records', this.refetchRecords)
       this.$root.$on('record-field-change', this.validateBlocksVisibilityCondition)
 
       if (this.inModal) {
@@ -373,7 +379,7 @@ export default {
       const { blocks = [] } = this.page
 
       if (blocks.some(({ meta = {} }) => ((meta.visibility || {}).expression).includes(fieldName))) {
-        this.updateBlocks()
+        this.evaluateBlocks()
       }
     },
 
@@ -509,30 +515,6 @@ export default {
       }
     },
 
-    evaluateLayoutExpressions (variables = {}) {
-      const expressions = {}
-      variables = {
-        ...this.expressionVariables,
-        ...variables,
-      }
-
-      this.layouts.forEach(layout => {
-        const { config = {} } = layout
-        if (!config.visibility.expression) return
-
-        variables.layout = layout
-
-        expressions[layout.pageLayoutID] = config.visibility.expression
-      })
-
-      return this.$SystemAPI.expressionEvaluate({ variables, expressions }).catch(e => {
-        this.toastErrorHandler(this.$t('notification:evaluate.failed'))(e)
-        Object.keys(expressions).forEach(key => (expressions[key] = false))
-
-        return expressions
-      })
-    },
-
     handleRecordButtons () {
       const { config = {} } = this.layout
       const { buttons = [] } = config
@@ -545,30 +527,27 @@ export default {
       }, new Set())
     },
 
-    refetchRecordBlocks () {
+    refetchRecords () {
       // Don't refresh when creating and prompt user before refreshing when editing
       if (this.isNew || (this.edit && this.compareRecordValues() && !window.confirm(this.$t('notification:record.staleDataRefresh')))) {
         return
       }
 
-      // Refetch the record and other page blocks that use records
-      this.loadRecord().then(record => {
-        this.record = record
-        this.initialRecordState = record.clone()
-      })
-      this.$root.$emit(`refetch-non-record-blocks:${this.page.pageID}`)
+      this.record = undefined
+      this.initialRecordState = undefined
+
+      this.refresh()
     },
 
-    async refresh (variables = {}) {
+    async refresh () {
       this.processing = true
 
       return this.loadRecord().then(record => {
-        // Set record so the latest one can be used in the layout expressions
-        variables.record = record ? record.serialize() : {}
-
-        return this.determineLayout(undefined, variables).then(() => {
+        return this.determineLayout().then(() => {
           this.record = record
           this.initialRecordState = record.clone()
+
+          return this.evaluateBlocks()
         })
       }).finally(() => {
         this.processing = false
@@ -579,7 +558,9 @@ export default {
       if (kind === 'toLayout') {
         this.processing = true
 
-        this.determineLayout(params.pageLayoutID, {}, false).finally(() => {
+        this.determineLayout(params.pageLayoutID, false).then(() => {
+          return this.evaluateBlocks()
+        }).finally(() => {
           this.processing = false
         })
       } else if (kind === 'toURL') {
@@ -604,7 +585,7 @@ export default {
     },
 
     destroyEvents () {
-      this.$root.$off('refetch-record-blocks', this.refetchRecordBlocks)
+      this.$root.$off('refetch-records', this.refetchRecords)
       this.$root.$off('record-field-change', this.validateBlocksVisibilityCondition)
 
       if (this.inModal) {

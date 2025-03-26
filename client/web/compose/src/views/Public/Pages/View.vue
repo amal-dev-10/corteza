@@ -177,7 +177,9 @@ export default {
         this.pageTitle = this.page.title
 
         if (!this.isRecordPage) {
-          this.determineLayout()
+          this.determineLayout().then(() => {
+            return this.evaluateBlocks()
+          })
         } else {
           this.blocks = []
         }
@@ -210,6 +212,10 @@ export default {
     },
   },
 
+  mounted () {
+    this.createEvents()
+  },
+
   beforeDestroy () {
     this.setPageHandle('')
     this.setLayoutHandle('')
@@ -235,9 +241,17 @@ export default {
       this.$root.$on('refetch-records', this.refetchRecords)
     },
 
+    destroyEvents () {
+      this.$root.$off('refetch-records', this.refetchRecords)
+    },
+
     refetchRecords () {
       // If on a record page, let it take care of events else just refetch non record-blocks (that use records)
-      this.$root.$emit(this.page.moduleID !== NoID ? 'refetch-record-blocks' : `refetch-non-record-blocks:${this.page.pageID}`)
+      if (this.isRecordPage) {
+        return
+      }
+
+      this.$root.$emit('refetch-non-record-blocks')
     },
 
     setDefaultValues () {
@@ -245,10 +259,6 @@ export default {
       this.layout = undefined
       this.blocks = undefined
       this.pageTitle = ''
-    },
-
-    destroyEvents () {
-      this.$root.$off('refetch-records', this.refetchRecords)
     },
   },
 }
