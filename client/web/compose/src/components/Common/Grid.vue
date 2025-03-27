@@ -42,10 +42,12 @@
           @resize="onGridAction"
         >
           <slot
+            v-if="!blocks[item.i].meta.invisible"
             :block="blocks[item.i]"
             :index="index"
             :block-index="item.i"
             :resizing="resizing"
+            :loading-record="loadingRecord"
             v-on="$listeners"
           />
         </grid-item>
@@ -85,6 +87,11 @@ export default {
     editable: {
       type: Boolean,
     },
+
+    loadingRecord: {
+      type: Boolean,
+      default: false,
+    },
   },
 
   data () {
@@ -123,18 +130,9 @@ export default {
           return meta.hidden ? { i, x: 0, y: 0, w: 0, h: 0 } : { i, x, y, w, h }
         })
 
-        // Next tick is important, otherwise it can lead to overlapping blocks
         this.$nextTick(() => {
-          if (this.layout.length !== blocks.length) {
-            this.layout = blocks
-          } else {
-            this.layout.forEach((item, index) => {
-              item.x = blocks[index].x
-              item.y = blocks[index].y
-              item.w = blocks[index].w
-              item.h = blocks[index].h
-            })
-          }
+          this.$set(this, 'layout', blocks)
+          this.forceRerender()
         })
       },
     },
@@ -170,6 +168,11 @@ export default {
     setDefaultValues () {
       this.layout = []
       this.resizing = false
+    },
+
+    forceRerender () {
+      // Force the grid layout to recalculate its dimensions
+      window.dispatchEvent(new Event('resize'))
     },
   },
 }

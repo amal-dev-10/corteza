@@ -79,14 +79,14 @@
         class="d-flex flex-column flex-fill"
       >
         <div
-          v-if="processing"
+          v-if="isProcessing"
           class="d-flex align-items-center justify-content-center h-100"
         >
           <b-spinner />
         </div>
 
         <full-calendar
-          v-show="!processing"
+          v-show="!isProcessing"
           :ref="`fc-${blockIndex}`"
           :key="key"
           :height="getHeight()"
@@ -147,7 +147,6 @@ export default {
 
   data () {
     return {
-      processing: false,
       show: false,
 
       events: [],
@@ -225,6 +224,12 @@ export default {
       deep: true,
       handler () {
         this.updateSize()
+      },
+    },
+
+    'record.updatedAt': {
+      handler () {
+        this.refresh()
       },
     },
   },
@@ -409,7 +414,6 @@ export default {
     },
 
     setDefaultValues () {
-      this.processing = false
       this.show = false
       this.events = []
       this.locale = undefined

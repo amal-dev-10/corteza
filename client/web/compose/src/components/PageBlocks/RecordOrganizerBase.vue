@@ -31,8 +31,15 @@
         v-else
         class="h-100"
       >
+        <div
+          v-if="isProcessing"
+          class="d-flex align-items-center justify-content-center h-100"
+        >
+          <b-spinner />
+        </div>
+
         <draggable
-          v-if="!processing"
+          v-else
           :id="draggableID"
           v-model="records"
           handle=".record-item"
@@ -96,12 +103,6 @@
             </b-card-text>
           </b-card>
         </draggable>
-        <div
-          v-else
-          class="d-flex align-items-center justify-content-center h-100"
-        >
-          <b-spinner />
-        </div>
       </div>
     </template>
   </wrap>

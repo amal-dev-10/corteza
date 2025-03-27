@@ -77,10 +77,17 @@ export default {
       type: Set,
       default: () => new Set(),
     },
+
+    loadingRecord: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
 
   data () {
     return {
+      processing: false,
       refreshInterval: null,
       key: 0,
     }
@@ -94,6 +101,10 @@ export default {
       set (options) {
         this.block.options = options
       },
+    },
+
+    isProcessing () {
+      return this.processing || this.loadingRecord
     },
 
     autoRefreshEnabled () {
@@ -141,9 +152,16 @@ export default {
 
   beforeDestroy () {
     clearInterval(this.refreshInterval)
+    this.setDefaultValues()
   },
 
   methods: {
+    setDefaultValues () {
+      this.processing = false
+      this.refreshInterval = null
+      this.key = 0
+    },
+
     /**
      *
      * @param {*} refreshFunction

@@ -177,11 +177,9 @@ export default {
         this.pageTitle = this.page.title
 
         if (!this.isRecordPage) {
-          this.determineLayout().then(() => {
-            return this.evaluateBlocks()
+          this.determineLayout().finally(() => {
+            this.processing = false
           })
-        } else {
-          this.blocks = []
         }
 
         // If the page changed we need to clear the record pagination since its not relevant anymore

@@ -30,6 +30,7 @@
             size="lg"
             variant="outline-primary"
             :disabled="!isCreated || !record || processing || !recordNavigation.prev"
+            class="w-100"
             @click="navigateToRecord(recordNavigation.prev)"
           >
             <font-awesome-icon :icon="['fas', 'angle-left']" />
@@ -42,6 +43,7 @@
             size="lg"
             variant="outline-primary"
             :disabled="!isCreated || !record || processing || !recordNavigation.next"
+            class="w-100"
             @click="navigateToRecord(recordNavigation.next)"
           >
             <font-awesome-icon :icon="['fas', 'angle-right']" />
@@ -274,7 +276,7 @@ export default {
         return false
       }
 
-      return !this.isDeleted && this.record.canDeleteRecord && !this.processing && this.record.recordID !== NoID
+      return !this.isDeleted && this.record.canDeleteRecord && this.record.recordID !== NoID
     },
 
     canUndeleteRecord () {
@@ -282,7 +284,7 @@ export default {
         return false
       }
 
-      return this.isDeleted && this.record.canUndeleteRecord && !this.processing && this.record.recordID !== NoID
+      return this.isDeleted && this.record.canUndeleteRecord && this.record.recordID !== NoID
     },
 
     backLabel () {

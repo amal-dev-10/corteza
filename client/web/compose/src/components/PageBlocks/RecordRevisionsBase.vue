@@ -16,7 +16,7 @@
       </span>
 
       <b-spinner
-        v-else-if="noRecord || processing"
+        v-else-if="isProcessing"
         class="my-auto"
       />
 
@@ -192,10 +192,6 @@ export default {
     preloadRevisions () {
       return this.options.preload
     },
-
-    noRecord () {
-      return !this.record
-    },
   },
 
   watch: {
@@ -244,7 +240,7 @@ export default {
         return
       }
 
-      if (this.noRecord || this.record.recordID === NoID) {
+      if (!this.record || this.record.recordID === NoID) {
         return
       }
 

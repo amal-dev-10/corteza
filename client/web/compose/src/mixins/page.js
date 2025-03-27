@@ -25,6 +25,8 @@ export default {
       layouts: [],
       layout: undefined,
       blocks: undefined,
+
+      tempRecord: undefined,
     }
   },
 
@@ -40,9 +42,11 @@ export default {
 
   methods: {
     expressionVariables () {
+      const record = this.tempRecord || this.record
+
       return {
         user: this.$auth.user,
-        record: this.record ? this.record.serialize() : {},
+        record: record ? record.serialize() : {},
         screen: {
           width: window.innerWidth,
           height: window.innerHeight,
@@ -80,7 +84,7 @@ export default {
       })
     },
 
-    async determineLayout (pageLayoutID, redirectOnFail = true) {
+    async determineLayout ({ pageLayoutID, redirectOnFail = true } = {}) {
       // Clear stored records so they can be refetched with latest values
       this.clearRecordSet()
 
@@ -108,8 +112,6 @@ export default {
         return this.$auth.user.roles.some(roleID => roles.includes(roleID))
       })
 
-      this.processing = false
-
       if (!matchedLayout) {
         this.toastWarning(this.$t('notification:page.page-layout.notFound.view'))
 
@@ -125,6 +127,7 @@ export default {
       }
 
       if (this.layout && matchedLayout.pageLayoutID === this.layout.pageLayoutID) {
+        this.evaluateBlocks()
         return
       }
 
@@ -139,11 +142,12 @@ export default {
         document.title = [title, this.namespace.name, this.$t('general:label.app-name.public')].filter(v => v).join(' | ')
       }
 
-      this.prepareBlocks()
+      this.blocks = undefined
+
+      return this.prepareBlocks()
     },
 
-    prepareBlocks () {
-      this.blocks = []
+    async prepareBlocks () {
       const tempBlocks = []
       const { blocks = [] } = this.layout || {}
 
@@ -151,11 +155,12 @@ export default {
         const block = this.page.blocks.find(b => b.blockID === blockID)
 
         block.xywh = xywh
-        block.meta.hidden = true
         tempBlocks.push(block)
       })
 
-      this.blocks = tempBlocks
+      return this.evaluateBlocks(tempBlocks).then(blocks => {
+        this.blocks = blocks
+      })
     },
 
     async evaluateBlocks (blocks = this.page.blocks) {
@@ -173,13 +178,15 @@ export default {
         const { roles = [] } = visibility
 
         // Determine if block should be shown based on expression and roles
-        const passesExpression = !visibility.expression || layoutBlocksExpressions[blockID]
-        const passesRoleCheck = !roles.length || this.$auth.user.roles.some(roleID => roles.includes(roleID))
-        const showBlock = block && passesExpression && passesRoleCheck
+        const validExpression = !visibility.expression || layoutBlocksExpressions[blockID]
+        const validRole = !roles.length || this.$auth.user.roles.some(roleID => roles.includes(roleID))
+        const showBlock = block && validExpression && validRole
 
-        // Update hidden status based on visibility evaluation
-        block.meta.hidden = !showBlock
+        // Update invisible status based on visibility evaluation
+        block.meta.invisible = !showBlock
       })
+
+      return blocks
     },
 
     evaluateBlocksExpressions () {

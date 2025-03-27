@@ -27,6 +27,7 @@
       v-bind="$props"
       :errors="errors"
       :record="record"
+      :loading-record="loadingRecord"
       :blocks="blocks"
       :mode="inEditing ? 'editor' : 'base'"
       class="h-100"
@@ -167,7 +168,7 @@ export default {
     refRecord: {
       type: compose.Record,
       required: false,
-      default: () => ({}),
+      default: undefined,
     },
 
     // If component was called (via router) with some pre-seed values
@@ -201,6 +202,8 @@ export default {
       },
 
       abortableRequests: [],
+
+      loadingRecord: false,
     }
   },
 
@@ -297,8 +300,8 @@ export default {
     uniqueID: {
       immediate: true,
       handler (value = [], oldValue = []) {
-        const [pageID = '', recordID = '', edit = false] = value
-        const [oldPageID = '', oldRecordID = '', oldEdit = false] = oldValue
+        const [pageID = ''] = value
+        const [oldPageID = ''] = oldValue
 
         // If page changed, get layouts
         if (pageID && pageID !== NoID && pageID !== oldPageID) {
@@ -306,17 +309,7 @@ export default {
           this.layouts = this.getPageLayouts(this.page.pageID)
         }
 
-        // If page or record changed refresh record and determine layout
-        if (pageID !== oldPageID || recordID !== oldRecordID) {
-          this.record = undefined
-          this.initialRecordState = undefined
-
-          this.refresh()
-        } else if (edit !== oldEdit) {
-          this.determineLayout().then(() => {
-            return this.evaluateBlocks()
-          })
-        }
+        this.refresh()
       },
     },
 
@@ -541,16 +534,19 @@ export default {
 
     async refresh () {
       this.processing = true
+      this.loadingRecord = true
 
       return this.loadRecord().then(record => {
+        this.tempRecord = record
+
         return this.determineLayout().then(() => {
           this.record = record
           this.initialRecordState = record.clone()
-
-          return this.evaluateBlocks()
         })
       }).finally(() => {
+        this.tempRecord = undefined
         this.processing = false
+        this.loadingRecord = false
       })
     },
 
@@ -558,9 +554,9 @@ export default {
       if (kind === 'toLayout') {
         this.processing = true
 
-        this.determineLayout(params.pageLayoutID, false).then(() => {
-          return this.evaluateBlocks()
-        }).finally(() => {
+        const pageLayoutID = params.pageLayoutID
+
+        this.determineLayout({ pageLayoutID, redirectOnFail: false }).finally(() => {
           this.processing = false
         })
       } else if (kind === 'toURL') {
@@ -611,8 +607,6 @@ export default {
         if (bvEvent) {
           bvEvent.preventDefault()
         }
-      } else {
-        this.record = this.initialRecordState ? this.initialRecordState.clone() : undefined
       }
 
       return recordStateChange

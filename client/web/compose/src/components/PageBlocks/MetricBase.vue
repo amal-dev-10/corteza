@@ -5,7 +5,7 @@
     @refreshBlock="refresh"
   >
     <div
-      v-if="processing"
+      v-if="isProcessing"
       class="d-flex align-items-center justify-content-center h-100"
     >
       <b-spinner />
@@ -265,7 +265,6 @@ export default {
     },
 
     setDefaultValues () {
-      this.processing = false
       this.reports = []
       this.abortableRequests = []
     },

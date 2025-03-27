@@ -14,7 +14,7 @@
     </div>
     <template v-else>
       <div
-        v-if="processing"
+        v-if="isProcessing"
         class="d-flex align-items-center justify-content-center h-100"
       >
         <b-spinner />
@@ -121,8 +121,6 @@ export default {
 
   data () {
     return {
-      processing: false,
-
       filter: {
         sort: '',
         filter: '',
@@ -285,6 +283,7 @@ export default {
       }
       if (this.roModule && this.contentField) {
         this.processing = true
+
         this.fetchRecords(this.roModule, this.expandFilter())
           .then(rr => {
             this.records = rr
@@ -402,7 +401,6 @@ export default {
     },
 
     setDefaultValues () {
-      this.processing = false
       this.filter = false
       this.records = []
       this.newRecord = {}

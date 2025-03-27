@@ -401,8 +401,6 @@ export default {
 
       if (!recordStateChange) {
         this.processing = false
-      } else {
-        this.record = this.initialRecordState ? this.initialRecordState.clone() : undefined
       }
 
       return recordStateChange

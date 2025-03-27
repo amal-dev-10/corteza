@@ -5,7 +5,7 @@
     v-on="$listeners"
   >
     <div
-      v-if="processing"
+      v-if="isProcessing"
       class="d-flex align-items-center justify-content-center h-100"
     >
       <b-spinner />
@@ -167,8 +167,8 @@ export default {
       return recordID === NoID ? 'parent:0' : recordID
     },
 
-    processing () {
-      return !this.record || this.evaluating
+    isProcessing () {
+      return this.loadingRecord || !this.record || this.evaluating
     },
 
     horizontal () {
@@ -208,7 +208,7 @@ export default {
       },
     },
 
-    processing: {
+    isProcessing: {
       handler (newVal) {
         if (this.options.recordFieldLayoutOption !== 'wrap') return
 

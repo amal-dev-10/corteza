@@ -319,7 +319,7 @@
     <template #default>
       <div
         class="d-flex position-relative h-100"
-        :class="{ 'overflow-hidden': !items.length || processing }"
+        :class="{ 'overflow-hidden': !items.length || isProcessing }"
       >
         <b-table-simple
           data-test-id="table-record-list"
@@ -406,7 +406,7 @@
           </b-thead>
 
           <draggable
-            v-if="items.length && !processing && !resizing"
+            v-if="items.length && !isProcessing && !resizing"
             v-model="items"
             :disabled="!inlineEditing || !options.draggable"
             group="items"
@@ -683,7 +683,7 @@
             style="left: 0; right: 0; bottom: calc(50% - 33px);"
           >
             <b-spinner
-              v-if="processing"
+              v-if="isProcessing"
             />
 
             <p
@@ -772,7 +772,7 @@
             aria-controls="record-list"
             class="m-0 d-print-none"
             pills
-            :disabled="processing"
+            :disabled="isProcessing"
             :value="getPagination.page"
             :per-page="getPagination.perPage"
             :total-rows="getPagination.count"
@@ -804,7 +804,7 @@
             class="gap-1"
           >
             <b-button
-              :disabled="!hasPrevPage || processing"
+              :disabled="!hasPrevPage || isProcessing"
               data-test-id="first-page"
               variant="outline-extra-light"
               class="d-flex align-items-center justify-content-center text-dark border-0 p-1"
@@ -814,7 +814,7 @@
             </b-button>
 
             <b-button
-              :disabled="!hasPrevPage || processing"
+              :disabled="!hasPrevPage || isProcessing"
               data-test-id="previous-page"
               variant="outline-extra-light"
               class="d-flex align-items-center justify-content-center text-dark border-0 p-1"
@@ -828,7 +828,7 @@
             </b-button>
 
             <b-button
-              :disabled="!hasNextPage || processing"
+              :disabled="!hasNextPage || isProcessing"
               data-test-id="next-page"
               variant="outline-extra-light"
               class="d-flex align-items-center justify-content-center text-dark border-0 p-1"

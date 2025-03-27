@@ -12,6 +12,7 @@
         :blocks="blocks"
         :block="block"
         :block-index="index"
+        :loading-record="loadingRecord"
         class="p-2"
         v-on="$listeners"
       />
@@ -40,6 +41,11 @@ export default {
     blocks: {
       type: Array,
       required: true,
+    },
+
+    loadingRecord: {
+      type: Boolean,
+      default: false,
     },
   },
 }

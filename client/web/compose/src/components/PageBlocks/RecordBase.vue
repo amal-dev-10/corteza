@@ -4,7 +4,7 @@
     v-on="$listeners"
   >
     <div
-      v-if="processing"
+      v-if="isProcessing"
       class="d-flex align-items-center justify-content-center h-100"
     >
       <b-spinner />
@@ -184,8 +184,8 @@ export default {
       return this.options.referenceField ? this.referenceRecord : this.record
     },
 
-    processing () {
-      return !this.fieldRecord || this.evaluating
+    isProcessing () {
+      return this.loadingRecord || !this.fieldRecord || this.evaluating
     },
 
     fieldWidth () {
@@ -252,7 +252,7 @@ export default {
       },
     },
 
-    processing: {
+    isProcessing: {
       handler (newVal) {
         if (this.options.recordFieldLayoutOption !== 'wrap') return
 
