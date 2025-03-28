@@ -1,6 +1,7 @@
 <template>
   <wrap
     v-bind="$props"
+    body-class="field-container mt-3 px-3"
     v-on="$listeners"
   >
     <div
@@ -13,7 +14,6 @@
     <div
       v-else-if="fieldModule"
       ref="fieldContainer"
-      class="mt-3 px-3"
       :class="fieldLayoutClass"
     >
       <template v-for="field in fields">
@@ -25,7 +25,7 @@
           :label-cols-xl="options.horizontalFieldLayoutEnabled && '5'"
           :content-cols-md="options.horizontalFieldLayoutEnabled && '6'"
           :content-cols-xl="options.horizontalFieldLayoutEnabled && '7'"
-          :class="`field-container ${columnWrapClass}`"
+          :class="columnWrapClass"
           :style="fieldWidth"
         >
           <template #label>

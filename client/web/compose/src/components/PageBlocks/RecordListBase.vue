@@ -2364,7 +2364,7 @@ tr:hover td.actions {
   transition: opacity 0.25s;
 }
 
-td:hover .inline-actions {
+tr:hover .inline-actions {
   opacity: 1;
 
   button:hover {
