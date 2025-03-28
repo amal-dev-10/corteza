@@ -18,7 +18,7 @@ resourceList:
     next: Next
     prev: Previous
     showing: '{{from}} - {{to}} of {{count}} {{data}}'
-    single: 'One {{data}}'
+    single_one: 'One {{data}}'
     single_plural: '{{count}} {{data}}'
     recordsPerPage: Per Page
 
