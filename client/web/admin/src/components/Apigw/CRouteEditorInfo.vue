@@ -119,11 +119,10 @@
         v-if="route && route.routeID && route.canDeleteApigwRoute"
         :data-test-id="deletedButtonStatusCypressId"
         variant="danger"
+        :text="getDeleteStatus"
         size="md"
         @confirmed="$emit('delete')"
-      >
-        {{ getDeleteStatus }}
-      </c-input-confirm>
+      />
 
       <c-button-submit
         :disabled="saveDisabled"

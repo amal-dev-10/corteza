@@ -91,33 +91,30 @@
       <c-input-confirm
         v-if="!fresh && user.canDeleteUser"
         :data-test-id="deletedButtonStatusCypressId"
+        :text="getDeleteStatus"
         variant="danger"
         size="md"
         @confirmed="$emit('delete')"
-      >
-        {{ getDeleteStatus }}
-      </c-input-confirm>
+      />
 
       <c-input-confirm
         v-if="!fresh"
         :data-test-id="suspendButtonStatusCypressId"
+        :text="getSuspendStatus"
         variant="light"
         size="md"
         @confirmed="$emit('status')"
-      >
-        {{ getSuspendStatus }}
-      </c-input-confirm>
+      />
 
       <c-input-confirm
         v-if="!fresh"
         data-test-id="button-sessions-revoke"
+        :text="$t('revokeAllSession')"
         :disabled="user.userID === userID"
         variant="light"
         size="md"
         @confirmed="$emit('sessionsRevoke')"
-      >
-        {{ $t('revokeAllSession') }}
-      </c-input-confirm>
+      />
 
       <b-button
         v-if="!fresh && !user.emailConfirmed"

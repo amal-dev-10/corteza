@@ -87,13 +87,12 @@
     <template #footer>
       <c-input-confirm
         v-if="workflow && workflow.workflowID && workflow.canDeleteWorkflow"
+        :text="getDeleteStatus"
         :disabled="deleteDisabled"
         variant="danger"
         size="md"
         @confirmed="$emit('delete')"
-      >
-        {{ getDeleteStatus }}
-      </c-input-confirm>
+      />
 
       <b-button
         v-if="workflow.workflowID"

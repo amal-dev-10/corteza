@@ -97,12 +97,11 @@
       <c-input-confirm
         v-if="queue && queue.queueID && queue.canDeleteQueue"
         :data-test-id="deleteButtonStatusCypressId"
+        :text="getDeleteStatus"
         variant="danger"
         size="md"
         @confirmed="$emit('delete')"
-      >
-        {{ getDeleteStatus }}
-      </c-input-confirm>
+      />
 
       <c-button-submit
         :disabled="saveDisabled"

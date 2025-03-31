@@ -10,36 +10,25 @@
     :class="buttonClass"
     @click.prevent="$emit('submit')"
   >
-    <template v-if="processing">
-      <span
-        v-if="loadingText"
-        data-test-id="button-loading-text"
-        class="loading-text mx-2"
-      >
-        {{ loadingText }}
-      </span>
-      <b-spinner
-        v-else
-        data-test-id="spinner"
-        class="align-middle"
-        small
-      />
-    </template>
-    <template v-else-if="success">
-      <font-awesome-icon
-        data-test-id="icon-success"
-        :icon="['fas', 'check']"
-        :class="iconVariant"
-        class="text-white"
-      />
-    </template>
-    <template v-else>
-      <span
-        data-test-id="button-text"
-      >
-        {{ text }}
-      </span>
-    </template>
+    <b-spinner
+      v-if="processing"
+      data-test-id="spinner"
+      small
+      class="align-middle"
+    />
+
+    <font-awesome-icon
+      v-else-if="success"
+      data-test-id="icon-success"
+      :icon="['fas', 'check']"
+    />
+
+    <span
+      v-else-if="text"
+      data-test-id="button-text"
+    >
+      {{ text }}
+    </span>
   </b-button>
 </template>
 
@@ -93,19 +82,6 @@ export default {
       type: String,
       default: 'primary',
     },
-
-    iconVariant: {
-      type: String,
-      default: 'text-white',
-    },
   },
 }
 </script>
-
-<style scoped>
-.loading-text::after {
-  display: inline-block;
-  animation: saving steps(1, end) 1s infinite;
-  content: '';
-}
-</style>

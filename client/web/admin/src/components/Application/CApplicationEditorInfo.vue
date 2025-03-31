@@ -71,12 +71,11 @@
       <c-input-confirm
         v-if="application && application.applicationID && application.canDeleteApplication"
         :data-test-id="deleteButtonStatusCypressId"
+        :text="getDeleteStatus"
         variant="danger"
         size="md"
         @confirmed="$emit('delete')"
-      >
-        {{ getDeleteStatus }}
-      </c-input-confirm>
+      />
 
       <c-button-submit
         :disabled="saveDisabled"

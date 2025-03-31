@@ -145,22 +145,20 @@
       <c-input-confirm
         v-if="!fresh && editable && role.canDeleteRole && !isDataPrivacyOfficer"
         :data-test-id="deletedButtonStatusCypressId"
+        :text="getDeleteStatus"
         variant="danger"
         size="md"
         @confirmed="$emit('delete')"
-      >
-        {{ getDeleteStatus }}
-      </c-input-confirm>
+      />
 
       <c-input-confirm
         v-if="!fresh && editable && !isDataPrivacyOfficer"
         :data-test-id="archivedButtonStatusCypressId"
+        :text="getArchiveStatus"
         variant="secondary"
         size="md"
         @confirmed="$emit('status')"
-      >
-        {{ getArchiveStatus }}
-      </c-input-confirm>
+      />
 
       <c-button-submit
         :disabled="saveDisabled"

@@ -88,26 +88,24 @@
               <c-input-confirm
                 v-if="!a.completedAt"
                 :disabled="!canResolve(a) || a.processing || processing"
+                :text="$t('resolve')"
                 variant="primary"
                 size="sm"
                 class="mx-1"
                 @click.stop
                 @confirmed="onResolve(a)"
-              >
-                {{ $t('resolve') }}
-              </c-input-confirm>
+              />
 
               <c-input-confirm
                 v-if="!a.completedAt"
                 :disabled="!canDismiss(a) || a.processing || processing"
+                :text="$t('dismiss')"
                 variant="light"
                 size="sm"
                 class="mx-1"
                 @click.stop
                 @confirmed="onDismiss(a)"
-              >
-                {{ $t('dismiss') }}
-              </c-input-confirm>
+              />
             </template>
           </b-td>
         </b-tr>
@@ -143,18 +141,13 @@
 
       <c-input-confirm
         v-if="canResolveAlterations"
+        :text="$t('resolveAuto')"
+        :processing="processing"
         variant="primary"
         :disabled="processing"
         size="md"
         @confirmed="onResolve()"
-      >
-        {{ $t('resolveAuto') }}
-        <b-spinner
-          v-if="processing"
-          variant="white"
-          small
-        />
-      </c-input-confirm>
+      />
     </template>
   </b-modal>
 </template>

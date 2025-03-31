@@ -124,12 +124,11 @@
       <c-input-confirm
         v-if="!fresh && template.canDeleteTemplate"
         :data-test-id="getDeletedButtonStatusCypressId"
+        :text="getDeleteStatus"
         variant="danger"
         size="md"
         @confirmed="$emit('delete')"
-      >
-        {{ getDeleteStatus }}
-      </c-input-confirm>
+      />
 
       <c-button-submit
         :disabled="saveDisabled"

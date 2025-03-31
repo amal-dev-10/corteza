@@ -99,12 +99,11 @@
     <template #footer>
       <c-input-confirm
         v-if="sensitivityLevel && sensitivityLevel.sensitivityLevelID"
+        :text="getDeleteStatus"
         variant="danger"
         size="md"
         @confirmed="$emit('delete')"
-      >
-        {{ getDeleteStatus }}
-      </c-input-confirm>
+      />
 
       <c-button-submit
         :disabled="saveDisabled"

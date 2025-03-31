@@ -479,12 +479,11 @@
         <c-input-confirm
           :data-test-id="isDeleted ? 'button-undelete': 'button-delete'"
           :disabled="processing"
+          :text="isDeleted ? $t('undelete') : $t('delete')"
           variant="danger"
           size="md"
           @confirmed="$emit(isDeleted ? 'undelete' : 'delete', resource.authClientID)"
-        >
-          {{ isDeleted ? $t('undelete') : $t('delete') }}
-        </c-input-confirm>
+        />
       </template>
 
       <c-button-submit

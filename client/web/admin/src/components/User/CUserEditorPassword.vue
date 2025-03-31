@@ -59,12 +59,11 @@
     <template #footer>
       <c-input-confirm
         data-test-id="button-remove-password"
+        :text="$t('removePassword')"
         variant="light"
         size="md"
         @confirmed="$emit('submit')"
-      >
-        {{ $t('removePassword') }}
-      </c-input-confirm>
+      />
 
       <c-corredor-manual-buttons
         ui-page="user/editor"

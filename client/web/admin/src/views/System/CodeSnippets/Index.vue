@@ -121,12 +121,11 @@
         <template #modal-footer="{ ok, cancel }">
           <c-input-confirm
             v-if="modal.index >= 0"
+            :text="$t('general:label.delete')"
             size="md"
             variant="danger"
             @confirmed="deleteCodeSnippet(modal.index)"
-          >
-            {{ $t('general:label.delete') }}
-          </c-input-confirm>
+          />
 
           <b-button
             variant="light"

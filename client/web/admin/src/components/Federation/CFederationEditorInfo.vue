@@ -96,10 +96,9 @@
         v-if="node && node.nodeID"
         variant="danger"
         size="md"
+        :text="getDeleteStatus"
         @confirmed="$emit('delete')"
-      >
-        {{ getDeleteStatus }}
-      </c-input-confirm>
+      />
 
       <c-button-submit
         :disabled="saveDisabled"

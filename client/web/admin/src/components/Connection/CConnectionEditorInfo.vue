@@ -148,12 +148,11 @@
     <template #footer>
       <c-input-confirm
         v-if="!fresh && !isPrimary && !disabled"
+        :text="connection.deletedAt ? $t('general:label.undelete') : $t('general:label.delete')"
         variant="danger"
         size="md"
         @confirmed="$emit('delete')"
-      >
-        {{ connection.deletedAt ? $t('general:label.undelete') : $t('general:label.delete') }}
-      </c-input-confirm>
+      />
 
       <c-button-submit
         :disabled="disabled || saveDisabled"

@@ -1,40 +1,37 @@
 <template>
-  <div class="d-inline-flex">
-    <template v-if="!inConfirmation">
-      <b-button
-        v-b-tooltip.noninteractive.hover="{ title: tooltip, container: '#body' }"
-        :data-test-id="dataTestId"
-        :variant="variant"
-        :size="size"
-        :disabled="disabled || processing"
-        :class="`${buttonClass} ${borderless ? 'border-0' : ''} flex-fill`"
-        @click.stop.prevent="onPrompt"
-      >
-        <b-spinner
-          v-if="processing"
-          data-test-id="spinner"
-          class="align-middle"
-          small
+  <div class="d-inline-flex gap-1">
+    <b-button
+      v-if="!inConfirmation"
+      v-b-tooltip.noninteractive.hover="{ title: tooltip, container: '#body' }"
+      :data-test-id="dataTestId"
+      :variant="variant"
+      :size="size"
+      :disabled="disabled || processing"
+      :class="`${buttonClass} ${borderless ? 'border-0' : ''} flex-fill`"
+      @click.stop.prevent="onPrompt"
+    >
+      <b-spinner
+        v-if="processing"
+        data-test-id="spinner"
+        class="align-middle"
+        small
+      />
+
+      <template v-else>
+        <font-awesome-icon
+          v-if="showIcon || !text"
+          :icon="icon"
+          :class="iconClass"
         />
 
-        <slot v-else>
-          <template v-if="!$slots.default">
-            <font-awesome-icon
-              v-if="showIcon || !text"
-              :icon="icon"
-              :class="iconClass"
-            />
-
-            <span
-              v-if="text"
-              :class="textClass"
-            >
-              {{ text }}
-            </span>
-          </template>
-        </slot>
-      </b-button>
-    </template>
+        <span
+          v-if="text"
+          :class="textClass"
+        >
+          {{ text }}
+        </span>
+      </template>
+    </b-button>
 
     <template v-else>
       <b-button
@@ -42,9 +39,7 @@
         :variant="variantOk"
         :size="sizeConfirm"
         :disabled="okDisabled"
-        :class="{ 'border-0': borderless }"
-        class="flex-fill mr-1"
-        style="min-width: 2rem;"
+        :class="[ borderless && 'border-0', 'flex-fill' ]"
         @blur.prevent="onCancel()"
         @click.prevent.stop="onConfirmation()"
       >
@@ -61,9 +56,7 @@
         :variant="variantCancel"
         :size="sizeConfirm"
         :disabled="cancelDisabled"
-        :class="[ borderless && 'border-0' ]"
-        class="flex-fill"
-        style="min-width: 2rem;"
+        :class="[ borderless && 'border-0', 'flex-fill' ]"
         @click.prevent.stop="onCancel()"
       >
         <slot name="no">
