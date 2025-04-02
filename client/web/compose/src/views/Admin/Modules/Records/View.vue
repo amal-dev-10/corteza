@@ -44,7 +44,7 @@
       v-if="isDeleted"
       show
       variant="warning"
-      class="mb-2 mx-2"
+      class="m-2"
     >
       {{ $t('block.record.recordDeleted') }}
     </b-alert>
@@ -57,13 +57,15 @@
         v-for="(block, index) in blocks"
         :key="index"
         cols="12"
-        lg="3"
+        md="6"
+        lg="4"
         style="max-height: 650px; height: 650px;"
       >
         <component
           :is="getRecordComponent"
           :errors="errors"
           v-bind="{ namespace, page, module, block, record }"
+          :loading-record="loadingRecord"
           class="p-2"
         />
       </b-col>
@@ -74,10 +76,9 @@
         :module="module"
         :record="record"
         :processing="processing"
-        :processing-submit="processingSubmit"
-        :processing-delete="processingDelete"
-        :processing-undelete="processingUndelete"
+        :processing-action="processingAction"
         :in-editing="inEditing"
+        :is-created="!isNew"
         :record-navigation="recordNavigation"
         :hide-back="false"
         :hide-delete="false"
@@ -253,15 +254,16 @@ export default {
       const { recordID } = this.record || {}
       return this.getNextAndPrevRecord(recordID)
     },
+
+    uniqueID () {
+      return [this.moduleID, this.recordID, this.edit]
+    },
   },
 
   watch: {
-    recordID: {
+    uniqueID: {
       immediate: true,
       handler () {
-        this.record = undefined
-        this.initialRecordState = undefined
-
         this.refresh()
       },
     },
@@ -291,31 +293,51 @@ export default {
     },
   },
 
-  created () {
+  mounted () {
     this.createBlocks()
+    this.createEvents()
   },
 
   beforeDestroy () {
     this.abortRequests()
+    this.destroyEvents()
     this.setDefaultValues()
   },
 
   methods: {
+    createEvents () {
+      this.$root.$on('refetch-records', this.refresh)
+    },
+
+    destroyEvents () {
+      this.$root.$off('refetch-records', this.refresh)
+    },
+
     createBlocks () {
       this.fields.forEach(f => {
         const options = {
           moduleID: this.moduleID,
           fields: f,
+          inlineRecordEditEnabled: true,
         }
         this.blocks.push(new compose.PageBlockRecord({ options }))
       })
     },
 
     refresh () {
-      return this.loadRecord()
+      this.processing = true
+      this.loadingRecord = true
+
+      return this.loadRecord().then(record => {
+        this.record = record
+        this.initialRecordState = this.record.clone()
+      }).finally(() => {
+        this.loadingRecord = false
+        this.processing = false
+      })
     },
 
-    loadRecord () {
+    async loadRecord () {
       const { moduleID = NoID, recordID = NoID } = this
 
       if (!moduleID || moduleID === NoID) return
@@ -329,21 +351,22 @@ export default {
 
         this.abortableRequests.push(cancel)
 
-        response()
+        return response()
           .then(record => {
-            this.record = new compose.Record(module, record)
-            this.initialRecordState = this.record.clone()
+            return new Promise(resolve => setTimeout(resolve, 300)).then(() => {
+              return new compose.Record(module, record)
+            })
           })
           .catch((e) => {
             if (!axios.isCancel(e)) {
               this.toastErrorHandler(this.$t('notification:record.loadFailed'))(e)
+              this.handleBack()
             }
           })
       } else {
         const { userID } = this.$auth.user
         // Prefill ownedBy field with current user
-        this.record = new compose.Record(module, { ownedBy: userID, values: this.values })
-        this.initialRecordState = undefined
+        return new compose.Record(module, { ownedBy: userID, values: this.values })
       }
     },
 
@@ -377,8 +400,12 @@ export default {
 
     setDefaultValues () {
       this.blocks = []
-      this.bindParams = {}
+      this.page = undefined
       this.abortableRequests = []
+      this.recordNavigation = {
+        prev: undefined,
+        next: undefined,
+      }
     },
 
     abortRequests () {
@@ -401,6 +428,8 @@ export default {
 
       if (!recordStateChange) {
         this.processing = false
+      } else {
+        this.initialRecordState = this.record.clone()
       }
 
       return recordStateChange

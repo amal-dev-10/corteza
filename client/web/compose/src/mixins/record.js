@@ -9,10 +9,7 @@ export default {
     return {
       inEditing: false,
       processing: false,
-      processingDelete: false,
-      processingUndelete: false,
-      processingSubmit: false,
-      processingEdit: false,
+      processingAction: '',
       record: undefined,
       initialRecordState: undefined,
       errors: new validator.Validated(),
@@ -56,10 +53,7 @@ export default {
       handler (processing) {
         // If processing is set to false we know that one of them is also true, so we reset all of them since we don't know which one is true
         if (!processing) {
-          this.processingDelete = false
-          this.processingUndelete = false
-          this.processingSubmit = false
-          this.processingEdit = false
+          this.processingAction = ''
         }
       },
     },
@@ -80,7 +74,7 @@ export default {
      * @returns {Promise<void>}
      */
     handleFormSubmit: throttle(async function (route = 'page.record') {
-      this.processingSubmit = true
+      this.processingAction = 'submit'
       this.processing = true
 
       let record
@@ -141,6 +135,9 @@ export default {
         items: [{ r: this.record, id: recordID === NoID ? 'parent:0' : recordID }],
       })
 
+      // Clone record so unsaved changes doesn't trigger false positive because of serialize values
+      this.record = this.record.clone()
+
       return this
         .dispatchUiEvent('beforeFormSubmit', this.record, { $records: records })
         .then(() => this.validateRecord(pairs))
@@ -150,8 +147,8 @@ export default {
           } else {
             return this.$ComposeAPI.recordUpdate({ ...this.record, records })
           }
-        })
-        .catch(err => {
+        }).catch(err => {
+          this.processing = false
           const { details = undefined } = err
           if (!!details && Array.isArray(details) && details.length > 0) {
             this.errors = new validator.Validated()
@@ -161,42 +158,38 @@ export default {
           }
 
           throw err
-        })
-        .then(r => {
+        }).then(r => {
           record = new compose.Record(this.module, r)
-        })
-        .then(() => this.dispatchUiEvent('afterFormSubmit', record, { $records: records }))
+        }).then(() => this.dispatchUiEvent('afterFormSubmit', record, { $records: records }))
         .then(() => {
-          // reset the record initial state in cases where the record edit page is redirected to the record view page
-          this.record = record
-          this.initialRecordState = this.record.clone()
-
-          if (this.record.valueErrors.set) {
-            this.toastWarning(this.$t('notification:record.validationWarnings'))
-            this.processing = false
-          } else {
-            if (this.inModal) {
-              this.$emit('handle-record-redirect', { recordID: this.record.recordID, recordPageID: this.page.pageID, edit: false })
-
-              // If we are in a modal we need to refresh blocks not in modal
-              this.$root.$emit('module-records-updated', {
-                moduleID: this.module.moduleID,
-                notPageID: this.page.pageID,
-              })
+          setTimeout(() => {
+            // reset the record initial state in cases where the record edit page is redirected to the record view page
+            if (record.valueErrors.set) {
+              this.toastWarning(this.$t('notification:record.validationWarnings'))
+              this.processing = false
             } else {
-              this.$router.push({ name: route, params: { ...this.$route.params, recordID: this.record.recordID, edit: false } })
-            }
-          }
+              this.initialRecordState = this.record.clone()
 
-          if (this.page.meta.notifications.enabled) {
-            this.toastSuccess(this.$t(`notification:record.${isNew ? 'create' : 'update'}Success`))
-          }
-        })
-        .catch(e => {
-          this.toastErrorHandler(this.$t(`notification:record.${isNew ? 'create' : 'update'}Failed`))(e)
-        })
-        .finally(() => {
+              if (this.inModal) {
+                this.$emit('handle-record-redirect', { recordID: record.recordID, recordPageID: this.page.pageID, edit: false })
+
+                // If we are in a modal we need to refresh blocks not in modal
+                this.$root.$emit('module-records-updated', {
+                  moduleID: this.module.moduleID,
+                  notPageID: this.page.pageID,
+                })
+              } else {
+                this.$router.push({ name: route, params: { ...this.$route.params, recordID: record.recordID, edit: false } })
+              }
+
+              if (this.page.meta.notifications.enabled) {
+                this.toastSuccess(this.$t(`notification:record.${isNew ? 'create' : 'update'}Success`))
+              }
+            }
+          }, 500)
+        }).catch(e => {
           this.processing = false
+          this.toastErrorHandler(this.$t(`notification:record.${isNew ? 'create' : 'update'}Failed`))(e)
         })
     }, 500),
 
@@ -205,11 +198,14 @@ export default {
      * @returns {Promise<void>}
      */
     handleFormSubmitSimple: throttle(function (route = 'admin.modules.record.view') {
-      this.processingSubmit = true
+      this.processingAction = 'submit'
       this.processing = true
 
       let record
       const isNew = this.record.recordID === NoID
+
+      // Clone record so unsaved changes doesn't trigger false positive because of serialize values
+      this.record = this.record.clone()
 
       return this
         .dispatchUiEvent('beforeFormSubmit')
@@ -220,8 +216,8 @@ export default {
           } else {
             return this.$ComposeAPI.recordUpdate(this.record)
           }
-        })
-        .catch(err => {
+        }).catch(err => {
+          this.processing = false
           const { details = undefined } = err
           if (!!details && Array.isArray(details) && details.length > 0) {
             this.errors.push(...details)
@@ -230,29 +226,19 @@ export default {
           }
 
           throw err
-        })
-        .then(r => {
+        }).then(r => {
           record = new compose.Record(this.module, r)
-        })
-        .then(() => this.dispatchUiEvent('afterFormSubmit', record))
+        }).then(() => this.dispatchUiEvent('afterFormSubmit', record))
         .then(() => {
-          this.record = record
-          this.initialRecordState = this.record.clone()
-
-          if (this.record.valueErrors.set) {
+          if (record.valueErrors.set) {
             this.toastWarning(this.$t('notification:record.validationWarnings'))
+            this.processing = false
           } else {
+            this.initialRecordState = this.record.clone()
             this.$router.push({ name: route, params: { ...this.$route.params, recordID: record.recordID, edit: false } })
+            this.toastSuccess(this.$t(`notification:record.${isNew ? 'create' : 'update'}Success`))
           }
-        })
-        .catch(this.toastErrorHandler(this.$t(
-          isNew
-            ? 'notification:record.createFailed'
-            : 'notification:record.updateFailed',
-        )))
-        .finally(() => {
-          this.processing = false
-        })
+        }).catch(this.toastErrorHandler(this.$t(`notification:record.${isNew ? 'create' : 'update'}Failed`)))
     }, 500),
 
     /**
@@ -261,54 +247,66 @@ export default {
      */
     handleDelete: throttle(function () {
       this.processing = true
-      this.processingDelete = true
+      this.processingAction = 'delete'
 
-      return this
-        .dispatchUiEvent('beforeDelete')
+      return this.dispatchUiEvent('beforeDelete')
         .then(() => this.$ComposeAPI.recordDelete(this.record))
         .then(this.dispatchUiEvent('afterDelete'))
         .then(() => {
-          this.record = undefined
-          this.initialRecordState = undefined
-
-          return this.refresh()
-        }).then(() => {
+          this.$root.$emit('refetch-records')
           this.toastSuccess(this.$t('notification:record.deleteSuccess'))
-        }).finally(() => {
+        }).catch(e => {
           this.processing = false
-        }).catch(this.toastErrorHandler(this.$t('notification:record.deleteFailed')))
+          this.toastErrorHandler(this.$t('notification:record.deleteFailed'))(e)
+        })
     }, 500),
 
     handleUndelete: throttle(function () {
-      this.processingUndelete = true
+      this.processingAction = 'undelete'
       this.processing = true
 
-      return this
-        .dispatchUiEvent('beforeUndelete')
+      return this.dispatchUiEvent('beforeUndelete')
         .then(() => this.$ComposeAPI.recordUndelete(this.record))
         .then(this.dispatchUiEvent('afterUndelete'))
         .then(() => {
-          this.record = undefined
-          this.initialRecordState = undefined
-
-          return this.refresh()
-        }).then(() => {
+          this.$root.$emit('refetch-records')
           this.toastSuccess(this.$t('notification:record.restoreSuccess'))
-        }).finally(() => {
+        }).catch(e => {
           this.processing = false
-        }).catch(this.toastErrorHandler(this.$t('notification:record.restoreFailed')))
+          this.toastErrorHandler(this.$t('notification:record.restoreFailed'))(e)
+        })
     }, 500),
 
     handleBulkUpdateSelectedRecords: throttle(function (query) {
       this.processing = true
 
-      const values = this.record.serializeValues().filter(val => this.fields.includes(val.name))
-
-      // handle system fields separately because they're stored directly on the Record
+      const values = []
       this.fields.forEach(f => {
-        const { name, isSystem } = this.getField(f)
-        if (isSystem && this.record[name] !== undefined) {
-          values.push({ name, value: this.record[name].toString() })
+        const { name, isMulti, isSystem } = this.getField(f)
+        const value = isSystem ? this.record[name] : this.record.values[name]
+
+        if (!isMulti) {
+          // Handle single value case
+          values.push({
+            name,
+            value: value?.toString() ?? '',
+          })
+        } else {
+          // Handle multi-value case
+          if (!Array.isArray(value) || value.length === 0) {
+            values.push({ name })
+            return
+          }
+
+          // Map non-undefined values to proper format
+          const multiValues = value
+            .filter(v => v !== undefined)
+            .map(v => ({
+              name,
+              value: v?.toString() ?? '',
+            }))
+
+          values.push(...multiValues)
         }
       })
 
@@ -329,15 +327,11 @@ export default {
         })
         .then(() => {
           this.toastSuccess(this.$t('notification:record.bulkRecordUpdateSuccess'))
-          this.onModalHide()
-          this.fields = []
-          this.record = new compose.Record(this.module, {})
-          this.initialRecordState = this.record.clone()
+          this.showModal = false
           this.$emit('save')
 
-          this.$root.$emit('module-records-updated', { moduleID })
-        })
-        .catch(this.toastErrorHandler(this.$t('notification:record.deleteBulkRecordUpdateFailed')))
+          this.$root.$emit('refetch-records')
+        }).catch(this.toastErrorHandler(this.$t('notification:record.deleteBulkRecordUpdateFailed')))
         .finally(() => {
           this.processing = false
         })

@@ -12,6 +12,9 @@ export default {
   methods: {
     async evaluateExpressions () {
       if (!this.block.options.fieldConditions.length || this.$route.name === 'admin.pages.builder') return
+
+      await new Promise(resolve => setTimeout(resolve, 300))
+
       const { expressions, variables } = this.prepareFieldConditionsData()
 
       return this.$SystemAPI
@@ -38,6 +41,7 @@ export default {
           expressions[field] = condition
         }
       })
+
       return { expressions, variables }
     },
 

@@ -756,12 +756,11 @@
         <c-input-confirm
           v-if="attachments && selectedAttachmentID"
           :disabled="(attachments && !selectedAttachmentID) || processingIcon"
+          :text="$t('icon.delete')"
           size="md"
           variant="danger"
           @confirmed="deleteIcon"
-        >
-          {{ $t('icon.delete') }}
-        </c-input-confirm>
+        />
 
         <div class="ml-auto">
           <b-button

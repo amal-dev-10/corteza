@@ -241,7 +241,7 @@ export default {
   },
 
   created () {
-    if ((!this.value || this.value.length === 0) && (this.field.options.presetWithAuthenticated)) {
+    if ((!this.value || this.value.length === 0) && (this.field.options.presetWithAuthenticated || this.field.name === 'ownedBy')) {
       this.updateValue(this.$auth.user)
     }
 

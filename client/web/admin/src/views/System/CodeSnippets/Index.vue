@@ -212,7 +212,6 @@ export default {
 
   methods: {
     openEditor (index) {
-      console.log(index)
       const item = index >= 0
         ? this.codeSnippets[index]
         : {

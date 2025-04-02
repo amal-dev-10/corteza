@@ -4,16 +4,19 @@
       <b-button
         v-if="!(hideBack || settings.hideBack)"
         data-test-id="button-back"
-        variant="link"
-        :disabled="processing"
-        class="d-flex align-items-center text-dark back gap-1 text-decoration-none"
+        :disabled="isProcessing"
+        variant="outline-light"
+        size="lg"
+        class="border-0 text-dark back"
         @click.prevent="$emit('back')"
       >
-        <font-awesome-icon
-          :icon="['fas', hasBack ? 'chevron-left' : 'times']"
-          class="back-icon"
-        />
-        {{ backLabel }}
+        <span class="d-flex align-items-center gap-1">
+          <font-awesome-icon
+            :icon="['fas', hasBack ? 'chevron-left' : 'times']"
+            :class="hasBack ? 'back-icon' : ''"
+          />
+          {{ backLabel }}
+        </span>
       </b-button>
 
       <slot name="start-actions" />
@@ -21,7 +24,7 @@
 
     <template #center>
       <div
-        v-if="recordNavigation.prev || recordNavigation.next"
+        v-if="isCreated && (recordNavigation.prev || recordNavigation.next)"
         class="d-flex align-items-center fill-width gap-1"
       >
         <span v-b-tooltip.noninteractive.hover="{ title: $t('recordNavigation.prev'), container: '#body' }">
@@ -29,7 +32,7 @@
             pill
             size="lg"
             variant="outline-primary"
-            :disabled="!isCreated || !record || processing || !recordNavigation.prev"
+            :disabled="!record || isProcessing || !recordNavigation.prev"
             class="w-100"
             @click="navigateToRecord(recordNavigation.prev)"
           >
@@ -42,7 +45,7 @@
             pill
             size="lg"
             variant="outline-primary"
-            :disabled="!isCreated || !record || processing || !recordNavigation.next"
+            :disabled="!record || isProcessing || !recordNavigation.next"
             class="w-100"
             @click="navigateToRecord(recordNavigation.next)"
           >
@@ -61,9 +64,9 @@
       <slot name="end-actions" />
 
       <c-input-confirm
-        v-if="(processingDelete || isCreated) && !(isDeleted || hideDelete || settings.hideDelete) && canDeleteRecord"
-        :disabled="!record || processing"
-        :processing="processingDelete"
+        v-if="(processingAction === 'delete' || isCreated) && !(isDeleted || hideDelete || settings.hideDelete) && canDeleteRecord"
+        :disabled="!record || isProcessing"
+        :processing="processingAction === 'delete'"
         :text="labels.delete || $t('label.delete')"
         size="lg"
         size-confirm="lg"
@@ -72,9 +75,9 @@
       />
 
       <c-input-confirm
-        v-else-if="(processingUndelete || isDeleted) && !(hideDelete || settings.hideDelete) && canUndeleteRecord"
-        :disabled="!record || processing"
-        :processing="processingUndelete"
+        v-else-if="(processingAction === 'undelete' || isDeleted) && !(hideDelete || settings.hideDelete) && canUndeleteRecord"
+        :disabled="!record || isProcessing"
+        :processing="processingAction === 'undelete'"
         :text="$t('label.restore')"
         size="lg"
         size-confirm="lg"
@@ -88,7 +91,7 @@
         data-test-id="button-clone"
         variant="light"
         size="lg"
-        :disabled="!record || processing"
+        :disabled="!record || isProcessing"
         class="text-nowrap"
         @click.prevent="$emit('clone')"
       >
@@ -98,7 +101,7 @@
       <b-button
         v-if="!inEditing && isCreated && !(hideEdit || settings.hideEdit) && canManageRecord"
         data-test-id="button-edit"
-        :disabled="!record || processing"
+        :disabled="!record || isProcessing"
         variant="light"
         size="lg"
         @click.prevent="$emit('edit')"
@@ -109,7 +112,7 @@
       <b-button
         v-else-if="inEditing && isCreated && !(hideEdit || settings.hideEdit)"
         data-test-id="button-view"
-        :disabled="!record || processing"
+        :disabled="!record || isProcessing"
         variant="light"
         size="lg"
         @click.prevent="$emit('view')"
@@ -122,7 +125,7 @@
         data-test-id="button-add-new"
         variant="primary"
         size="lg"
-        :disabled="!record || processing"
+        :disabled="!record || isProcessing"
         class="text-nowrap"
         @click.prevent="$emit('add')"
       >
@@ -132,8 +135,8 @@
       <c-button-submit
         v-if="inEditing && !(hideSubmit || settings.hideSubmit) && canManageRecord"
         data-test-id="button-save"
-        :disabled="!record || processingSubmit || processing"
-        :processing="processingSubmit"
+        :disabled="!record || isProcessing"
+        :processing="processingAction === 'submit'"
         :text="labels.submit || $t('label.save')"
         size="lg"
         @submit="$emit('submit')"
@@ -180,19 +183,14 @@ export default {
       default: false,
     },
 
-    processingDelete: {
-      type: Boolean,
-      default: false,
+    processingAction: {
+      type: String,
+      default: '',
     },
 
-    processingUndelete: {
+    isCreated: {
       type: Boolean,
-      default: false,
-    },
-
-    processingSubmit: {
-      type: Boolean,
-      default: false,
+      required: true,
     },
 
     inEditing: {
@@ -248,13 +246,12 @@ export default {
   },
 
   computed: {
-    isCreated () {
-      // The !this.record is intentional, to keep the button visible even when loading a record
-      return !this.record || this.record.recordID !== NoID
-    },
-
     isDeleted () {
       return this.record && this.record.deletedAt
+    },
+
+    isProcessing () {
+      return this.processing || !!this.processingAction
     },
 
     settings () {

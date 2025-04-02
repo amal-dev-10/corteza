@@ -32,22 +32,25 @@
             <div
               class="d-flex text-primary mb-0"
             >
-              <span class="d-flex">
+              <span
+                class="d-flex"
+                style="margin-top: 0.1rem;"
+              >
                 {{ field.label || field.name }}
               </span>
 
               <c-hint :tooltip="((field.options.hint || {}).view || '')" />
 
               <div
-                v-if="options.inlineRecordEditEnabled && isFieldEditable(field)"
-                class="inline-actions ml-2"
+                v-if="!record.deletedAt && options.inlineRecordEditEnabled && isFieldEditable(field)"
+                class="inline-actions ml-1"
               >
                 <b-button
                   v-b-tooltip.noninteractive.hover="{ title: $t('record.inlineEdit.button.title'), container: '#body' }"
-                  variant="outline-light"
+                  variant="outline-extra-light"
                   :disabled="editable"
                   size="sm"
-                  class="d-flex align-items-center text-secondary border-0 px-1"
+                  class="text-secondary border-0"
                   @click="editInlineField(fieldRecord, field)"
                 >
                   <font-awesome-icon
@@ -88,15 +91,15 @@
     <!-- Modal for inline editing -->
     <bulk-edit-modal
       v-if="options.inlineRecordEditEnabled && fieldModule"
+      :modal-title="$t('record.inlineEdit.modal.title')"
       :namespace="namespace"
       :module="fieldModule"
       :selected-records="inlineEdit.recordIDs"
       :selected-fields="inlineEdit.fields"
       :initial-record="inlineEdit.record"
       :query="inlineEdit.query"
-      :modal-title="$t('record.inlineEdit.modal.title')"
-      open-on-select
       :allow-add-field="options.inlineRecordEditAllowAddField"
+      open-on-select
       @save="onInlineEdit()"
       @close="onInlineEditClose()"
     />
@@ -198,10 +201,12 @@ export default {
   },
 
   watch: {
-    'record.recordID': {
+    loadingRecord: {
       immediate: true,
-      handler (recordID) {
-        if (!recordID) return
+      handler (loadingRecord) {
+        const { recordID } = this.record || {}
+
+        if (!recordID || loadingRecord) return
 
         let resolutions = []
 
@@ -218,9 +223,7 @@ export default {
           ...resolutions,
           this.evaluateExpressions(),
         ]).finally(() => {
-          setTimeout(() => {
-            this.evaluating = false
-          }, 300)
+          this.evaluating = false
         })
 
         if (this.options.referenceModuleID) {
@@ -350,8 +353,6 @@ export default {
       this.inlineEdit.recordIDs = []
       this.inlineEdit.record = {}
       this.inlineEdit.query = ''
-
-      this.$root.$emit('refetch-records')
     },
 
     onInlineEditClose () {

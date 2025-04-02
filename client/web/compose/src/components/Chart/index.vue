@@ -74,7 +74,7 @@ export default {
   },
 
   watch: {
-    'record.updatedAt': {
+    'record.recordID': {
       immediate: true,
       handler () {
         this.updateChart()

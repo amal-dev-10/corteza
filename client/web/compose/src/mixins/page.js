@@ -63,7 +63,7 @@ export default {
       }
     },
 
-    evaluateLayoutExpressions () {
+    async evaluateLayoutExpressions () {
       const expressions = {}
       const variables = this.expressionVariables()
 
@@ -119,7 +119,7 @@ export default {
           this.$router.go(-1)
         }
 
-        return this.$router.go(-1)
+        return
       }
 
       if (this.isRecordPage) {
@@ -142,8 +142,6 @@ export default {
         document.title = [title, this.namespace.name, this.$t('general:label.app-name.public')].filter(v => v).join(' | ')
       }
 
-      this.blocks = undefined
-
       return this.prepareBlocks()
     },
 
@@ -158,17 +156,25 @@ export default {
         tempBlocks.push(block)
       })
 
-      return this.evaluateBlocks(tempBlocks).then(blocks => {
-        this.blocks = blocks
-      })
+      if (this.isRecordPage) {
+        await new Promise(resolve => setTimeout(resolve, 300))
+      }
+
+      this.blocks = undefined
+
+      return this.evaluateBlocks(tempBlocks, this.isRecordPage)
     },
 
-    async evaluateBlocks (blocks = this.page.blocks) {
+    async evaluateBlocks (blocks = this.page.blocks, async = false) {
       const layoutBlocks = this.layout.blocks
       let layoutBlocksExpressions = {}
 
       // Only evaluate expressions if any blocks have visibility expressions
       if (layoutBlocks.some(({ meta = {} }) => (meta.visibility || {}).expression)) {
+        if (async) {
+          await new Promise(resolve => setTimeout(resolve, 300))
+        }
+
         layoutBlocksExpressions = await this.evaluateBlocksExpressions()
       }
 
@@ -183,13 +189,13 @@ export default {
         const showBlock = block && validExpression && validRole
 
         // Update invisible status based on visibility evaluation
-        block.meta.invisible = !showBlock
+        block.meta.visible = showBlock
       })
 
       return blocks
     },
 
-    evaluateBlocksExpressions () {
+    async evaluateBlocksExpressions () {
       const expressions = {}
       const variables = this.expressionVariables()
 

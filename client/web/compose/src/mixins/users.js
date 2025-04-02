@@ -1,3 +1,5 @@
+import { NoID } from '@cortezaproject/corteza-js'
+
 export default {
   methods: {
     fetchUsers (fields = [], records = []) {
@@ -15,7 +17,7 @@ export default {
               return f.isMulti ? r.values[f.name] : [r.values[f.name]]
             }
           })
-      }).flat(Infinity))]
+      }).flat(Infinity))].filter(uID => uID !== NoID)
 
       if (list.length) {
         return this.$store.dispatch('user/resolveUsers', list)

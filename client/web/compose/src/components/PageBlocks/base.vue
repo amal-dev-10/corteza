@@ -151,14 +151,17 @@ export default {
   },
 
   beforeDestroy () {
-    clearInterval(this.refreshInterval)
-    this.setDefaultValues()
+    this.setBaseDefaultValues()
   },
 
   methods: {
-    setDefaultValues () {
+    setBaseDefaultValues () {
+      if (this.refreshInterval) {
+        clearInterval(this.refreshInterval)
+        this.refreshInterval = null
+      }
+
       this.processing = false
-      this.refreshInterval = null
       this.key = 0
     },
 

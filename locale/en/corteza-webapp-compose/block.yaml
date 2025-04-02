@@ -494,8 +494,8 @@ recordList:
     next: Next
     prev: Previous
     showing: '{{from}} - {{to}} of {{count}} records'
-    single: One record
-    single_plural: '{{count}} records'
+    single_one: One record
+    single_other: '{{count}} records'
     recordsPerPage: Per page
     selectLabel: Select an option
   positionField:

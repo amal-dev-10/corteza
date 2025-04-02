@@ -1,29 +1,29 @@
 <template>
   <div class="d-flex flex-column flex-grow-1 w-100 h-100">
-    <b-alert
-      v-if="isDeleted"
-      show
-      variant="warning"
-      class="mb-2 mx-2"
-    >
-      {{ $t('record.recordDeleted') }}
-    </b-alert>
-
     <portal
       :to="portalTopbarTitle"
     >
       {{ title }}
     </portal>
 
+    <b-alert
+      v-if="isDeleted"
+      show
+      variant="warning"
+      class="m-2"
+    >
+      {{ $t('record.recordDeleted') }}
+    </b-alert>
+
     <div
-      v-if="!layout"
+      v-if="isLoading"
       class="d-flex align-items-center justify-content-center w-100 h-100"
     >
       <b-spinner />
     </div>
 
     <grid
-      v-else-if="blocks"
+      v-else
       v-bind="$props"
       :errors="errors"
       :record="record"
@@ -42,11 +42,10 @@
         :record="record"
         :labels="recordToolbarLabels"
         :processing="processing"
-        :processing-submit="processingSubmit"
-        :processing-delete="processingDelete"
-        :processing-undelete="processingUndelete"
+        :processing-action="processingAction"
         :in-editing="inEditing"
         :in-modal="inModal"
+        :is-created="!isNew"
         :record-navigation="recordNavigation"
         :hide-back="!layoutButtons.has('back')"
         :hide-delete="!layoutButtons.has('delete')"
@@ -148,7 +147,7 @@ export default {
     const areParamsChanged = JSON.stringify(to.params) !== JSON.stringify(from.params)
 
     // If the route params have changed, we need to check for unsaved changes
-    // We do this to avoid maginfy block to raise the unsaved changes prompt
+    // We do this to avoid magnify block to raise the unsaved changes prompt
     if (!areParamsChanged) {
       next()
       return
@@ -216,6 +215,10 @@ export default {
 
     isNew () {
       return !this.recordID || this.recordID === NoID
+    },
+
+    isLoading () {
+      return !this.layout || !this.blocks
     },
 
     portalTopbarTitle () {
@@ -416,6 +419,7 @@ export default {
 
           const { userID } = this.$auth.user
 
+          await new Promise(resolve => setTimeout(resolve, 300))
           // Prefill ownedBy field with current user
           return new compose.Record(module, { ownedBy: userID, values: this.values })
         }
@@ -526,9 +530,6 @@ export default {
         return
       }
 
-      this.record = undefined
-      this.initialRecordState = undefined
-
       this.refresh()
     },
 
@@ -536,15 +537,24 @@ export default {
       this.processing = true
       this.loadingRecord = true
 
+      if (this.isRecordPage) {
+        this.inEditing = this.edit
+      }
+
       return this.loadRecord().then(record => {
         this.tempRecord = record
 
-        return this.determineLayout().then(() => {
-          this.record = record
-          this.initialRecordState = record.clone()
+        return this.determineLayout().then(blocks => {
+          this.record = this.tempRecord
+          this.initialRecordState = this.record.clone()
+
+          if (blocks) {
+            this.blocks = blocks
+          }
         })
       }).finally(() => {
         this.tempRecord = undefined
+
         this.processing = false
         this.loadingRecord = false
       })
@@ -553,11 +563,17 @@ export default {
     handleAction ({ kind, params = {} }) {
       if (kind === 'toLayout') {
         this.processing = true
+        this.loadingRecord = true
 
         const pageLayoutID = params.pageLayoutID
 
-        this.determineLayout({ pageLayoutID, redirectOnFail: false }).finally(() => {
+        this.determineLayout({ pageLayoutID, redirectOnFail: false }).then(blocks => {
+          if (blocks) {
+            this.blocks = blocks
+          }
+        }).finally(() => {
           this.processing = false
+          this.loadingRecord = false
         })
       } else if (kind === 'toURL') {
         window.open(params.url, params.openIn === 'newTab' ? '_blank' : '_self')
@@ -566,12 +582,14 @@ export default {
 
     setDefaultValues () {
       this.inEditing = false
-      this.layouts = []
-      this.layout = undefined
       this.layoutButtons.clear()
       this.blocks = undefined
-      this.recordNavigation = {}
+      this.recordNavigation = {
+        prev: undefined,
+        next: undefined,
+      }
       this.abortableRequests = []
+      this.loadingRecord = false
     },
 
     abortRequests () {
@@ -607,6 +625,8 @@ export default {
         if (bvEvent) {
           bvEvent.preventDefault()
         }
+      } else {
+        this.initialRecordState = this.record.clone()
       }
 
       return recordStateChange

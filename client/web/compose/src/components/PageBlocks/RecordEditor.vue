@@ -181,10 +181,12 @@ export default {
   },
 
   watch: {
-    'record.recordID': {
+    loadingRecord: {
       immediate: true,
-      handler (recordID) {
-        if (!recordID) return
+      handler () {
+        const { recordID } = this.record || {}
+
+        if (!recordID || this.loadingRecord) return
 
         let resolutions = []
 
@@ -201,9 +203,7 @@ export default {
           ...resolutions,
           this.evaluateExpressions(),
         ]).finally(() => {
-          setTimeout(() => {
-            this.evaluating = false
-          }, 300)
+          this.evaluating = false
         })
       },
     },

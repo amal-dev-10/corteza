@@ -1216,7 +1216,7 @@ export default {
       },
     },
 
-    'record.updatedAt': {
+    'record.recordID': {
       immediate: true,
       handler () {
         this.createEvents()
@@ -1256,12 +1256,13 @@ export default {
       }
 
       this.uniqueID = [pageID, recordID, this.block.blockID, this.magnified].map(v => v || NoID).join('-')
+
       this.$root.$on(`record-line:collect:${this.uniqueID}`, this.resolveRecords)
       this.$root.$on(`page-block:validate:${this.uniqueID}`, this.validatePageBlock)
       this.$root.$on(`drill-down-recordList:${this.uniqueID}`, this.setDrillDownFilter)
-      this.$root.$on('refetch-non-record-blocks', this.refreshAndResetPagination)
       this.$root.$on('module-records-updated', this.refreshOnRelatedRecordsUpdate)
       this.$root.$on('record-field-change', this.refetchOnPrefilterValueChange)
+      this.$root.$on('refetch-records', this.refreshAndResetPagination)
     },
 
     refetchOnPrefilterValueChange ({ fieldName }) {
@@ -1626,7 +1627,7 @@ export default {
         this.loadPaginationRecords({
           filter: {
             ...this.filter,
-            limit: Math.min(this.filter.limit, 100),
+            limit: 50,
           },
         })
       }
@@ -1965,7 +1966,7 @@ export default {
     },
 
     onImportSuccessful () {
-      this.refresh(true)
+      this.$root.$emit('module-records-updated', { moduleID: this.recordListModule.moduleID })
     },
 
     createDefaultFilter (condition, field = {}, value = undefined, operator = undefined) {
@@ -2241,9 +2242,9 @@ export default {
       this.$root.$off(`record-line:collect:${this.uniqueID}`, this.resolveRecords)
       this.$root.$off(`page-block:validate:${this.uniqueID}`, this.validatePageBlock)
       this.$root.$off(`drill-down-recordList:${this.uniqueID}`, this.setDrillDownFilter)
-      this.$root.$off('refetch-non-record-blocks', this.refreshAndResetPagination)
       this.$root.$off('module-records-updated', this.refreshOnRelatedRecordsUpdate)
       this.$root.$off('record-field-change', this.refetchOnPrefilterValueChange)
+      this.$root.$off('refetch-records', this.refreshAndResetPagination)
     },
 
     handleAddRecord () {

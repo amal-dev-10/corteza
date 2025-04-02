@@ -2,14 +2,14 @@
   <div>
     <b-button
       v-if="!openOnSelect"
-      :title="$t('recordList.bulkRecord.title')"
-      variant="outline-light"
-      class="text-primary border-0"
+      v-b-tooltip.noninteractive.hover="{ title: $t('recordList.bulkRecord.title'), container: '#body' }"
+      variant="outline-extra-light"
       size="sm"
+      class="inline-button text-secondary border-0"
       @click="showModal = true"
     >
       <font-awesome-icon
-        :icon="['far', 'edit']"
+        :icon="['fas', 'pen']"
       />
     </b-button>
 
@@ -46,7 +46,7 @@
               <c-input-confirm
                 :tooltip="$t('recordList.bulkRecord.field.remove')"
                 show-icon
-                class="ml-2"
+                class="ml-1"
                 @confirmed="fields.splice(index, 1)"
               />
             </template>
@@ -85,7 +85,7 @@
             <b-button
               variant="light"
               rounded
-              @click="onModalHide"
+              @click="showModal = false"
             >
               {{ $t('general:label.cancel') }}
             </b-button>
@@ -293,5 +293,13 @@ export default {
 <style lang="scss">
 .position-initial {
   position: initial;
+}
+</style>
+
+<style lang="scss" scoped>
+.inline-button {
+  &:hover {
+    color: var(--primary) !important;
+  }
 }
 </style>

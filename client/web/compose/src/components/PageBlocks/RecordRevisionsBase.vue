@@ -195,7 +195,7 @@ export default {
   },
 
   watch: {
-    'record.updatedAt': {
+    'record.recordID': {
       immediate: true,
       handler () {
         this.refresh()
@@ -226,7 +226,10 @@ export default {
   methods: {
     createEvents () {
       this.$root.$on('module-records-updated', this.refreshOnRelatedRecordsUpdate)
-      this.$root.$on('refetch-non-record-blocks', this.refresh)
+
+      if (!this.isRecordPage) {
+        this.$root.$on('refetch-records', this.refresh)
+      }
     },
 
     refreshOnRelatedRecordsUpdate ({ moduleID }) {
@@ -275,7 +278,10 @@ export default {
 
     destroyEvents () {
       this.$root.$off('module-records-updated', this.refreshOnRelatedRecordsUpdate)
-      this.$root.$off('refetch-non-record-blocks', this.refresh)
+
+      if (!this.isRecordPage) {
+        this.$root.$off('refetch-records', this.refresh)
+      }
     },
   },
 }
