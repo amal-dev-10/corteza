@@ -90,5 +90,12 @@ export default (options = {}) => {
     ...options,
   }
 
-  return new Vue(options)
+  const app = new Vue(options)
+
+  // Simple HMR acceptance
+  if (module.hot) {
+    module.hot.accept()
+  }
+
+  return app
 }

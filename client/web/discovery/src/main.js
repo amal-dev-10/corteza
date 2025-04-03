@@ -11,7 +11,8 @@ import './plugins'
 import './mixins'
 import './components'
 
-new Vue({
+// Need to save the Vue instance for HMR
+const app = new Vue({
   router,
   store,
   i18n: i18n(Vue,
@@ -24,3 +25,10 @@ new Vue({
   ),
   render: h => h(App),
 }).$mount('#app')
+
+// Simple HMR acceptance
+if (module.hot) {
+  module.hot.accept()
+}
+
+export default app

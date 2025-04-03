@@ -52,10 +52,10 @@ module.exports = ({ appFlavour, appLabel, version = process.env.BUILD_VERSION, t
 
       // Webpack 5 specific configuration
       resolve: {
-        symlinks: false,
+        symlinks: true,
         fallback: {
           path: false,
-          fs: false, // Add explicit false for Node.js core modules
+          fs: false,
           crypto: false,
           stream: false,
           util: false,
@@ -91,9 +91,6 @@ module.exports = ({ appFlavour, appLabel, version = process.env.BUILD_VERSION, t
     },
 
     chainWebpack: config => {
-      // https://cli.vuejs.org/guide/troubleshooting.html#symbolic-links-in-node-modules
-      config.resolve.symlinks(false)
-
       // Remove css extraction issues
       // https://github.com/vuejs/vue-cli/issues/3771#issuecomment-526228100
       config.plugin('friendly-errors').tap(args => {
@@ -162,8 +159,9 @@ module.exports = ({ appFlavour, appLabel, version = process.env.BUILD_VERSION, t
       host: '127.0.0.1',
       port: 8080,
       hot: true,
-      allowedHosts: 'all', // replaces disableHostCheck
+      allowedHosts: 'all',
       webSocketServer: 'ws',
+      liveReload: false,
       headers: {
         'Access-Control-Allow-Origin': '*',
       },
@@ -178,7 +176,6 @@ module.exports = ({ appFlavour, appLabel, version = process.env.BUILD_VERSION, t
         },
       },
 
-      // Webpack 5 DevServer configuration
       watchFiles: {
         paths: [
           '**/*',
