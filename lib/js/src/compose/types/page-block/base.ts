@@ -119,7 +119,7 @@ export class PageBlock {
   }
 
   clone (): this {
-    return new (this.constructor as new (i?: PageBlockInput) => this)({ ...JSON.parse(JSON.stringify(this)), blockID: NoID, meta: { tempID: '' } })
+    return new (this.constructor as new (i?: PageBlockInput) => this)({ ...JSON.parse(JSON.stringify(this)), blockID: NoID, meta: { ...this.meta, tempID: '' } })
   }
 }
 
