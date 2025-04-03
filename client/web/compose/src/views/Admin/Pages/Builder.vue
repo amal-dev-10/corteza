@@ -440,6 +440,7 @@ export default {
         }
         return this.page
       },
+
       set (v) {
         this.page = v
         this.updatePageSet(v)

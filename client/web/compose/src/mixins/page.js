@@ -1,7 +1,12 @@
 import { compose } from '@cortezaproject/corteza-js'
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
+import PageTranslator from 'corteza-webapp-compose/src/components/Admin/Page/PageTranslator'
 
 export default {
+  components: {
+    PageTranslator,
+  },
+
   props: {
     namespace: {
       // via router-view
@@ -38,9 +43,32 @@ export default {
     isRecordPage () {
       return this.recordID || this.$route.name === 'page.record.create'
     },
+
+    trPage: {
+      get () {
+        return this.page.clone()
+      },
+
+      set (v) {
+        this.updatePageSet(v)
+      },
+    },
+
+    pageEditor () {
+      return { name: 'admin.pages.edit', params: { pageID: this.page.pageID } }
+    },
+
+    pageBuilder () {
+      const { pageLayoutID } = this.layout || {}
+      return { name: 'admin.pages.builder', params: { pageID: this.page.pageID }, query: { layoutID: pageLayoutID } }
+    },
   },
 
   methods: {
+    ...mapActions({
+      updatePageSet: 'page/updateSet',
+    }),
+
     expressionVariables () {
       const record = this.tempRecord || this.record
 

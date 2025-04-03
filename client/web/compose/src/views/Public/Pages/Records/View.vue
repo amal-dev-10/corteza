@@ -6,13 +6,55 @@
       {{ title }}
     </portal>
 
+    <portal to="topbar-tools">
+      <b-button-group
+        v-if="page && page.canUpdatePage"
+        size="sm"
+      >
+        <b-button
+          data-test-id="button-page-builder"
+          variant="primary"
+          class="d-flex align-items-center"
+          :to="pageBuilder"
+        >
+          {{ $t('general:label.pageBuilder') }}
+          <font-awesome-icon
+            :icon="['fas', 'tools']"
+            class="ml-2"
+          />
+        </b-button>
+
+        <page-translator
+          v-if="trPage"
+          data-test-id="button-page-translations"
+          :page.sync="trPage"
+          :page-layout.sync="layout"
+          button-variant="primary"
+          style="margin-left:2px;"
+        />
+
+        <b-button
+          v-b-tooltip.noninteractive.hover="{ title: $t('tooltip.edit.page'), container: '#body' }"
+          data-test-id="button-page-edit"
+          :to="pageEditor"
+          variant="primary"
+          class="d-flex align-items-center"
+          style="margin-left:2px;"
+        >
+          <font-awesome-icon
+            :icon="['far', 'edit']"
+          />
+        </b-button>
+      </b-button-group>
+    </portal>
+
     <b-alert
       v-if="isDeleted"
       show
       variant="warning"
       class="m-2"
     >
-      {{ $t('record.recordDeleted') }}
+      {{ $t('block:record.recordDeleted') }}
     </b-alert>
 
     <div
@@ -123,7 +165,7 @@ import { evaluatePrefilter } from 'corteza-webapp-compose/src/lib/record-filter'
 
 export default {
   i18nOptions: {
-    namespaces: 'block',
+    namespaces: 'page',
   },
 
   name: 'ViewRecord',

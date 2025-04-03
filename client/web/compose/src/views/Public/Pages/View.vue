@@ -3,11 +3,17 @@
     v-if="!!page"
     class="d-flex w-100 overflow-hidden"
   >
-    <portal to="topbar-title">
+    <portal
+      v-if="!isRecordPage"
+      to="topbar-title"
+    >
       {{ pageTitle }}
     </portal>
 
-    <portal to="topbar-tools">
+    <portal
+      v-if="!isRecordPage"
+      to="topbar-tools"
+    >
       <b-button-group
         v-if="page && page.canUpdatePage"
         size="sm"
@@ -24,6 +30,7 @@
             class="ml-2"
           />
         </b-button>
+
         <page-translator
           v-if="trPage"
           data-test-id="button-page-translations"
@@ -32,6 +39,7 @@
           button-variant="primary"
           style="margin-left:2px;"
         />
+
         <b-button
           v-b-tooltip.noninteractive.hover="{ title: $t('tooltip.edit.page'), container: '#body' }"
           data-test-id="button-page-edit"
@@ -87,7 +95,6 @@ import { mapGetters, mapActions } from 'vuex'
 import Grid from 'corteza-webapp-compose/src/components/Public/Page/Grid'
 import RecordModal from 'corteza-webapp-compose/src/components/Public/Record/Modal'
 import MagnificationModal from 'corteza-webapp-compose/src/components/Public/Page/Block/Modal'
-import PageTranslator from 'corteza-webapp-compose/src/components/Admin/Page/PageTranslator'
 import { NoID } from '@cortezaproject/corteza-js'
 import page from 'corteza-webapp-compose/src/mixins/page'
 
@@ -99,7 +106,6 @@ export default {
   components: {
     Grid,
     RecordModal,
-    PageTranslator,
     MagnificationModal,
   },
 
@@ -145,24 +151,6 @@ export default {
       }
 
       return undefined
-    },
-
-    trPage: {
-      get () {
-        return this.page.clone()
-      },
-      set (v) {
-        this.updatePageSet(v)
-      },
-    },
-
-    pageEditor () {
-      return { name: 'admin.pages.edit', params: { pageID: this.page.pageID } }
-    },
-
-    pageBuilder () {
-      const { pageLayoutID } = this.layout || {}
-      return { name: 'admin.pages.builder', params: { pageID: this.page.pageID }, query: { layoutID: pageLayoutID } }
     },
   },
 
@@ -221,7 +209,6 @@ export default {
 
   methods: {
     ...mapActions({
-      updatePageSet: 'page/updateSet',
       setRecordPaginationUsable: 'ui/setRecordPaginationUsable',
       clearRecordIDs: 'ui/clearRecordIDs',
       setPreviousPages: 'ui/setPreviousPages',
