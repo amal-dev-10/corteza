@@ -48,7 +48,6 @@
         <c-input-expression
           v-model.trim="options.filter"
           height="3.688rem"
-          lang="javascript"
           :suggestion-params="recordAutoCompleteParams"
           :placeholder="$t('recordList.record.prefilterPlaceholder')"
         />

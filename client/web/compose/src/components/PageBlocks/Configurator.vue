@@ -21,7 +21,6 @@
                 id="title"
                 v-model="block.title"
                 auto-complete
-                lang="javascript"
                 :placeholder="$t('general.titlePlaceholder')"
                 :suggestion-params="recordAutoCompleteParams"
                 height="2.375rem"
@@ -62,7 +61,6 @@
                 id="description"
                 v-model="block.description"
                 auto-complete
-                lang="javascript"
                 :placeholder="$t('general.descriptionPlaceholder')"
                 :suggestion-params="recordAutoCompleteParams"
                 height="3.448rem"
@@ -247,10 +245,7 @@
       </h5>
 
       <b-row>
-        <b-col
-          cols="12"
-          lg="6"
-        >
+        <b-col cols="12">
           <b-form-group
             label-class="d-flex align-items-center text-primary mb-0"
           >
@@ -271,7 +266,6 @@
                 id="visibility-fields"
                 v-model="block.meta.visibility.expression"
                 auto-complete
-                lang="javascript"
                 :placeholder="$t('general.visibility.condition.placeholder')"
                 :suggestion-params="visibilityAutoCompleteParams"
                 height="2.375rem"
@@ -317,10 +311,7 @@
           </b-form-group>
         </b-col>
 
-        <b-col
-          cols="12"
-          lg="6"
-        >
+        <b-col cols="12">
           <b-form-group
             :label="$t('general.visibility.roles.label')"
             label-class="text-primary"

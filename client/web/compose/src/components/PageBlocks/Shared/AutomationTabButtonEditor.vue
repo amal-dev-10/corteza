@@ -11,7 +11,6 @@
       <c-input-expression
         v-model="button.label"
         auto-complete
-        lang="javascript"
         :suggestion-params="recordAutoCompleteParams"
         :page="page"
         height="2.375rem"

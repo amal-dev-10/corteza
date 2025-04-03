@@ -53,7 +53,6 @@
               <c-input-expression
                 v-model="options.value.filter"
                 height="3.688rem"
-                lang="javascript"
                 placeholder="(A > B) OR (A < C)"
                 class="mb-1"
                 :suggestion-params="recordAutoCompleteParams.value"
@@ -166,7 +165,6 @@
               <c-input-expression
                 v-model="options.minValue.filter"
                 height="3.688rem"
-                lang="javascript"
                 placeholder="(A > B) OR (A < C)"
                 class="mb-1"
                 :suggestion-params="recordAutoCompleteParams.min"
@@ -279,7 +277,6 @@
               <c-input-expression
                 v-model="options.maxValue.filter"
                 height="3.688rem"
-                lang="javascript"
                 placeholder="(A > B) OR (A < C)"
                 class="mb-1"
                 :suggestion-params="recordAutoCompleteParams.max"

@@ -150,7 +150,6 @@
                 <c-input-expression
                   v-model="edit.filter"
                   auto-complete
-                  lang="javascript"
                   placeholder="(A > B) OR (A < C)"
                   class="mb-1"
                   height="3.448rem"
@@ -211,7 +210,6 @@
                 <c-input-expression
                   v-model="edit.transformFx"
                   auto-complete
-                  lang="javascript"
                   placeholder="v"
                   class="mb-1"
                   height="3.448rem"

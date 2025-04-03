@@ -296,7 +296,17 @@
                         class="align-middle"
                       >
                         <b-input-group>
+                          <c-input-expression
+                            v-if="isRecordPage && layout.config.useTitle"
+                            v-model="layout.meta.title"
+                            auto-complete
+                            :suggestion-params="recordAutoCompleteParams"
+                            height="2.375rem"
+                            class="flex-grow-1"
+                            @input="layout.meta.updated = true"
+                          />
                           <b-form-input
+                            v-else
                             v-model="layout.meta.title"
                             :state="layoutTitleState(layout.meta.title)"
                             @input="layout.meta.updated = true"
@@ -402,7 +412,20 @@
             label-class="text-primary"
           >
             <b-input-group>
+              <c-input-expression
+                v-if="isRecordPage && layoutEditor.layout.config.useTitle"
+                v-model="layoutEditor.layout.meta.title"
+                auto-complete
+                :state="layoutTitleState(layoutEditor.layout.meta.title)"
+                :suggestion-params="recordAutoCompleteParams"
+                :placeholder="$t('page-layout.title')"
+                height="2.375rem"
+                class="flex-grow-1"
+                @input="layoutEditor.layout.meta.updated = true"
+              />
+
               <b-form-input
+                v-else
                 v-model="layoutEditor.layout.meta.title"
                 :state="layoutTitleState(layoutEditor.layout.meta.title)"
                 @input="layoutEditor.layout.meta.updated = true"
@@ -480,9 +503,13 @@
               ƒ
             </b-button>
           </b-input-group-prepend>
-          <b-form-input
+          <c-input-expression
             v-model="layoutEditor.layout.config.visibility.expression"
+            auto-complete
             :placeholder="$t('page-layout.condition.placeholder')"
+            :suggestion-params="visibilityAutoCompleteParams"
+            height="2.375rem"
+            class="flex-grow-1"
           />
           <b-input-group-append>
             <b-button
@@ -921,7 +948,8 @@ import Uploader from 'corteza-webapp-compose/src/components/Public/Page/Attachme
 import Draggable from 'vuedraggable'
 import { compose, NoID } from '@cortezaproject/corteza-js'
 import { handle, components } from '@cortezaproject/corteza-vue'
-const { CInputRole } = components
+import autocomplete from 'corteza-webapp-compose/src/mixins/autocomplete.js'
+const { CInputRole, CInputExpression } = components
 
 export default {
   i18nOptions: {
@@ -937,10 +965,12 @@ export default {
     Uploader,
     Draggable,
     CInputRole,
+    CInputExpression,
   },
 
   mixins: [
     pages,
+    autocomplete,
   ],
 
   beforeRouteUpdate (to, from, next) {
@@ -1003,6 +1033,7 @@ export default {
     ...mapGetters({
       pages: 'page/set',
       previousPage: 'ui/previousPage',
+      getModuleByID: 'module/getByID',
     }),
 
     titleState () {
@@ -1021,6 +1052,22 @@ export default {
 
     isRecordPage () {
       return this.page && this.page.moduleID !== NoID
+    },
+
+    module () {
+      if (this.isRecordPage) {
+        return this.getModuleByID(this.page.moduleID)
+      }
+
+      return undefined
+    },
+
+    record () {
+      if (this.module) {
+        return new compose.Record({}, this.module)
+      }
+
+      return undefined
     },
 
     hasChildren () {
@@ -1136,6 +1183,14 @@ export default {
         { value: 'center', text: this.$t('page-layout.recordToolbar.actions.placement.center') },
         { value: 'end', text: this.$t('page-layout.recordToolbar.actions.placement.end') },
       ]
+    },
+
+    visibilityAutoCompleteParams () {
+      return this.processVisibilityAutoCompleteParams({ module: this.module })
+    },
+
+    recordAutoCompleteParams () {
+      return this.isRecordPage ? this.processRecordAutoCompleteParams({ module: this.module }) : []
     },
   },
 

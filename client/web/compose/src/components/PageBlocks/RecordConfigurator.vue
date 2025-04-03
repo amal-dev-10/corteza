@@ -189,7 +189,7 @@
     <hr>
 
     <div class="px-3">
-      <h5 class="d-flex align-items-center justify-content-between mb-3">
+      <h5 class="d-flex align-items-center justify-content-between mb-2">
         {{ $t('record.fieldConditions.label') }}
 
         <c-hint
@@ -199,7 +199,7 @@
 
         <b-button
           variant="link"
-          :href="`${documentationURL}#value-sanitizers`"
+          :href="visibilityDocumentationURL"
           target="_blank"
           class="p-0 ml-auto"
         >
@@ -207,15 +207,28 @@
         </b-button>
       </h5>
 
+      <i18next
+        path="general.visibility.condition.description.record-page"
+        tag="small"
+        class="text-muted"
+      >
+        <code>record.values.fieldName</code>
+        <code>user.(userID/email...)</code>
+        <code>user.userID == record.values.createdBy</code>
+        <code>record.values.fieldName == "value"</code>
+        <code>record.values.ownedBy == user.userID</code>
+      </i18next>
+
       <c-form-table-wrapper
         :labels="{
           addButton: $t('general:label.add')
         }"
         :disable-add-button="addRuleDisabled"
-        class="mb-3"
+        class="my-3"
         @add-item="addRule"
       >
         <b-table-simple
+          v-if="block.options.fieldConditions.length > 0"
           borderless
           small
           responsive
@@ -264,9 +277,13 @@
                       ƒ
                     </b-button>
                   </b-input-group-prepend>
-                  <b-form-input
+                  <c-input-expression
                     v-model="condition.condition"
+                    auto-complete
                     :placeholder="$t('record.fieldConditions.placeholder')"
+                    :suggestion-params="visibilityAutoCompleteParams"
+                    height="2.375rem"
+                    class="flex-grow-1"
                   />
                 </b-input-group>
               </b-td>
@@ -291,6 +308,10 @@ import base from './base'
 import FieldPicker from 'corteza-webapp-compose/src/components/Common/FieldPicker'
 import { mapActions } from 'vuex'
 import { NoID, compose } from '@cortezaproject/corteza-js'
+import autocomplete from 'corteza-webapp-compose/src/mixins/autocomplete.js'
+import { components } from '@cortezaproject/corteza-vue'
+
+const { CInputExpression } = components
 
 export default {
   i18nOptions: {
@@ -301,9 +322,12 @@ export default {
 
   components: {
     FieldPicker,
+    CInputExpression,
   },
 
   extends: base,
+
+  mixins: [autocomplete],
 
   data () {
     return {
@@ -316,10 +340,10 @@ export default {
   },
 
   computed: {
-    documentationURL () {
+    visibilityDocumentationURL () {
       // eslint-disable-next-line no-undef
       const [year, month] = VERSION.split('.')
-      return `https://docs.cortezaproject.org/corteza-docs/${year}.${month}/integrator-guide/compose-configuration/index.html`
+      return `https://docs.cortezaproject.org/corteza-docs/${year}.${month}/integrator-guide/compose-configuration/page-layouts.html#visibility-condition`
     },
 
     addRuleDisabled () {

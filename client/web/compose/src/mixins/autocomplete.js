@@ -1,19 +1,6 @@
-import { compose, NoID } from '@cortezaproject/corteza-js'
+import { NoID } from '@cortezaproject/corteza-js'
 
 export default {
-  props: {
-    record: {
-      type: compose.Record,
-      required: false,
-      default: undefined,
-    },
-
-    page: {
-      type: compose.Page,
-      required: true,
-    },
-  },
-
   computed: {
     isRecordPage () {
       return this.page && this.page.moduleID !== NoID
@@ -29,7 +16,7 @@ export default {
   },
 
   methods: {
-    processRecordAutoCompleteParams ({ module = this.module, operators = false }) {
+    processRecordAutoCompleteParams ({ module = this.module, operators = false } = {}) {
       const { fields = [] } = module || {}
       const moduleFields = fields.map(({ name }) => name)
       const userProperties = this.$auth.user.properties() || []
@@ -49,15 +36,15 @@ export default {
         : []
 
       return [
-        ...moduleFields,
         ...recordSuggestions,
         ...(operators ? ['AND', 'OR'] : []),
         { interpolate: true, value: 'userID' },
         { interpolate: true, value: 'user', properties: userProperties },
+        ...moduleFields,
       ]
     },
 
-    processVisibilityAutoCompleteParams ({ module = this.module }) {
+    processVisibilityAutoCompleteParams ({ module = this.module } = {}) {
       const { fields = [] } = module || {}
       const moduleFields = fields.map(({ name }) => name)
       const userProperties = this.$auth.user.properties() || []
@@ -75,10 +62,10 @@ export default {
         : []
 
       return [
-        ...moduleFields,
         ...recordSuggestions,
         { value: 'user', properties: userProperties },
         { value: 'screen', properties: ['width', 'height', 'userAgent', 'breakpoint'] },
+        ...moduleFields,
       ]
     },
   },
