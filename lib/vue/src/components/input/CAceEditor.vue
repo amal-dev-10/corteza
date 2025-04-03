@@ -313,6 +313,7 @@ export default {
   background-color: var(--white) !important;
   border-radius: 0.25rem;
   border: 2px solid var(--extra-light);
+  font-size: initial !important;
 
   .ace_gutter {
     background-color: var(--light) !important;
@@ -321,6 +322,31 @@ export default {
     .ace_gutter-active-line {
       background-color: var(--extra-light) !important;
     }
+  }
+  .ace_hidden-cursors {
+    .ace_cursor {
+      color: var(--white) !important;
+    }
+  }
+
+  .ace_cursor {
+    color: var(--black) !important;
+  }
+}
+
+.ace_autocomplete {
+  border: none !important;
+  .ace_active-line {
+    background-color: var(--extra-light) !important;
+  }
+
+  .ace_line-hover {
+    border: none !important;
+    background-color: var(--extra-light) !important;
+  }
+
+  .ace_completion-highlight {
+    color: var(--primary) !important;
   }
 }
 </style>
