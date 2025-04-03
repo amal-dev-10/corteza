@@ -79,161 +79,151 @@
         </div>
 
         <div class="mt-3">
-          <draggable
-            v-model="block.options.navigationItems"
-            group="sort"
-            handle=".grab"
+          <c-form-table-wrapper
+            :labels="{ addButton: $t('general:label.add') }"
+            @add-item="addNavigationItem"
           >
-            <div
-              v-for="(item, index) in block.options.navigationItems"
-              :key="index"
+            <draggable
+              v-model="block.options.navigationItems"
+              group="sort"
+              handle=".grab"
             >
-              <hr v-if="index">
-
-              <b-table-simple
-                borderless
-                responsive="lg"
-                small
+              <div
+                v-for="(item, index) in block.options.navigationItems"
+                :key="index"
               >
-                <thead class="text-primary">
-                  <tr>
-                    <th
-                      scope="col"
-                      style="width: auto;"
+                <hr v-if="index">
+
+                <b-table-simple
+                  borderless
+                  responsive="lg"
+                  small
+                >
+                  <thead class="text-primary">
+                    <tr>
+                      <th
+                        scope="col"
+                        style="width: auto;"
+                      />
+
+                      <th
+                        scope="col"
+                        style="min-width: 200px;"
+                      >
+                        {{ $t("navigation.type") }}
+                      </th>
+
+                      <th
+                        scope="col"
+                        style="min-width: 200px;"
+                      >
+                        {{ $t("navigation.color") }}
+                      </th>
+
+                      <th
+                        scope="col"
+                        style="min-width: 200px;"
+                      >
+                        {{ $t("navigation.background") }}
+                      </th>
+
+                      <th
+                        class="text-center"
+                        scope="col"
+                        style="width: 50px; min-width: 50px;"
+                      >
+                        {{ $t("navigation.enabled") }}
+                      </th>
+
+                      <th
+                        scope="col"
+                        style="width: auto; min-width: 100px;"
+                      />
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    <tr>
+                      <td class="grab align-middle text-center">
+                        <font-awesome-icon
+                          :icon="['fas', 'bars']"
+                          class="text-secondary"
+                        />
+                      </td>
+
+                      <td class="align-middle">
+                        <b-form-select
+                          v-model="item.type"
+                          :options="navigationItemTypes"
+                        />
+                      </td>
+
+                      <td class="align-middle">
+                        <c-input-color-picker
+                          v-model="item.options.textColor"
+                          :translations="{
+                            modalTitle: $t('navigation.colorPicker'),
+                            light: $t('general:themes.labels.light'),
+                            dark: $t('general:themes.labels.dark'),
+                            cancelBtnLabel: $t('general:label.cancel'),
+                            saveBtnLabel: $t('general:label.saveAndClose')
+                          }"
+                          :theme-settings="themeSettings"
+                          class="w-100"
+                        />
+                      </td>
+
+                      <td class="align-middle">
+                        <c-input-color-picker
+                          v-model="item.options.backgroundColor"
+                          :translations="{
+                            modalTitle: $t('navigation.colorPicker'),
+                            light: $t('general:themes.labels.light'),
+                            dark: $t('general:themes.labels.dark'),
+                            cancelBtnLabel: $t('general:label.cancel'),
+                            saveBtnLabel: $t('general:label.saveAndClose')
+                          }"
+                          :theme-settings="themeSettings"
+                          class="w-100"
+                        />
+                      </td>
+                      <td class="d-flex align-items-center justify-content-center">
+                        <c-input-checkbox
+                          v-model="item.options.enabled"
+                          switch
+                          :labels="{}"
+                        />
+                      </td>
+                      <td class="text-right align-middle">
+                        <c-input-confirm
+                          show-icon
+                          button-class="px-2"
+                          size="md"
+                          @confirmed="options.navigationItems.splice(index, 1)"
+                        />
+                      </td>
+                    </tr>
+
+                    <component
+                      :is="item.type"
+                      :item="item"
+                      :namespace="namespace"
+                      @update="(value) => item = value"
                     />
+                  </tbody>
+                </b-table-simple>
+              </div>
+            </draggable>
 
-                    <th
-                      scope="col"
-                      style="min-width: 200px;"
-                    >
-                      {{ $t("navigation.type") }}
-                    </th>
-
-                    <th
-                      scope="col"
-                      style="min-width: 200px;"
-                    >
-                      {{ $t("navigation.color") }}
-                    </th>
-
-                    <th
-                      scope="col"
-                      style="min-width: 200px;"
-                    >
-                      {{ $t("navigation.background") }}
-                    </th>
-
-                    <th
-                      class="text-center"
-                      scope="col"
-                      style="width: 50px; min-width: 50px;"
-                    >
-                      {{ $t("navigation.enabled") }}
-                    </th>
-
-                    <th
-                      scope="col"
-                      style="width: auto; min-width: 100px;"
-                    />
-                  </tr>
-                </thead>
-
-                <tbody>
-                  <tr>
-                    <td class="grab align-middle text-center">
-                      <font-awesome-icon
-                        :icon="['fas', 'bars']"
-                        class="text-secondary"
-                      />
-                    </td>
-
-                    <td class="align-middle">
-                      <b-form-select
-                        v-model="item.type"
-                        :options="navigationItemTypes"
-                      />
-                    </td>
-
-                    <td class="align-middle">
-                      <c-input-color-picker
-                        v-model="item.options.textColor"
-                        :translations="{
-                          modalTitle: $t('navigation.colorPicker'),
-                          light: $t('general:themes.labels.light'),
-                          dark: $t('general:themes.labels.dark'),
-                          cancelBtnLabel: $t('general:label.cancel'),
-                          saveBtnLabel: $t('general:label.saveAndClose')
-                        }"
-                        :theme-settings="themeSettings"
-                        class="w-100"
-                      />
-                    </td>
-
-                    <td class="align-middle">
-                      <c-input-color-picker
-                        v-model="item.options.backgroundColor"
-                        :translations="{
-                          modalTitle: $t('navigation.colorPicker'),
-                          light: $t('general:themes.labels.light'),
-                          dark: $t('general:themes.labels.dark'),
-                          cancelBtnLabel: $t('general:label.cancel'),
-                          saveBtnLabel: $t('general:label.saveAndClose')
-                        }"
-                        :theme-settings="themeSettings"
-                        class="w-100"
-                      />
-                    </td>
-                    <td class="d-flex align-items-center justify-content-center">
-                      <c-input-checkbox
-                        v-model="item.options.enabled"
-                        switch
-                        :labels="{}"
-                      />
-                    </td>
-                    <td class="text-right align-middle">
-                      <c-input-confirm
-                        show-icon
-                        button-class="px-2"
-                        size="md"
-                        @confirmed="options.navigationItems.splice(index, 1)"
-                      />
-                    </td>
-                  </tr>
-
-                  <component
-                    :is="item.type"
-                    :item="item"
-                    :namespace="namespace"
-                    @update="(value) => item = value"
-                  />
-                </tbody>
-              </b-table-simple>
+            <div
+              v-if="!block.options.navigationItems.length"
+              class="text-center my-4"
+            >
+              <p>
+                {{ $t('navigation.noNavigationItems') }}
+              </p>
             </div>
-          </draggable>
-
-          <div
-            v-if="!block.options.navigationItems.length"
-            class="text-center my-4"
-          >
-            <p>
-              {{ $t('navigation.noNavigationItems') }}
-            </p>
-          </div>
-        </div>
-
-        <div class="d-flex align-items-center mb-4">
-          <b-button
-            variant="primary"
-            class="d-flex align-items-center text-decoration-none"
-            @click="addNavigationItem"
-          >
-            <font-awesome-icon
-              :icon="['fas', 'plus']"
-              size="sm"
-              class="mr-1"
-            />
-            {{ $t("navigation.add") }}
-          </b-button>
+          </c-form-table-wrapper>
         </div>
       </div>
     </b-tab>

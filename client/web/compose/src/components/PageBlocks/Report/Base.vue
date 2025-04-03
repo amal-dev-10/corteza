@@ -57,15 +57,24 @@ export default {
         }
       },
     },
+
+    'record.recordID': {
+      immediate: true,
+      handler () {
+        this.refresh()
+      },
+    },
   },
 
   beforeDestroy () {
+    this.destroyEvents()
     this.abortRequests()
     this.setDefaultValues()
   },
 
   created () {
     this.refreshBlock(this.refresh)
+    this.createEvents()
   },
 
   methods: {
@@ -153,6 +162,18 @@ export default {
       this.fetchReport(this.options.reportID).then(() => {
         this.key++
       })
+    },
+
+    createEvents () {
+      if (!this.isRecordPage) {
+        this.$root.$on('refetch-records', this.refresh)
+      }
+    },
+
+    destroyEvents () {
+      if (!this.isRecordPage) {
+        this.$root.$off('refetch-records', this.refresh)
+      }
     },
 
     setDefaultValues () {

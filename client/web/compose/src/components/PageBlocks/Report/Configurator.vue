@@ -9,7 +9,7 @@
           <c-input-select
             v-model="options.reportID"
             :options="reports"
-            :get-option-label="o => o.meta.name || o.handle"
+            :get-option-label="getReportLabel"
             default-value="0"
             :reduce="o => o.reportID"
             @input="handleReportChange"
@@ -37,34 +37,22 @@
     <b-form-group
       v-if="selectedReport"
       :label="$t('report.element.label')"
-      :description="$t('report.element.description')"
       label-class="text-primary"
     >
       <c-input-select
         v-model="options.elementID"
-        :options="selectedReport.blocks"
-        :reduce="o => o.elements[0].elementID"
-        :get-option-label="getElementsOptionLabel"
+        :options="allElements"
+        :reduce="o => o.elementID"
         default-value="0"
       >
+        <template #selected-option="option">
+          {{ option.label }}
+          <small class="text-muted"> ({{ option.blockLabel }})</small>
+        </template>
+
         <template #option="option">
-          <div v-if="option.elements.length > 0">
-            <strong>{{ option.title || `${$t('general:label.block')} ${option.key}` }}</strong>
-
-            <ul class="list-unstyled">
-              <li
-                v-for="subOption in option.elements"
-                :key="subOption.name"
-                class="ml-2"
-              >
-                {{ subOption.name || subOption.kind }}
-              </li>
-            </ul>
-          </div>
-
-          <div v-else>
-            {{ option.name }}
-          </div>
+          {{ option.label }}
+          <small class="text-muted"> ({{ option.blockLabel }})</small>
         </template>
       </c-input-select>
     </b-form-group>
@@ -97,6 +85,30 @@ export default {
 
       return undefined
     },
+
+    allElements () {
+      if (!this.selectedReport) {
+        return []
+      }
+
+      // Flatten all elements from all blocks
+      const elements = []
+      this.selectedReport.blocks.forEach(block => {
+        const blockLabel = block.title || `${this.$t('general:label.block')} ${block.key}`
+
+        if (block.elements && Array.isArray(block.elements)) {
+          block.elements.forEach(element => {
+            elements.push({
+              elementID: element.elementID,
+              blockLabel,
+              label: element.name || element.kind,
+            })
+          })
+        }
+      })
+
+      return elements
+    },
   },
 
   watch: {
@@ -126,9 +138,8 @@ export default {
       this.reports = []
     },
 
-    getElementsOptionLabel (o) {
-      const blockTitle = o.title.length > 1 ? `${o.title} - ` : ''
-      return `${blockTitle}${o.elements[0].name}` || o.elements[0].kind
+    getReportLabel ({ kind, meta = {} } = {}) {
+      return meta.name || kind
     },
 
     handleReportChange () {

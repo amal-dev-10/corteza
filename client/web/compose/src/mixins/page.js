@@ -189,7 +189,7 @@ export default {
         const showBlock = block && validExpression && validRole
 
         // Update invisible status based on visibility evaluation
-        block.meta.visible = showBlock
+        block.meta.invisible = !showBlock
       })
 
       return blocks

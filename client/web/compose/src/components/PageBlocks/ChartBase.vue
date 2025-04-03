@@ -328,8 +328,10 @@ export default {
 
     refresh () {
       this.fetchChart({ force: true }).then(() => {
-        this.chart.config.noAnimation = true
-        this.key++
+        if (this.chart) {
+          this.chart.config.noAnimation = true
+          this.key++
+        }
       })
     },
 

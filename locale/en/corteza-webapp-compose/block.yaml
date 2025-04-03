@@ -761,7 +761,6 @@ report:
     label: Scenario
   element:
     label: Display element
-    description: Display elements are grouped by their respective block
 
 progress:
   add: + Add

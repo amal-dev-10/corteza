@@ -42,7 +42,7 @@
           @resize="onGridAction"
         >
           <slot
-            v-if="blocks[item.i].meta.visible"
+            v-if="!blocks[item.i].meta.invisible"
             :block="blocks[item.i]"
             :index="index"
             :block-index="item.i"
