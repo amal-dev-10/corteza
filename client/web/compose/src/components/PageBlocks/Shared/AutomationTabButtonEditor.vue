@@ -1,9 +1,29 @@
 <template>
   <b-card
-    :title="workflow ? $t('editTitle.workflow') : $t('editTitle.script')"
+    :title="sourceLabel"
     footer-class="text-right pt-0"
     class="border"
   >
+    <p
+      v-if="workflow && workflow.meta"
+      class="mb-3"
+    >
+      {{ workflow.meta.description || $t('noDescription') }}
+
+      <var
+        v-if="trigger"
+      >
+        {{ $t('stepID', { stepID: trigger.stepID }) }}
+      </var>
+    </p>
+
+    <p
+      v-else-if="script"
+      class="mb-3"
+    >
+      {{ script.description || $t('noDescription') }}
+    </p>
+
     <b-form-group
       :label="$t('buttonLabel')"
       label-class="text-primary"
@@ -34,7 +54,6 @@
       <b-select
         v-model="button.variant"
         class="w-100"
-        size="sm"
       >
         <b-select-option
           v-for="({ variant, label }) in variants"
@@ -45,48 +64,6 @@
         </b-select-option>
       </b-select>
     </b-form-group>
-
-    <div
-      v-if="workflow"
-    >
-      <h5>
-        {{ workflow.meta.name || $t('noLabel') }}
-      </h5>
-    </div>
-
-    <code
-      v-else-if="button.script"
-    >
-      {{ button.script }}
-    </code>
-
-    <b-alert
-      v-else
-      show
-      variant="warning"
-    >
-      {{ $t('noScript' ) }}
-    </b-alert>
-
-    <p
-      v-if="workflow && workflow.meta"
-      class="my-2"
-    >
-      {{ workflow.meta.description || $t('noDescription') }}
-
-      <var
-        v-if="trigger"
-      >
-        {{ $t('stepID', { stepID: trigger.stepID }) }}
-      </var>
-    </p>
-
-    <p
-      v-else-if="script"
-      class="my-2"
-    >
-      {{ script.description || $t('noDescription') }}
-    </p>
 
     <template #footer>
       <c-input-confirm
@@ -113,7 +90,7 @@ export default {
     CInputExpression,
   },
 
-  extends: autocomplete,
+  mixins: [autocomplete],
 
   props: {
     button: {
@@ -148,6 +125,12 @@ export default {
       required: false,
       default: undefined,
     },
+
+    record: {
+      type: compose.Record,
+      required: false,
+      default: undefined,
+    },
   },
 
   computed: {
@@ -161,6 +144,16 @@ export default {
         'danger',
         'warning',
       ].map(variant => ({ variant, label: this.$t(`variants.${variant}`) }))
+    },
+
+    sourceLabel () {
+      if (this.workflow) {
+        return this.workflow.meta.name || this.$t('noLabel')
+      } else if (this.button.script) {
+        return this.button.script
+      }
+
+      return this.$t('dummyButtonLabel')
     },
 
     workflow () {

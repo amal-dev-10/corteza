@@ -21,15 +21,15 @@ export default {
       const moduleFields = fields.map(({ name }) => name)
       const userProperties = this.$auth.user.properties() || []
 
-      const recordSuggestions = this.isRecordPage
+      const recordSuggestions = this.isRecordPage && this.record
         ? [
             ...(['ownerID', 'recordID'].map(value => ({ interpolate: true, value }))),
             {
               interpolate: true,
               value: 'record',
               properties: [
-                ...(this.record.properties || []),
                 { value: 'values', properties: Object.keys(this.record.values) || [] },
+                ...(this.record.properties || []),
               ],
             },
           ]
@@ -49,13 +49,13 @@ export default {
       const moduleFields = fields.map(({ name }) => name)
       const userProperties = this.$auth.user.properties() || []
 
-      const recordSuggestions = this.isRecordPage
+      const recordSuggestions = this.isRecordPage && this.record
         ? [
             {
               value: 'record',
               properties: [
-                ...(this.record.properties || []),
                 { value: 'values', properties: Object.keys(this.record.values) || [] },
+                ...(this.record.properties || []),
               ],
             },
           ]

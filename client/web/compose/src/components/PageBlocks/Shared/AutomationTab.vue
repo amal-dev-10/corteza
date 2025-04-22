@@ -1,7 +1,7 @@
 <template>
   <b-tab class="p-0">
     <template #title>
-      {{ $t('automation.label') }}
+      {{ $t('label') }}
       <b-badge
         v-if="buttons.length > 0"
         pill
@@ -11,11 +11,14 @@
       </b-badge>
     </template>
 
-    <b-container class="pt-3">
+    <b-container class="py-3">
       <b-row>
-        <b-col lg="6">
+        <b-col
+          cols="12"
+          lg="6"
+        >
           <b-card
-            :title="$t('automation.configuredButtons')"
+            :title="$t('configuredButtons')"
             footer-class="text-right"
             class="border"
           >
@@ -31,19 +34,19 @@
                 class="cursor-move m-1"
                 @click="currentButton=b"
               >
-                {{ b.label || '-' }}
+                {{ buttonLabel(b.label) || '-' }}
               </b-button>
             </draggable>
             <template #footer>
               <b-button
                 variant="link"
-                @click="appendButton({ label: $t('automation.dummyButtonLabel'), variant: 'danger' })"
+                @click="appendButton({ label: $t('dummyButtonLabel'), variant: 'danger' })"
               >
-                {{ $t('automation.addPlaceholderLabel') }}
+                {{ $t('addPlaceholderLabel') }}
               </b-button>
               <c-input-confirm
                 v-if="buttons.length"
-                :text="$t('automation.removeAll')"
+                :text="$t('removeAll')"
                 variant="link"
                 size="md"
                 @confirmed="removeAllButtons"
@@ -51,7 +54,11 @@
             </template>
           </b-card>
         </b-col>
-        <b-col lg="6">
+
+        <b-col
+          cols="12"
+          lg="6"
+        >
           <button-editor
             v-if="currentButton"
             :page="page"
@@ -68,15 +75,20 @@
 
       <b-row class="mt-4">
         <b-col>
+          <b-spinner
+            v-if="loading"
+            class="d-block mx-auto my-5"
+          />
+
           <b-card
-            v-if="available.length > 0"
-            :title="$t('automation.availableScriptsAndWorkflow', { count: available.length })"
+            v-else-if="available.length > 0"
+            :title="$t('availableScriptsAndWorkflow', { count: available.length })"
             class="border"
           >
             <c-input-search
               v-model="queryAvailable"
               class="mb-1"
-              :placeholder="$t('automation.searchPlaceholder')"
+              :placeholder="$t('searchPlaceholder')"
             />
 
             <b-list-group
@@ -94,13 +106,13 @@
                       v-if="b.workflowID"
                       variant="info"
                     >
-                      {{ $t('automation.badge.workflow') }}
+                      {{ $t('badge.workflow') }}
                     </b-badge>
                     <b-badge
                       v-else-if="b.script"
                       variant="light"
                     >
-                      {{ $t('automation.badge.script') }}
+                      {{ $t('badge.script') }}
                     </b-badge>
                   </h6>
                   <code v-if="b.label && b.script">{{ b.script }}</code>
@@ -115,14 +127,14 @@
                   </span>
 
                   <i v-else>
-                    {{ $t('automation.noDescription') }}
+                    {{ $t('noDescription') }}
                   </i>
                 </p>
 
                 <var
                   v-if="b.stepID"
                 >
-                  {{ $t('automation.stepID', { stepID: b.stepID }) }}
+                  {{ $t('stepID', { stepID: b.stepID }) }}
                 </var>
               </b-list-group-item>
             </b-list-group>
@@ -130,7 +142,7 @@
           <p
             v-else-if="buttons.length === 0"
           >
-            {{ $t('automation.noScripts') }}
+            {{ $t('noScripts') }}
           </p>
         </b-col>
       </b-row>
@@ -138,17 +150,20 @@
   </b-tab>
 </template>
 <script>
-import { compose } from '@cortezaproject/corteza-js'
+import { compose, NoID } from '@cortezaproject/corteza-js'
 import { components } from '@cortezaproject/corteza-vue'
 import draggable from 'vuedraggable'
 import base from '../base'
 import { words } from 'lodash'
 import ButtonEditor from './AutomationTabButtonEditor'
+import { evaluatePrefilter } from 'corteza-webapp-compose/src/lib/record-filter'
+
 const { CInputSearch } = components
 
 export default {
   i18nOptions: {
     namespaces: 'block',
+    keyPrefix: 'automation',
   },
 
   components: {
@@ -178,6 +193,8 @@ export default {
 
   data () {
     return {
+      loading: false,
+
       currentButton: null,
       queryAvailable: '',
 
@@ -277,6 +294,7 @@ export default {
     },
 
     async fetchTriggers () {
+      this.loading = true
       let aux = []
 
       // Fetch triggers & workflows a
@@ -342,11 +360,24 @@ export default {
         .catch(err => {
           console.error(err)
         })
+        .finally(() => {
+          this.loading = false
+        })
     },
 
     removeAllButtons () {
       this.buttons.splice(0)
       this.currentButton = undefined
+    },
+
+    buttonLabel (label = '') {
+      return evaluatePrefilter(label, {
+        record: this.record,
+        user: this.$auth.user || {},
+        recordID: (this.record || {}).recordID || NoID,
+        ownerID: (this.record || {}).ownedBy || NoID,
+        userID: (this.$auth.user || {}).userID || NoID,
+      })
     },
   },
 }
