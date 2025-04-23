@@ -78,7 +78,7 @@
 
       <div
         class="card-body p-0 flex-fill"
-        :class="{ 'overflow-auto': scrollableBody, bodyClass }"
+        :class="[{ 'overflow-auto': scrollableBody }, bodyClass]"
         style="flex-shrink: 10;"
       >
         <slot
@@ -99,6 +99,7 @@
 </template>
 <script>
 import base from './base.vue'
+
 export default {
   name: 'PlainWrap',
   extends: base,

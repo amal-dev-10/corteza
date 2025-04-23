@@ -1,7 +1,7 @@
 <template>
   <wrap
     v-bind="$props"
-    body-class="field-container mt-3 px-3"
+    body-class="field-container pt-3 px-3"
     v-on="$listeners"
   >
     <div
@@ -30,7 +30,7 @@
         >
           <template #label>
             <div
-              class="d-flex text-primary mb-0"
+              class="d-flex align-items-center text-primary mb-0"
             >
               <span
                 class="d-flex"
