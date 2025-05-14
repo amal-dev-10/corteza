@@ -1,4 +1,4 @@
-.PHONY: all install-fresh install-packages build clean cleaner
+.PHONY: all install-fresh install-packages build clean cleaner tar
 
 WGET         ?= wget
 WGET_FLAGS   ?= -q
@@ -9,7 +9,7 @@ APPS         ?= admin compose workflow reporter discovery privacy
 ALL_APPS     ?= $(APPS) one
 VERSION      ?= $(shell git describe --tags --abbrev=0)
 PACKAGES      = $(addprefix corteza-webapp-,$(addsuffix -$(VERSION).tar.gz,$(ALL_APPS)))
-SOURCE_LOC   ?= "../../webapp-"
+SOURCE_LOC   ?= "../../client/web/"
 SOURCES       = $(addprefix $(SOURCE_LOC),$(ALL_APPS))
 
 all: install-packages
@@ -43,6 +43,10 @@ install-fresh: build
 	@ cp -r $(SOURCE_LOC)privacy/dist 	public/privacy
 
 build: $(SOURCES)
+
+tar:
+	$(info creating tar.gz file of public folder)
+	@$(TAR) -czf corteza-webapp-$(VERSION).tar.gz -C public .
 
 $(SOURCES):
 	$(info building $(@))
