@@ -9,6 +9,7 @@ import (
 	"github.com/cortezaproject/corteza/server/assets"
 	automationRest "github.com/cortezaproject/corteza/server/automation/rest"
 	composeRest "github.com/cortezaproject/corteza/server/compose/rest"
+	customRoutes "github.com/cortezaproject/corteza/server/custom/routes"
 	discoveryRest "github.com/cortezaproject/corteza/server/discovery/rest"
 	"github.com/cortezaproject/corteza/server/docs"
 	federationRest "github.com/cortezaproject/corteza/server/federation/rest"
@@ -157,4 +158,6 @@ func (app *CortezaApp) mountHttpRoutes(r chi.Router) {
 	func() {
 		r.Handle("/.well-known/openid-configuration", app.AuthService.WellKnownOpenIDConfiguration())
 	}()
+
+	customRoutes.MountHttpRoutes(r)
 }
