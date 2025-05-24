@@ -1,4 +1,4 @@
-.PHONY: all install-fresh install-packages build clean cleaner
+.PHONY: all install-fresh install-packages build clean cleaner tar
 
 WGET         ?= wget
 WGET_FLAGS   ?= -q
@@ -43,6 +43,10 @@ install-fresh: build
 	@ cp -r $(SOURCE_LOC)privacy/dist 	public/privacy
 
 build: $(SOURCES)
+
+tar:
+	$(info creating tar.gz file of public folder)
+	@$(TAR) -czf corteza-webapp-$(VERSION).tar.gz -C public .
 
 $(SOURCES):
 	$(info building $(@))

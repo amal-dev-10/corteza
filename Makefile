@@ -1,4 +1,4 @@
-.PHONY: dev test lint fresh audit
+.PHONY: dev test lint fresh audit copy-locales clean-and-build-lib build-server-release install-client-and-build-webapp docker-build automax-local-build
 
 dev:
 	@echo "---Processing libs---"
@@ -32,5 +32,26 @@ audit:
 	@(cd $(CURDIR)/lib && make audit) || true
 	@echo "---Audit clients---"
 	@(cd $(CURDIR)/client && make audit) || true
+
+# new
+copy-locales:
+	cp -r locale/en server/pkg/locale/src/
+
+clean-and-build-lib:
+	$(MAKE) -C lib build
+
+build-server-release:
+	rm -rf server/build
+	$(MAKE) -C server release
+
+install-client-and-build-webapp:
+	cd client && yarn install && $(MAKE) yarn
+	cd server/webapp && NODE_OPTIONS=--openssl-legacy-provider $(MAKE) install-fresh
+	cd server/webapp && $(MAKE) tar
+
+docker-build:
+	sudo docker build --no-cache -t corteza:local .
+
+automax-local-build: copy-locales clean-and-build-lib build-server-release install-client-and-build-webapp docker-build
 
 .DEFAULT_GOAL := dev
