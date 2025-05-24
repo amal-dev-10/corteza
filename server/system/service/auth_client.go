@@ -413,6 +413,21 @@ func (svc *authClient) Undelete(ctx context.Context, ID uint64) (err error) {
 	return svc.recordAction(ctx, aaProps, AuthClientActionUndelete, err)
 }
 
+func (svc *authClient) LookupUserByID(ctx context.Context, userID uint64) (*types.AuthClient, error) {
+	set, _, err := svc.store.SearchAuthClients(ctx, types.AuthClientFilter{})
+	if err != nil {
+		return nil, err
+	}
+
+	for _, authCli := range set {
+		if authCli.Security.ImpersonateUser == userID {
+			return authCli, nil
+		}
+	}
+
+	return nil, nil
+}
+
 func loadAuthClient(ctx context.Context, s store.AuthClients, ID uint64) (res *types.AuthClient, err error) {
 	if ID == 0 {
 		return nil, AuthClientErrInvalidID()

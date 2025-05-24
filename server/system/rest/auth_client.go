@@ -28,6 +28,9 @@ type (
 		ExposeSecret(ctx context.Context, ID uint64) (secret string, err error)
 		RegenerateSecret(ctx context.Context, ID uint64) (secret string, err error)
 		IsDefaultClient(c *types.AuthClient) bool
+
+		// Custom methods
+		LookupUserByID(ctx context.Context, userID uint64) (*types.AuthClient, error)
 	}
 
 	authClientAccessController interface {

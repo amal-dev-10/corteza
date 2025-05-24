@@ -6,7 +6,6 @@ import (
 	"github.com/cortezaproject/corteza/server/custom/dtos"
 	"github.com/cortezaproject/corteza/server/custom/utils/helpers"
 	"github.com/cortezaproject/corteza/server/system/service"
-	"github.com/cortezaproject/corteza/server/system/types"
 )
 
 type (
@@ -43,24 +42,17 @@ func (h login) GetAuthCLient(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	authClientSet, _, err := service.DefaultAuthClient.Search(r.Context(), types.AuthClientFilter{})
+	authCli, err := service.DefaultAuthClient.LookupUserByID(r.Context(), user.ID)
 	if err != nil {
 		helpers.HttpFailedResponse(&w, http.StatusBadRequest, "Unable to find the auth credentials", map[string]interface{}{"error": err.Error()})
 		return
 	}
 
-	if len(authClientSet) == 0 {
-		helpers.HttpFailedResponse(&w, http.StatusBadRequest, "No auth client credentials are created", nil)
+	if authCli != nil {
+		helpers.HttpSuccessResponse(&w, http.StatusNoContent, "Auth client fetched successfully!", map[string]interface{}{
+			"auth-client": authCli,
+		})
 		return
-	}
-
-	for _, authClient := range authClientSet {
-		if authClient.Security.ImpersonateUser == user.ID {
-			helpers.HttpSuccessResponse(&w, http.StatusAccepted, "Verified User", map[string]interface{}{
-				"authClient": authClient,
-			})
-			return
-		}
 	}
 
 	helpers.HttpSuccessResponse(&w, http.StatusNoContent, "User didn't have auth credentials", nil)
